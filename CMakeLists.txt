@@ -33,6 +33,10 @@ set(PROJECT_SOURCES
         main.cpp
         Widget.cpp
         Widget.h
+        TreeModel.cpp
+        TreeItem.cpp
+        TreeView.cpp
+        Constant.cpp
         ${TS_FILES}
 )
 
