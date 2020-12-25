@@ -12,6 +12,8 @@ public:
 
     void appendChild(TreeItem *child);
 
+    int insertFolder(TreeItem* child);
+
     TreeItem *child(int row);
 
     int childCount() const;

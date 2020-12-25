@@ -17,6 +17,7 @@
 #include <fstream>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QDir>
 #include "markdown.h"
 #include "Utils.h"
 
@@ -221,6 +222,25 @@ void Widget::on_action_newNote() {
 
 void Widget::on_action_newFolder() {
 
+    bool ok;
+    QString folderName = QInputDialog::getText(this, tr("New Folder"), tr("Folder name"),
+                                               QLineEdit::Normal, "folder", &ok);
+    qDebug() << "new folder name:" << folderName;
+    if (!ok || folderName.isEmpty()) return;
+    QString newFolderPath = m_curCheckedPath + "/" + folderName;
+    QDir dir(newFolderPath);
+    if (dir.exists()) {
+        QMessageBox::warning(this, tr("warning"), tr("Folder already exist!"));
+        return;
+    }
+    qDebug() << "create new folder:" << folderName;
+    dir.mkpath(newFolderPath);
+    QList<QVariant> data;
+    data << folderName;
+    auto item = new TreeItem(data, m_curItem);
+    item->setPath(newFolderPath);
+    auto newNoteIndex = m_treeModel->addNewNode(m_curIndex, item);
+    m_treeView->setCurrentIndex(newNoteIndex);
 }
 
 void Widget::loadMdText() {

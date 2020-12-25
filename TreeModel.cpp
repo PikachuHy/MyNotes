@@ -164,3 +164,16 @@ QModelIndex TreeModel::addNewNode(const QModelIndex& parent, TreeItem* child) {
     endInsertRows();
     return index(insertRowNum, 0, parent);
 }
+
+QModelIndex TreeModel::addNewFolder(const QModelIndex &parent, TreeItem *child) {
+    if (!parent.isValid()) {
+        qDebug() << "index is invalid";
+        return QModelIndex();
+    }
+    auto parentItem = static_cast<TreeItem *>(parent.internalPointer());
+
+    int insertRowNum = parentItem->insertFolder(child);
+    beginInsertRows(parent, insertRowNum, insertRowNum);
+    endInsertRows();
+    return index(insertRowNum, 0, parent);
+}

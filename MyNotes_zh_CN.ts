@@ -19,5 +19,17 @@
         <source>Note already exist!</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>New Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Folder name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Folder already exist!</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>

@@ -33,6 +33,8 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
     QModelIndex addNewNode(const QModelIndex& parent, TreeItem* child);
+
+    QModelIndex addNewFolder(const QModelIndex& parent, TreeItem* child);
 private:
     void setupModelData(TreeItem *parent);
 

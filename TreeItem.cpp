@@ -73,7 +73,19 @@ bool TreeItem::isWorkshopItem() {
 }
 
 bool TreeItem::isFile() {
-    return !isAttachmentItem() && !isTrashItem() && !isWorkshopItem() && m_childItems.empty();
+    return QFileInfo(m_path).isFile();
+}
+
+int TreeItem::insertFolder(TreeItem *child) {
+    int i = 0;
+    for(auto item: m_childItems) {
+        if (QFileInfo(item->path()).isDir()) {
+            i++;
+        }
+        break;
+    }
+    m_childItems.insert(i, child);
+    return i;
 }
 
 QVariant TrashItem::data(int column, int role) const {
