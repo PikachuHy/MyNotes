@@ -33,6 +33,7 @@ Widget::Widget(QWidget *parent)
     m_showPreviewButton = new QPushButton("Preview");
     // 处理Ctrl+S保存
     m_textEdit->installEventFilter(this);
+    m_treeView->installEventFilter(this);
     auto splitter = new QSplitter();
     splitter->addWidget(m_treeView);
     auto vbox = new QVBoxLayout();
@@ -160,6 +161,22 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
                 qDebug() << "text";
             } else {
                 qDebug() << "other";
+            }
+        }
+        if (watched == m_treeView) {
+            if (event->key() == Qt::Key_Backspace) {
+                auto item = static_cast<TreeItem*>(m_treeView->currentIndex().internalPointer());
+                if (item->isFile()) {
+                    auto ret = QMessageBox::question(this, tr("Trash Note"),
+                                                     tr("Trash Note?"),
+                                                     QMessageBox::Yes|QMessageBox::No,
+                                                     QMessageBox::Yes);
+                    if (ret == QMessageBox::Yes) {
+                        m_curIndex = m_treeView->currentIndex();
+                        on_action_trashNote();
+                        return true;
+                    }
+                }
             }
         }
     }

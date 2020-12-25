@@ -47,5 +47,13 @@
         <source>trash folder fail</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Trash Note</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trash Note?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>
