@@ -15,6 +15,8 @@
 #include <QMimeData>
 #include <iostream>
 #include <fstream>
+#include <QInputDialog>
+#include <QMessageBox>
 #include "markdown.h"
 #include "Utils.h"
 
@@ -81,11 +83,7 @@ void Widget::on_treeView_pressed(const QModelIndex &index) {
     if (item->isFile()) {
         m_titleLabel->setText(item->path().mid(m_notesPath.size()));
         m_curNotePath = item->path();
-        QFile file(item->path());
-        file.open(QIODevice::ReadOnly);
-        QString mdText = file.readAll();
-        m_textEdit->setText(mdText);
-        file.close();
+        loadMdText();
         updatePreview();
     }
 }
@@ -101,6 +99,9 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
     auto index = m_treeView->indexAt(pos);
     if (index.isValid()) {
         auto item = static_cast<TreeItem *>(index.internalPointer());
+        m_curItem = item;
+        m_curCheckedPath = item->path();
+        m_curIndex = index;
         if (item->isTrashItem()) {
             auto a = new QAction("Clear Trash", &menu);
             menu.addAction(a);
@@ -112,7 +113,9 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
         } else {
             auto a = new QAction("New Note", &menu);
             menu.addAction(a);
+            connect(a, &QAction::triggered, this, &Widget::on_action_newNote);
             auto b = new QAction("New Folder", &menu);
+            connect(b, &QAction::triggered, this, &Widget::on_action_newFolder);
             menu.addAction(b);
         }
     }
@@ -181,6 +184,50 @@ void Widget::saveMdText() {
     file.open(QIODevice::WriteOnly);
     const QString &mdText = m_textEdit->toPlainText();
     file.write(mdText.toUtf8());
+    file.close();
+}
+
+void Widget::on_action_newNote() {
+    bool ok;
+    QString noteName = QInputDialog::getText(this, tr("New Note"),tr("Note name"), QLineEdit::Normal,"untitled", &ok);
+    qDebug() << "new note name:" << noteName;
+    if (ok && !noteName.isEmpty()) {
+        QString newNotePath = m_curCheckedPath + "/" + noteName;
+        QFile file = QFile(newNotePath);
+        if (file.exists()) {
+            QMessageBox::warning(this, tr("warning"), tr("Note already exist!"));
+        } else {
+            qDebug() << "create new note:" << noteName;
+            ok = file.open(QIODevice::WriteOnly);
+            if (!ok) {
+                qDebug() << "open file fail:" << newNotePath;
+            } else {
+                QList<QVariant> data;
+                data << noteName;
+                auto item = new TreeItem(data, m_curItem);
+                item->setPath(newNotePath);
+                auto newNoteIndex = m_treeModel->addNewNode(m_curIndex, item);
+                m_treeView->setCurrentIndex(newNoteIndex);
+                QString newNoteText = "# " + noteName;
+                file.write(newNoteText.toUtf8());
+                file.close();
+                m_curNotePath = newNotePath;
+                loadMdText();
+                updatePreview();
+            }
+        }
+    }
+}
+
+void Widget::on_action_newFolder() {
+
+}
+
+void Widget::loadMdText() {
+    QFile file(m_curNotePath);
+    file.open(QIODevice::ReadOnly);
+    QString mdText = file.readAll();
+    m_textEdit->setText(mdText);
     file.close();
 }
 

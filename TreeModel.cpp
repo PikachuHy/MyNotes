@@ -11,7 +11,7 @@ namespace fs = std::filesystem;
 
 TreeModel::TreeModel(const QString &path, QObject *parent)
         : QAbstractItemModel(parent) {
-    m_dataPath = path + "/" + Constant::workshop;
+    m_dataPath = path;
     ensurePathExist(path);
     ensurePathExist(path + "/" + Constant::workshop);
     ensurePathExist(path + "/" + Constant::attachment);
@@ -123,11 +123,11 @@ void buildFileTree(QString path, TreeItem *parent) {
 }
 
 void TreeModel::setupModelData(TreeItem *parent) {
-    auto workshopItem = new WorkshopItem(parent);
+    auto workshopItem = new WorkshopItem(workshopPath(), parent);
     parent->appendChild(workshopItem);
-    parent->appendChild(new AttachmentItem(parent));
-    parent->appendChild(new TrashItem(parent));
-    buildFileTree(m_dataPath, workshopItem);
+    parent->appendChild(new AttachmentItem(attachmentPath(), parent));
+    parent->appendChild(new TrashItem(trashPath(), parent));
+    buildFileTree(workshopPath(), workshopItem);
 }
 
 void TreeModel::ensurePathExist(QString path) {
@@ -138,4 +138,29 @@ void TreeModel::ensurePathExist(QString path) {
             exit(0);
         }
     }
+}
+
+QString TreeModel::workshopPath() {
+    return m_dataPath + "/" + Constant::workshop;
+}
+
+QString TreeModel::trashPath() {
+    return m_dataPath + "/" + Constant::trash;
+}
+
+QString TreeModel::attachmentPath() {
+    return m_dataPath + "/" + Constant::attachment;
+}
+
+QModelIndex TreeModel::addNewNode(const QModelIndex& parent, TreeItem* child) {
+    if (!parent.isValid()) {
+        qDebug() << "index is invalid";
+        return QModelIndex();
+    }
+    auto parentItem = static_cast<TreeItem *>(parent.internalPointer());
+    int insertRowNum = parentItem->childCount();
+    beginInsertRows(parent, insertRowNum, insertRowNum);
+    parentItem->appendChild(child);
+    endInsertRows();
+    return index(insertRowNum, 0, parent);
 }

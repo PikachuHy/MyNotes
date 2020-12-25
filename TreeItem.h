@@ -45,7 +45,7 @@ private:
 
 class TrashItem : public TreeItem {
 public:
-    explicit TrashItem(TreeItem *parentItem = nullptr);
+    explicit TrashItem(const QString & path, TreeItem *parentItem = nullptr);
 
     QVariant data(int column, int role) const override;
 
@@ -54,7 +54,7 @@ public:
 
 class AttachmentItem : public TreeItem {
 public:
-    explicit AttachmentItem(TreeItem *parentItem = nullptr);
+    explicit AttachmentItem(const QString & path, TreeItem *parentItem = nullptr);
 
     QVariant data(int column, int role) const override;
 
@@ -63,7 +63,7 @@ public:
 
 class WorkshopItem : public TreeItem {
 public:
-    explicit WorkshopItem(TreeItem *parentItem = nullptr);
+    explicit WorkshopItem(const QString & path, TreeItem *parentItem = nullptr);
 
     QVariant data(int column, int role) const override;
 

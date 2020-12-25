@@ -11,6 +11,7 @@
 #include <QLayout>
 #include <QAction>
 
+class TreeItem;
 class TreeModel;
 
 class Widget : public QWidget {
@@ -35,6 +36,9 @@ private slots:
 
     void on_treeView_customContextMenuRequested(const QPoint &pos);
 
+    void on_action_newNote();
+
+    void on_action_newFolder();
 private:
     inline QString attachmentPath() {
         return m_notesPath + "/attachment/";
@@ -45,6 +49,7 @@ private:
     inline QString imageMdText(const QString & url) {
         return "![image]("+url+")";
     }
+    void loadMdText();
     void saveMdText();
     void updatePreview();
 private:
@@ -59,6 +64,9 @@ private:
     TreeModel *m_treeModel;
     QString m_notesPath;
     QString m_curNotePath;
+    QString m_curCheckedPath;
+    TreeItem* m_curItem;
+    QModelIndex m_curIndex;
 };
 
 #endif // WIDGET_H

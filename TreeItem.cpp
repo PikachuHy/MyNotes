@@ -88,8 +88,8 @@ bool TrashItem::isTrashItem() {
     return true;
 }
 
-TrashItem::TrashItem(TreeItem *parentItem) : TreeItem({"Trash"}, parentItem) {
-
+TrashItem::TrashItem(const QString & path, TreeItem *parentItem) : TreeItem({"Trash"}, parentItem) {
+    setPath(path);
 }
 
 QVariant AttachmentItem::data(int column, int role) const {
@@ -104,8 +104,8 @@ bool AttachmentItem::isAttachmentItem() {
     return true;
 }
 
-AttachmentItem::AttachmentItem(TreeItem *parentItem) : TreeItem({"Attachment"}, parentItem) {
-
+AttachmentItem::AttachmentItem(const QString & path, TreeItem *parentItem) : TreeItem({"Attachment"}, parentItem) {
+    setPath(path);
 }
 
 QVariant WorkshopItem::data(int column, int role) const {
@@ -120,6 +120,6 @@ bool WorkshopItem::isWorkshopItem() {
     return true;
 }
 
-WorkshopItem::WorkshopItem(TreeItem *parentItem) : TreeItem({"Workshop"}, parentItem) {
-
+WorkshopItem::WorkshopItem(const QString & path, TreeItem *parentItem) : TreeItem({"Workshop"}, parentItem) {
+    setPath(path);
 }

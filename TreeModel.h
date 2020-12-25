@@ -8,7 +8,6 @@
 
 class TreeItem;
 
-//! [0]
 class TreeModel : public QAbstractItemModel {
 Q_OBJECT
 
@@ -33,11 +32,15 @@ public:
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
+    QModelIndex addNewNode(const QModelIndex& parent, TreeItem* child);
 private:
     void setupModelData(TreeItem *parent);
 
     void ensurePathExist(QString path);
 
+    inline QString workshopPath();
+    inline QString attachmentPath();
+    inline QString trashPath();
 private:
     TreeItem *rootItem;
     QString m_dataPath;
