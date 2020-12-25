@@ -34,9 +34,15 @@ QVariant TreeItem::data(int column, int role) const {
         return QVariant();
     if (role == Qt::DecorationRole && column == 0) {
         if (m_path.isEmpty()) return QVariant();
+
         QFileInfo fileInfo(m_path);
-        QFileIconProvider iconProvider;
-        return iconProvider.icon(fileInfo);
+        if (fileInfo.exists()) {
+            QFileIconProvider iconProvider;
+            return iconProvider.icon(fileInfo);
+        } else {
+            qDebug() << "file" << m_path << "not exist";
+            return QVariant();
+        }
     }
     return m_itemData.at(column);
 }
@@ -92,6 +98,11 @@ int TreeItem::removeChild(TreeItem* child) {
     int rowToBeRemoved = m_childItems.indexOf(child);
     m_childItems.removeOne(child);
     return rowToBeRemoved;
+}
+
+int TreeItem::indexInParent() {
+    if (!m_parentItem) return -1;
+    return m_parentItem->m_childItems.indexOf(this);
 }
 
 QVariant TrashItem::data(int column, int role) const {

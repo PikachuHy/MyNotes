@@ -119,6 +119,12 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
             auto b = new QAction("New Folder", &menu);
             connect(b, &QAction::triggered, this, &Widget::on_action_newFolder);
             menu.addAction(b);
+            if (!item->isWorkshopItem()) {
+                auto c = new QAction("Trash Folder", &menu);
+                connect(c, &QAction::triggered, this, &Widget::on_action_trashFolder);
+                menu.addAction(c);
+                c->setEnabled(item->childCount() == 0);
+            }
         }
     }
     menu.exec(m_treeView->mapToGlobal(pos));
@@ -262,7 +268,7 @@ void Widget::on_action_trashNote() {
     qDebug() << "trash" << noteOldPath << "to" << noteTrashPath;
     bool ret = QFile::rename(noteOldPath, noteTrashPath);
     if (!ret) {
-        qDebug() << "trash" << noteOldPath << "success";
+        qDebug() << "trash" << noteOldPath << "fail";
         QMessageBox::critical(this, tr("trash note"), tr("trash note fail"));
         return;
     }
@@ -271,6 +277,19 @@ void Widget::on_action_trashNote() {
 }
 
 void Widget::on_action_trashFolder() {
-
+    if (!m_curIndex.isValid()) {
+        return;
+    }
+    m_treeModel->removeNode(m_curIndex);
+    auto item = static_cast<TreeItem *>(m_curIndex.internalPointer());
+    const QString folderPath = item->path();
+    qDebug() << "trash" << folderPath;
+    bool ret = QDir().rmdir(folderPath);
+    if (!ret) {
+        qDebug() << "trash" << folderPath << "fail";
+        QMessageBox::critical(this, tr("trash folder"), tr("trash folder fail"));
+        return;
+    }
+    qDebug() << "trash" << folderPath << "success";
 }
 

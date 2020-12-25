@@ -39,6 +39,8 @@ public:
     bool isFile();
 
     int removeChild(TreeItem* item);
+
+    int indexInParent();
 private:
     QList<TreeItem *> m_childItems;
     QList<QVariant> m_itemData;
