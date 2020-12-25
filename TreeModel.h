@@ -35,6 +35,8 @@ public:
     QModelIndex addNewNode(const QModelIndex& parent, TreeItem* child);
 
     QModelIndex addNewFolder(const QModelIndex& parent, TreeItem* child);
+
+    void removeNode(const QModelIndex& index);
 private:
     void setupModelData(TreeItem *parent);
 

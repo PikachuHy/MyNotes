@@ -177,3 +177,10 @@ QModelIndex TreeModel::addNewFolder(const QModelIndex &parent, TreeItem *child) 
     endInsertRows();
     return index(insertRowNum, 0, parent);
 }
+
+void TreeModel::removeNode(const QModelIndex &index) {
+    auto item = static_cast<TreeItem *>(index.internalPointer());
+    int rowToBeRemoved = item->parentItem()->removeChild(item);
+    beginRemoveRows(index.parent(), rowToBeRemoved, rowToBeRemoved);
+    endRemoveRows();
+}

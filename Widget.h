@@ -39,12 +39,19 @@ private slots:
     void on_action_newNote();
 
     void on_action_newFolder();
+
+    void on_action_trashNote();
+
+    void on_action_trashFolder();
 private:
     inline QString attachmentPath() {
         return m_notesPath + "/attachment/";
     }
     inline QString tmpHtmlPath() {
         return m_notesPath + "/tmp/note.html";
+    }
+    inline QString trashPath() {
+        return m_notesPath + "/trash/";
     }
     inline QString imageMdText(const QString & url) {
         return "![image]("+url+")";

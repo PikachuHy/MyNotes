@@ -88,6 +88,12 @@ int TreeItem::insertFolder(TreeItem *child) {
     return i;
 }
 
+int TreeItem::removeChild(TreeItem* child) {
+    int rowToBeRemoved = m_childItems.indexOf(child);
+    m_childItems.removeOne(child);
+    return rowToBeRemoved;
+}
+
 QVariant TrashItem::data(int column, int role) const {
     if (role == Qt::DecorationRole && column == 0) {
         QFileIconProvider provider;

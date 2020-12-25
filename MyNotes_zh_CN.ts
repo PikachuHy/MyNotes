@@ -31,5 +31,13 @@
         <source>Folder already exist!</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>trash note</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>trash note fail</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>

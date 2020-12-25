@@ -111,6 +111,7 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
         } else if (item->isFile()) {
             auto a = new QAction("Trash Note", &menu);
             menu.addAction(a);
+            connect(a, &QAction::triggered, this, &Widget::on_action_trashNote);
         } else {
             auto a = new QAction("New Note", &menu);
             menu.addAction(a);
@@ -239,7 +240,7 @@ void Widget::on_action_newFolder() {
     data << folderName;
     auto item = new TreeItem(data, m_curItem);
     item->setPath(newFolderPath);
-    auto newNoteIndex = m_treeModel->addNewNode(m_curIndex, item);
+    auto newNoteIndex = m_treeModel->addNewFolder(m_curIndex, item);
     m_treeView->setCurrentIndex(newNoteIndex);
 }
 
@@ -249,5 +250,27 @@ void Widget::loadMdText() {
     QString mdText = file.readAll();
     m_textEdit->setText(mdText);
     file.close();
+}
+
+void Widget::on_action_trashNote() {
+    if (!m_curIndex.isValid()) {
+        return;
+    }
+    auto item = static_cast<TreeItem *>(m_curIndex.internalPointer());
+    const QString noteOldPath = item->path();
+    QString noteTrashPath = trashPath() + QFileInfo(noteOldPath).fileName();
+    qDebug() << "trash" << noteOldPath << "to" << noteTrashPath;
+    bool ret = QFile::rename(noteOldPath, noteTrashPath);
+    if (!ret) {
+        qDebug() << "trash" << noteOldPath << "success";
+        QMessageBox::critical(this, tr("trash note"), tr("trash note fail"));
+        return;
+    }
+    m_treeModel->removeNode(m_curIndex);
+    qDebug() << "trash" << noteOldPath << "success";
+}
+
+void Widget::on_action_trashFolder() {
+
 }
 
