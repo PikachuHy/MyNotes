@@ -31,15 +31,22 @@ public:
 
 private slots:
 
-    void on_treeView_activated(const QModelIndex &index);
+    void on_treeView_pressed(const QModelIndex &index);
 
     void on_treeView_customContextMenuRequested(const QPoint &pos);
 
 private:
     inline QString attachmentPath() {
-        return m_notesPath + "/attachment";
+        return m_notesPath + "/attachment/";
     }
-
+    inline QString tmpHtmlPath() {
+        return m_notesPath + "/tmp/note.html";
+    }
+    inline QString imageMdText(const QString & url) {
+        return "![image]("+url+")";
+    }
+    void saveMdText();
+    void updatePreview();
 private:
     QTreeView *m_treeView;
     QTextEdit *m_textEdit;

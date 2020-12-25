@@ -16,6 +16,7 @@ TreeModel::TreeModel(const QString &path, QObject *parent)
     ensurePathExist(path + "/" + Constant::workshop);
     ensurePathExist(path + "/" + Constant::attachment);
     ensurePathExist(path + "/" + Constant::trash);
+    ensurePathExist(path + "/" + Constant::tmp);
     rootItem = new TreeItem({"File"});
     setupModelData(rootItem);
 }

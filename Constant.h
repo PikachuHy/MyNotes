@@ -10,6 +10,7 @@ public:
     static const QString workshop;
     static const QString attachment;
     static const QString trash;
+    static const QString tmp;
 
 };
 

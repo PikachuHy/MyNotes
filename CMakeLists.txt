@@ -37,6 +37,7 @@ set(PROJECT_SOURCES
         TreeItem.cpp
         TreeView.cpp
         Constant.cpp
+        Utils.cpp
         ${TS_FILES}
 )
 
@@ -59,5 +60,8 @@ else()
 
     qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
-
-target_link_libraries(MyNotes PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+add_subdirectory(md)
+target_link_libraries(MyNotes PRIVATE
+        Qt${QT_VERSION_MAJOR}::Widgets
+        cppmarkdown
+        )

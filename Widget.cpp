@@ -1,5 +1,4 @@
 #include "Widget.h"
-#include "FileTreeModel.h"
 #include "TreeItem.h"
 #include "TreeModel.h"
 #include "TreeView.h"
@@ -14,6 +13,10 @@
 #include <QClipboard>
 #include <QApplication>
 #include <QMimeData>
+#include <iostream>
+#include <fstream>
+#include "markdown.h"
+#include "Utils.h"
 
 Widget::Widget(QWidget *parent)
         : QWidget(parent) {
@@ -72,7 +75,7 @@ QLayout *Widget::initTitleLayout() {
     return hbox;
 }
 
-void Widget::on_treeView_activated(const QModelIndex &index) {
+void Widget::on_treeView_pressed(const QModelIndex &index) {
     if (!index.isValid()) return;
     auto item = static_cast<TreeItem *>(index.internalPointer());
     if (item->isFile()) {
@@ -82,13 +85,13 @@ void Widget::on_treeView_activated(const QModelIndex &index) {
         file.open(QIODevice::ReadOnly);
         QString mdText = file.readAll();
         m_textEdit->setText(mdText);
-        m_textPreview->setMarkdown(mdText);
         file.close();
+        updatePreview();
     }
 }
 
 void Widget::initSlots() {
-    connect(m_treeView, &QTreeView::pressed, this, &Widget::on_treeView_activated);
+    connect(m_treeView, &QTreeView::pressed, this, &Widget::on_treeView_pressed);
     connect(m_treeView, &QTreeView::customContextMenuRequested, this, &Widget::on_treeView_customContextMenuRequested);
 //    connect(m_textEdit, &QTextEdit:)
 }
@@ -120,15 +123,8 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
     if (e->type() == QEvent::KeyPress) {
         auto *event = static_cast<QKeyEvent *>(e);
         if (event->key() == Qt::Key_S && (event->modifiers() & Qt::ControlModifier)) {
-            if (m_curNotePath.isEmpty()) {
-                return true;
-            }
-            QFile file(m_curNotePath);
-            file.open(QIODevice::WriteOnly);
-            const QString &mdText = m_textEdit->toPlainText();
-            file.write(mdText.toUtf8());
-            file.close();
-            m_textPreview->setMarkdown(mdText);
+            saveMdText();
+            updatePreview();
             return true;
         }
         if (event->key() == Qt::Key_V && (event->modifiers() & Qt::ControlModifier)) {
@@ -137,12 +133,16 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
             if (mimeData->hasImage()) {
                 qDebug() << "image";
                 auto pixmap = qvariant_cast<QPixmap>(mimeData->imageData());
-                QString savePath = attachmentPath() + "/1.png";
+                QString saveName = "image-" + Utils::generateId() + ".png";
+                QString savePath = attachmentPath() + saveName;
                 auto ret = pixmap.save(savePath);
                 if (!ret) {
                     qDebug() << "save to" << savePath << "fail";
                 }
-
+                m_textEdit->insertPlainText(imageMdText(saveName));
+                saveMdText();
+                updatePreview();
+                return true;
             } else if (mimeData->hasHtml()) {
                 qDebug() << "html";
             } else if (mimeData->hasText()) {
@@ -153,5 +153,34 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
         }
     }
     return QObject::eventFilter(watched, e);
+}
+
+void Widget::updatePreview() {
+    std::ifstream ifile;
+    std::ofstream ofile;
+    ifile.open(m_curNotePath.toStdString());
+    ofile.open(tmpHtmlPath().toStdString());
+    std::istream *in=&ifile;
+    markdown::Document doc;
+    doc.read(*in);
+    doc.write(ofile);
+    ofile.close();
+    ifile.close();
+    QFile file(tmpHtmlPath());
+    file.open(QIODevice::ReadOnly);
+    QString html = file.readAll();
+    std::cout << html.toStdString() << std::endl;
+    m_textPreview->setHtml(html);
+}
+
+void Widget::saveMdText() {
+    if (m_curNotePath.isEmpty()) {
+        return;
+    }
+    QFile file(m_curNotePath);
+    file.open(QIODevice::WriteOnly);
+    const QString &mdText = m_textEdit->toPlainText();
+    file.write(mdText.toUtf8());
+    file.close();
 }
 
