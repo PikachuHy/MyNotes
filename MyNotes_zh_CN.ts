@@ -55,5 +55,14 @@
         <source>Trash Note?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Cannot open database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to establish a database connection.
+This example needs SQLite support. Please read the Qt SQL driver documentation for information how to build it.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>

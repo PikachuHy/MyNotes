@@ -20,6 +20,7 @@
 #include <QDir>
 #include "markdown.h"
 #include "Utils.h"
+#include <QtSql>
 
 Widget::Widget(QWidget *parent)
         : QWidget(parent) {
@@ -56,17 +57,34 @@ Widget::Widget(QWidget *parent)
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(splitter);
     setLayout(mainLayout);
-    m_notesPath = "/Users/pikachu/Documents/MyNotes";
+    m_notesPath = "/Users/pikachu/Documents/MyNotes/";
     m_treeModel = new TreeModel(m_notesPath);
     m_treeView->setModel(m_treeModel);
     initSlots();
-    resize(1200, 800);
+    resize(1500, 800);
     auto _font = font();
     _font.setPointSize(16);
     setFont(_font);
+
+    db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(m_notesPath+"db/sqlite.db");
+    if (!db.open()) {
+        QMessageBox::critical(this, tr("Cannot open database"),
+                              tr("Unable to establish a database connection.\n"
+                                 "This example needs SQLite support. Please read "
+                                 "the Qt SQL driver documentation for information how "
+                                 "to build it."), QMessageBox::Cancel);
+        return;
+    }
+    QSqlQuery query;
+    execDbSetupSql(query, ":/sql/create_table_note.sql");
+    execDbSetupSql(query, ":/sql/create_trigger_note_auto_update_time.sql");
+    execDbSetupSql(query, ":/sql/create_table_path.sql");
+    execDbSetupSql(query, ":/sql/create_trigger_path_auto_update_time.sql");
 }
 
 Widget::~Widget() {
+    db.close();
 }
 
 QLayout *Widget::initTitleLayout() {
@@ -199,6 +217,35 @@ void Widget::updatePreview() {
     QString html = file.readAll();
     std::cout << html.toStdString() << std::endl;
     m_textPreview->setHtml(html);
+}
+
+bool Widget::execDbSetupSql(QSqlQuery& query, QString path)
+{
+
+    QFile file(path);
+    if (!file.exists()) {
+        qDebug() << "ERROR:"<< path <<"not exist";
+        return false;
+    }
+    file.open(QIODevice::ReadOnly);
+    QString sql = file.readAll();
+    bool ret = query.exec(sql);
+    if (!ret) {
+        qDebug() << "exec sql fail:";
+        qDebug().nospace().noquote() << sql;
+        auto w = new QDialog();
+        auto vbox = new QVBoxLayout();
+        vbox->addWidget(new QLabel("ERROR in exec sql:"));
+        auto t = new QTextBrowser();
+        t->setText(sql);
+        vbox->addWidget(t);
+        w->setLayout(vbox);
+        w->exec();
+        connect(w, &QLabel::destroyed, w, &QLabel::deleteLater);
+        return false;
+    }
+    file.close();
+    return true;
 }
 
 void Widget::saveMdText() {

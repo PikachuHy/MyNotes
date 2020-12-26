@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>sql/create_table_note.sql</file>
+        <file>sql/create_trigger_note_auto_update_time.sql</file>
+        <file>sql/create_table_path.sql</file>
+        <file>sql/create_trigger_path_auto_update_time.sql</file>
+    </qresource>
+</RCC>

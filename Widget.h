@@ -10,10 +10,11 @@
 #include <QPushButton>
 #include <QLayout>
 #include <QAction>
+#include <QSqlQuery>
 
 class TreeItem;
 class TreeModel;
-
+class QSqlRelationalTableModel;
 class Widget : public QWidget {
 Q_OBJECT
 
@@ -59,6 +60,8 @@ private:
     void loadMdText();
     void saveMdText();
     void updatePreview();
+    bool execDbSetupSql(QSqlQuery& query, QString path);
+
 private:
     QTreeView *m_treeView;
     QTextEdit *m_textEdit;
@@ -74,6 +77,10 @@ private:
     QString m_curCheckedPath;
     TreeItem* m_curItem;
     QModelIndex m_curIndex;
+
+
+    QSqlRelationalTableModel *model;
+    QSqlDatabase db;
 };
 
 #endif // WIDGET_H

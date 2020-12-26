@@ -24,8 +24,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #    endif()
 #endif()
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets LinguistTools REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets LinguistTools Sql REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools Sql REQUIRED)
 
 set(TS_FILES MyNotes_zh_CN.ts)
 
@@ -39,6 +39,7 @@ set(PROJECT_SOURCES
         Constant.cpp
         Utils.cpp
         ${TS_FILES}
+        db.qrc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -63,5 +64,6 @@ endif()
 add_subdirectory(md)
 target_link_libraries(MyNotes PRIVATE
         Qt${QT_VERSION_MAJOR}::Widgets
+        Qt${QT_VERSION_MAJOR}::Sql
         cppmarkdown
         )
