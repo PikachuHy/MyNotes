@@ -14,6 +14,7 @@
 
 class TreeItem;
 class TreeModel;
+class DbManager;
 class QSqlRelationalTableModel;
 class Widget : public QWidget {
 Q_OBJECT
@@ -60,7 +61,7 @@ private:
     void loadMdText();
     void saveMdText();
     void updatePreview();
-    bool execDbSetupSql(QSqlQuery& query, QString path);
+
 
 private:
     QTreeView *m_treeView;
@@ -77,10 +78,7 @@ private:
     QString m_curCheckedPath;
     TreeItem* m_curItem;
     QModelIndex m_curIndex;
-
-
-    QSqlRelationalTableModel *model;
-    QSqlDatabase db;
+    DbManager* m_dbManager;
 };
 
 #endif // WIDGET_H

@@ -2,6 +2,18 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="MyNotes_zh_CN">
 <context>
+    <name>DbManager</name>
+    <message>
+        <source>Cannot open database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to establish a database connection.
+This example needs SQLite support. Please read the Qt SQL driver documentation for information how to build it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Widget</name>
     <message>
         <source>New Note</source>
@@ -53,15 +65,6 @@
     </message>
     <message>
         <source>Trash Note?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot open database</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to establish a database connection.
-This example needs SQLite support. Please read the Qt SQL driver documentation for information how to build it.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

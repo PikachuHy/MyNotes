@@ -6,7 +6,7 @@
 
 class TreeItem {
 public:
-    explicit TreeItem(const QList<QVariant> &data, TreeItem *parentItem = nullptr);
+    explicit TreeItem(const QList<QVariant> &data, bool isFolder = false, TreeItem *parentItem = nullptr);
 
     ~TreeItem();
 
@@ -46,6 +46,7 @@ private:
     QList<QVariant> m_itemData;
     TreeItem *m_parentItem;
     QString m_path;
+    bool m_isFolder;
 };
 
 class TrashItem : public TreeItem {

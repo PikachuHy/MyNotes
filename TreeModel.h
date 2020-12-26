@@ -7,12 +7,12 @@
 #include <QVariant>
 
 class TreeItem;
-
+class DbManager;
 class TreeModel : public QAbstractItemModel {
 Q_OBJECT
 
 public:
-    explicit TreeModel(const QString &data, QObject *parent = nullptr);
+    explicit TreeModel(const QString &dataPath, DbManager* dbManager, QObject *parent = nullptr);
 
     ~TreeModel();
 
@@ -39,7 +39,7 @@ public:
     void removeNode(const QModelIndex& index);
 private:
     void setupModelData(TreeItem *parent);
-
+    void buildFileTreeFromDb(int parentPathId, TreeItem* parentItem);
     void ensurePathExist(QString path);
 
     inline QString workshopPath();
@@ -48,6 +48,7 @@ private:
 private:
     TreeItem *rootItem;
     QString m_dataPath;
+    DbManager* m_dbManager;
 };
 
 #endif // TREEMODEL_H

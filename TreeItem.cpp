@@ -4,8 +4,8 @@
 #include <QFileIconProvider>
 #include <QIcon>
 
-TreeItem::TreeItem(const QList<QVariant> &data, TreeItem *parent)
-        : m_itemData(data), m_parentItem(parent) {}
+TreeItem::TreeItem(const QList<QVariant> &data, bool isFolder, TreeItem *parent)
+        : m_itemData(data), m_isFolder(isFolder), m_parentItem(parent) {}
 
 TreeItem::~TreeItem() {
     qDeleteAll(m_childItems);
@@ -36,12 +36,10 @@ QVariant TreeItem::data(int column, int role) const {
         if (m_path.isEmpty()) return QVariant();
 
         QFileInfo fileInfo(m_path);
-        if (fileInfo.exists()) {
-            QFileIconProvider iconProvider;
-            return iconProvider.icon(fileInfo);
+        if (m_isFolder) {
+            return QFileIconProvider().icon(QFileIconProvider::Folder);
         } else {
-            qDebug() << "file" << m_path << "not exist";
-            return QVariant();
+            return QFileIconProvider().icon(QFileIconProvider::File);
         }
     }
     return m_itemData.at(column);
@@ -79,7 +77,7 @@ bool TreeItem::isWorkshopItem() {
 }
 
 bool TreeItem::isFile() {
-    return QFileInfo(m_path).isFile();
+    return !m_isFolder;
 }
 
 int TreeItem::insertFolder(TreeItem *child) {
@@ -117,7 +115,7 @@ bool TrashItem::isTrashItem() {
     return true;
 }
 
-TrashItem::TrashItem(const QString & path, TreeItem *parentItem) : TreeItem({"Trash"}, parentItem) {
+TrashItem::TrashItem(const QString & path, TreeItem *parentItem) : TreeItem({"Trash"}, true, parentItem) {
     setPath(path);
 }
 
@@ -133,7 +131,7 @@ bool AttachmentItem::isAttachmentItem() {
     return true;
 }
 
-AttachmentItem::AttachmentItem(const QString & path, TreeItem *parentItem) : TreeItem({"Attachment"}, parentItem) {
+AttachmentItem::AttachmentItem(const QString & path, TreeItem *parentItem) : TreeItem({"Attachment"}, true, parentItem) {
     setPath(path);
 }
 
@@ -149,6 +147,6 @@ bool WorkshopItem::isWorkshopItem() {
     return true;
 }
 
-WorkshopItem::WorkshopItem(const QString & path, TreeItem *parentItem) : TreeItem({"Workshop"}, parentItem) {
+WorkshopItem::WorkshopItem(const QString & path, TreeItem *parentItem) : TreeItem({"Workshop"}, true, parentItem) {
     setPath(path);
 }

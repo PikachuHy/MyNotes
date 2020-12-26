@@ -2,6 +2,7 @@
 #include "TreeModel.h"
 #include "TreeItem.h"
 #include "Constant.h"
+#include "DbManager.h"
 #include <QStringList>
 #include <filesystem>
 #include <regex>
@@ -9,8 +10,8 @@
 
 namespace fs = std::filesystem;
 
-TreeModel::TreeModel(const QString &path, QObject *parent)
-        : QAbstractItemModel(parent) {
+TreeModel::TreeModel(const QString &path, DbManager* dbManager, QObject *parent)
+        : QAbstractItemModel(parent), m_dataPath(path), m_dbManager(dbManager) {
     m_dataPath = path;
     ensurePathExist(path);
     ensurePathExist(path + "/" + Constant::workshop);
@@ -127,7 +128,8 @@ void TreeModel::setupModelData(TreeItem *parent) {
     parent->appendChild(workshopItem);
     parent->appendChild(new AttachmentItem(attachmentPath(), parent));
     parent->appendChild(new TrashItem(trashPath(), parent));
-    buildFileTree(workshopPath(), workshopItem);
+//    buildFileTree(workshopPath(), workshopItem);
+    buildFileTreeFromDb(0, workshopItem);
 }
 
 void TreeModel::ensurePathExist(QString path) {
@@ -184,4 +186,22 @@ void TreeModel::removeNode(const QModelIndex &index) {
     beginRemoveRows(index.parent(), rowToBeRemoved, rowToBeRemoved);
     item->parentItem()->removeChild(item);
     endRemoveRows();
+}
+
+void TreeModel::buildFileTreeFromDb(int parentPathId, TreeItem *parentItem) {
+    auto pathList = m_dbManager->getPathList(parentPathId);
+    for(const auto& path: pathList) {
+        QString realPath = parentItem->path() + "/" + path.name();
+        auto item = new TreeItem({path.name()}, true, parentItem);
+        item->setPath(realPath);
+        parentItem->appendChild(item);
+        buildFileTreeFromDb(path.id(), item);
+    }
+    auto noteList = m_dbManager->getNoteList(parentPathId);
+    for(const auto& note: noteList) {
+        QString realPath = parentItem->path() + "/" + note.title();
+        auto item = new TreeItem({note.title()}, false, parentItem);
+        item->setPath(realPath);
+        parentItem->appendChild(item);
+    }
 }

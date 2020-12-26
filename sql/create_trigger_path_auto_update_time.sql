@@ -1,4 +1,4 @@
-create trigger  [path_auto_update_time]
+create trigger if not exists  [path_auto_update_time]
     after update on path
     for each row
 begin
