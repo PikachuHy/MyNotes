@@ -12,6 +12,7 @@
 #include <QAction>
 #include <QSqlQuery>
 #include "cppjieba/Jieba.hpp"
+#include "DbModel.h"
 class TreeItem;
 class TreeModel;
 class DbManager;
@@ -39,6 +40,8 @@ public:
 private slots:
 
     void on_treeView_pressed(const QModelIndex &index);
+
+    void on_listView_pressed(const QModelIndex &index);
 
     void on_treeView_customContextMenuRequested(const QPoint &pos);
 
@@ -69,6 +72,7 @@ private:
     }
     inline TreeItem* currentTreeItem();
     inline void showErrorDialog(const QString & msg);
+    void loadNote(const Note& note);
     void loadMdText();
     void saveMdText();
     void updatePreview();

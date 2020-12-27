@@ -470,9 +470,26 @@ QListView* Widget::searchResultView() {
         m_listView->setModel(m_listModel);
     }
     auto x = this->geometry().left() + this->geometry().width() / 2 - m_searchDialog->width() / 2;
-    m_searchDialog->move(x, this->geometry().top() + 50);
     int y = this->geometry().top() + Constant::marginToTop + Constant::searchDialogHeight + 10;
     m_listView->move(x, y);
+    connect(m_listView, &ListView::pressed, this, &Widget::on_listView_pressed);
     return m_listView;
+}
+
+void Widget::on_listView_pressed(const QModelIndex &index) {
+    if (!index.isValid()) {
+        return;
+    }
+    index.data(Qt::UserRole+1);
+    auto note = index.data(Qt::UserRole+1).value<Note>();
+    loadNote(note);
+    m_listView->hide();
+    m_searchDialog->hide();
+}
+
+void Widget::loadNote(const Note &note) {
+    m_curNotePath = workshopPath() + note.strId();
+    loadMdText();
+    updatePreview();
 }
 
