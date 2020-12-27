@@ -24,19 +24,11 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>warning</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>New Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Folder name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Folder already exist!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -81,6 +73,14 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
     </message>
     <message>
         <source>ERROR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>folder exist.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>new folder: save to db fail</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

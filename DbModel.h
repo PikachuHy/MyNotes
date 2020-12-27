@@ -35,9 +35,14 @@ private:
 
 class Path : public DbModel {
 public:
+    Path() {}
+    Path(const QString &name, int parentId);
+
     inline QString name() const { return m_name; }
+    inline int parentId() const { return m_parentId; }
 private:
     QString m_name;
+    int m_parentId;
     friend DbManager;
 };
 

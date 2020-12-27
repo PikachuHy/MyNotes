@@ -58,11 +58,7 @@ QList<Path> DbManager::getPathList(int parentPathId) {
     QSqlQuery query("select * from path where parent_id = " + QString::number(parentPathId));
     while (query.next()) {
         Path path;
-        path.m_id = query.value("id").toInt();
-        path.m_trashed = query.value("trashed").toInt();
-        path.m_name = query.value("name").toString();
-        path.m_createTime = query.value("create_time").toInt();
-        path.m_updateTime = query.value("update_time").toInt();
+        fillPath(path, query);
         ret.append(path);
     }
     return ret;
@@ -117,4 +113,46 @@ void DbManager::fillNote(Note &note, QSqlQuery &query) {
     note.m_pathId = query.value("path").toInt();
     note.m_createTime = query.value("create_time").toInt();
     note.m_updateTime = query.value("update_time").toInt();
+}
+
+bool DbManager::addNewPath(Path &path) {
+    QSqlQuery query;
+    query.prepare("insert into path (name, parent_id) values (:name, :parent_id)");
+    query.bindValue(":name", path.name());
+    query.bindValue(":parent_id", path.parentId());
+    auto ret = query.exec();
+    if (!ret) {
+        qDebug() << "exec sql fail: " << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return false;
+    }
+    int id = query.lastInsertId().toInt();
+    path = getPath(id);
+    return true;
+}
+
+Path DbManager::getPath(int id) {
+    Path path;
+    QSqlQuery query("select * from path where id = " + QString::number(id));
+    while (query.next()) {
+        fillPath(path, query);
+    }
+    return path;
+}
+
+void DbManager::fillPath(Path &path, QSqlQuery &query) {
+    path.m_id = query.value("id").toInt();
+    path.m_parentId = query.value("parent_id").toInt();
+    path.m_trashed = query.value("trashed").toInt();
+    path.m_name = query.value("name").toString();
+    path.m_createTime = query.value("create_time").toInt();
+    path.m_updateTime = query.value("update_time").toInt();
+}
+
+bool DbManager::isPathExist(QString name, int parentId) {
+    QSqlQuery query("select * from path where parent_id = " + QString::number(parentId) + " and name = " + name);
+    while (query.next()) {
+        return true;
+    }
+    return false;
 }

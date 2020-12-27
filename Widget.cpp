@@ -267,20 +267,35 @@ void Widget::on_action_newFolder() {
     QString folderName = QInputDialog::getText(this, tr("New Folder"), tr("Folder name"),
                                                QLineEdit::Normal, "folder", &ok);
     qDebug() << "new folder name:" << folderName;
-    if (!ok || folderName.isEmpty()) return;
-    QString newFolderPath = m_curCheckedPath + "/" + folderName;
-    QDir dir(newFolderPath);
-    if (dir.exists()) {
-        QMessageBox::warning(this, tr("warning"), tr("Folder already exist!"));
+    if (!ok) {
+        qDebug() << "user cancel";
         return;
     }
-    qDebug() << "create new folder:" << folderName;
-    dir.mkpath(newFolderPath);
-    QList<QVariant> data;
-    data << folderName;
-    auto item = new TreeItem(data, m_curItem);
-    item->setPath(newFolderPath);
-    auto newNoteIndex = m_treeModel->addNewFolder(m_curIndex, item);
+    if (folderName.isEmpty()) {
+        qDebug() << "user input is empty";
+        return;
+    }
+    auto item = currentTreeItem();
+    if (!item) {
+        qDebug() << "current item is nullptr";
+        showErrorDialog(tr("current item is null"));
+        return;
+    }
+    auto ret = m_dbManager->isPathExist(folderName, item->pathId());
+    if (ret) {
+        qDebug() << "path exist." << folderName;
+        showErrorDialog(tr("folder exist."));
+        return;
+    }
+    Path path(folderName, item->pathId());
+    ret = m_dbManager->addNewPath(path);
+    if (!ret) {
+        qDebug() << "save to db fail";
+        showErrorDialog(tr("new folder: save to db fail"));
+        return;
+    }
+    auto newPathItem = new FolderItem(path, item);
+    auto newNoteIndex = m_treeModel->addNewFolder(m_treeView->currentIndex(), newPathItem);
     m_treeView->setCurrentIndex(newNoteIndex);
 }
 
