@@ -231,7 +231,7 @@ void Widget::updatePreview() {
     QFile file(tmpHtmlPath());
     file.open(QIODevice::ReadOnly);
     QString html = file.readAll();
-    std::cout << html.toStdString() << std::endl;
+//    std::cout << html.toStdString() << std::endl;
     m_textPreview->setHtml(html);
 }
 
@@ -417,8 +417,9 @@ void Widget::updateIndex(QString text, int id) {
         qDebug() << "update index for note" << id << "finish";
     };
     qDebug() << "update index for note" << id << "start";
-//    QtConcurrent::run(f, text, id);
-    f(text, id);
+    auto ret = QtConcurrent::run(f, text, id);
+    Q_UNUSED(ret)
+//    f(text, id);
 }
 
 void Widget::initSearchDialog() {
