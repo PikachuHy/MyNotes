@@ -16,6 +16,11 @@ namespace Utils {
      * @return
      */
     QString generateId();
+    /**
+     * 获取当前进程的ID
+     * @return
+     */
+    QString currentThreadId();
 };
 
 

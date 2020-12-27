@@ -6,7 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <chrono>
-
+#include <QThread>
 using namespace std;
 
 
@@ -31,5 +31,9 @@ namespace Utils {
         }
 
         return QString::fromStdString(ret);
+    }
+
+    QString currentThreadId() {
+        return QString::number((long long)QThread::currentThread(), 16);
     }
 }
