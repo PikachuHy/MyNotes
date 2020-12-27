@@ -25,9 +25,11 @@ public:
     Note getNote(int id);
     Path getPath(int id);
     bool isPathExist(QString name, int parentId);
+
+    bool updateIndex(QStringList wordList, int id);
 private:
     bool execDbSetupSql(QString path);
-    bool execSql(QSqlQuery& query);
+    bool execSql(QSqlQuery& query, bool batch = false);
     void fillNote(Note& note, QSqlQuery& query);
     void fillPath(Path & path, QSqlQuery& query);
 private:

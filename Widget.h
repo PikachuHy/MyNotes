@@ -66,6 +66,7 @@ private:
     void loadMdText();
     void saveMdText();
     void updatePreview();
+    void updateIndex(QString text, int id);
 
 
 private:
@@ -84,6 +85,7 @@ private:
     TreeItem* m_curItem;
     QModelIndex m_curIndex;
     DbManager* m_dbManager;
+    int m_curNoteId;
 };
 
 #endif // WIDGET_H

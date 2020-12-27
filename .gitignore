@@ -76,3 +76,5 @@ cmake-build-debug
 CMakeLists.txt.user
 
 md
+cppjieba
+limonp

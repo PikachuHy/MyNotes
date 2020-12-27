@@ -6,8 +6,10 @@
 #include <QtCore>
 #include <QtWidgets>
 #include <QtSql>
+#include <QThread>
 DbManager::DbManager(const QString& dataPath, QObject *parent): QObject(parent) {
-
+    QString threadId = QString::number((long long)QThread::currentThread(), 16);
+//    db = QSqlDatabase::addDatabase("QSQLITE", "db-connect-"+threadId);
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(dataPath+"db/sqlite.db");
     if (!db.open()) {
@@ -177,11 +179,42 @@ bool DbManager::removePath(int id) {
     return ret;
 }
 
-bool DbManager::execSql(QSqlQuery &query) {
-    auto ret = query.exec();
+bool DbManager::execSql(QSqlQuery &query, bool batch) {
+    bool ret;
+    if (batch) {
+        ret = query.execBatch();
+    } else {
+        ret = query.exec();
+    }
     if (!ret) {
         qDebug() << "exec sql fail: " << query.lastQuery();
         qDebug() << query.lastError().text();
     }
     return ret;
+}
+
+bool DbManager::updateIndex(QStringList wordList, int id) {
+    db.transaction();
+    QSqlQuery query;
+
+    query.prepare("delete from note_word where id=:id");
+    query.bindValue(":id", id);
+    auto ret = execSql(query);
+    if (!ret) {
+        qDebug() << "rollback";
+        db.rollback();
+        return false;
+    }
+    query.prepare("insert into note_word (word, note) values (:word, :note)");
+    query.bindValue(":word", wordList);
+    QVariantList idList(wordList.size(), id);
+    query.bindValue(":note", idList);
+    ret = execSql(query, true);
+    if (!ret) {
+        qDebug() << "rollback";
+        db.rollback();
+        return false;
+    }
+    db.commit();
+    return true;
 }

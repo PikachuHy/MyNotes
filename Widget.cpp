@@ -22,7 +22,9 @@
 #include "markdown.h"
 #include "Utils.h"
 #include <QtSql>
-
+#include <QtConcurrent>
+#include "cppjieba/Jieba.hpp"
+#include <unordered_set>
 Widget::Widget(QWidget *parent)
         : QWidget(parent) {
     m_treeView = new TreeView();
@@ -87,8 +89,10 @@ void Widget::on_treeView_pressed(const QModelIndex &index) {
     if (!index.isValid()) return;
     auto item = static_cast<TreeItem *>(index.internalPointer());
     if (item->isFile()) {
+        auto noteItem = static_cast<NoteItem*>(item);
         m_titleLabel->setText(item->path().mid(m_notesPath.size()));
         m_curNotePath = workshopPath() + item->path();
+        m_curNoteId = noteItem->note().id();
         loadMdText();
         updatePreview();
     }
@@ -215,6 +219,7 @@ void Widget::saveMdText() {
     const QString &mdText = m_textEdit->toPlainText();
     file.write(mdText.toUtf8());
     file.close();
+    updateIndex(mdText, m_curNoteId);
 }
 
 void Widget::on_action_newNote() {
@@ -257,6 +262,7 @@ void Widget::on_action_newNote() {
     file.write(newNoteText.toUtf8());
     file.close();
     m_curNotePath = newNotePath;
+    m_curNoteId = note.id();
     loadMdText();
     updatePreview();
     m_textEdit->setFocus();
@@ -367,5 +373,35 @@ TreeItem *Widget::currentTreeItem() {
 
 void Widget::showErrorDialog(const QString &msg) {
     QMessageBox::critical(this, tr("ERROR"), msg);
+}
+
+void Widget::updateIndex(QString text, int id) {
+    auto f = [this](QString text, int id) {
+        // TODO: change the path
+        const char* const DICT_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/jieba.dict.utf8";
+        const char* const HMM_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/hmm_model.utf8";
+        const char* const USER_DICT_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/user.dict.utf8";
+        const char* const IDF_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/idf.utf8";
+        const char* const STOP_WORD_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/stop_words.utf8";
+        cppjieba::Jieba jieba(DICT_PATH,
+                              HMM_PATH,
+                              USER_DICT_PATH,
+                              IDF_PATH,
+                              STOP_WORD_PATH);
+        std::vector<std::string> words;
+        std::string s = text.toStdString();
+        jieba.Cut(s, words);
+        std::unordered_set<std::string> wordSet(words.begin(), words.end());
+        QStringList wordList;
+        for(const auto& word: wordSet) {
+            wordList << QString::fromStdString(word);
+        }
+//        DbManager db(m_notesPath);
+        m_dbManager->updateIndex(wordList, id);
+        qDebug() << "update index for note" << id << "finish";
+    };
+    qDebug() << "update index for note" << id << "start";
+//    QtConcurrent::run(f, text, id);
+    f(text, id);
 }
 
