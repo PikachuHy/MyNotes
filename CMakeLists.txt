@@ -40,6 +40,7 @@ set(PROJECT_SOURCES
         TreeView.cpp
         DbModel.cpp
         DbManager.cpp
+        DbThread.cpp
         Constant.cpp
         SearchDialog.cpp
         Utils.cpp

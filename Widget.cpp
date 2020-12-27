@@ -31,6 +31,7 @@
 #include "ListModel.h"
 #include "ListView.h"
 #include "Constant.h"
+#include "DbThread.h"
 
 Widget::Widget(QWidget *parent)
         : QWidget(parent) {
@@ -81,6 +82,8 @@ Widget::Widget(QWidget *parent)
     m_listModel = new ListModel(this);
     m_searchDialog = nullptr;
     m_listView = nullptr;
+    auto t = new DbThread(m_notesPath);
+    t->start();
 }
 
 Widget::~Widget() {

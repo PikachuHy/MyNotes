@@ -9,9 +9,11 @@
 #include <QThread>
 DbManager::DbManager(const QString& dataPath, QObject *parent): QObject(parent) {
     QString threadId = QString::number((long long)QThread::currentThread(), 16);
-//    db = QSqlDatabase::addDatabase("QSQLITE", "db-connect-"+threadId);
-    db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(dataPath+"db/sqlite.db");
+    m_connectionName = "db_connect_" + threadId;
+    db = QSqlDatabase::addDatabase("QSQLITE", m_connectionName);
+//    db = QSqlDatabase::addDatabase("QSQLITE");
+    QString database = dataPath+"db/sqlite.db";
+    db.setDatabaseName(database);
     if (!db.open()) {
         QMessageBox::critical(nullptr, tr("Cannot open database"),
                               tr("Unable to establish a database connection.\n"
@@ -20,10 +22,10 @@ DbManager::DbManager(const QString& dataPath, QObject *parent): QObject(parent) 
                                  "to build it."), QMessageBox::Cancel);
         return;
     }
-    execDbSetupSql(":/sql/create_table_note.sql");
-    execDbSetupSql(":/sql/create_trigger_note_auto_update_time.sql");
-    execDbSetupSql(":/sql/create_table_path.sql");
-    execDbSetupSql(":/sql/create_trigger_path_auto_update_time.sql");
+     execDbSetupSql(":/sql/create_table_note.sql");
+     execDbSetupSql(":/sql/create_trigger_note_auto_update_time.sql");
+     execDbSetupSql(":/sql/create_table_path.sql");
+     execDbSetupSql(":/sql/create_trigger_path_auto_update_time.sql");
 }
 
 bool DbManager::execDbSetupSql(QString path) {
@@ -35,7 +37,7 @@ bool DbManager::execDbSetupSql(QString path) {
     }
     file.open(QIODevice::ReadOnly);
     QString sql = file.readAll();
-    QSqlQuery query;
+    QSqlQuery query = _query();
     bool ret = query.exec(sql);
     if (!ret) {
         qDebug() << "exec sql fail:";
@@ -57,7 +59,8 @@ bool DbManager::execDbSetupSql(QString path) {
 
 QList<Path> DbManager::getPathList(int parentPathId) {
     QList<Path> ret;
-    QSqlQuery query("select * from path where parent_id = " + QString::number(parentPathId));
+    const QString &sql = "select * from path where parent_id = " + QString::number(parentPathId);
+    QSqlQuery query = _query(sql);
     while (query.next()) {
         Path path;
         fillPath(path, query);
@@ -68,7 +71,8 @@ QList<Path> DbManager::getPathList(int parentPathId) {
 
 QList<Note> DbManager::getNoteList(int pathId) {
     QList<Note> ret;
-    QSqlQuery query("select * from note where path = " + QString::number(pathId));
+    const QString &sql = "select * from note where path = " + QString::number(pathId);
+    QSqlQuery query = _query(sql);
     while (query.next()) {
         Note note;
         fillNote(note, query);
@@ -82,7 +86,7 @@ DbManager::~DbManager() {
 }
 
 bool DbManager::addNewNote(Note &note) {
-    QSqlQuery query;
+    QSqlQuery query = _query();
     query.prepare("insert into note (str_id, title, path, security) values (:str_id, :title, :path, :security)");
     query.bindValue(":str_id", note.strId());
     query.bindValue(":title", note.title());
@@ -101,7 +105,8 @@ bool DbManager::addNewNote(Note &note) {
 
 Note DbManager::getNote(int id) {
     Note note;
-    QSqlQuery query("select * from note where id = " + QString::number(id));
+    const QString &sql = "select * from note where id = " + QString::number(id);
+    QSqlQuery query = _query(sql);
     while (query.next()) {
         fillNote(note, query);
     }
@@ -120,7 +125,7 @@ void DbManager::fillNote(Note &note, QSqlQuery &query) {
 }
 
 bool DbManager::addNewPath(Path &path) {
-    QSqlQuery query;
+    QSqlQuery query = _query();
     query.prepare("insert into path (name, parent_id, security) values (:name, :parent_id, :security)");
     query.bindValue(":name", path.name());
     query.bindValue(":parent_id", path.parentId());
@@ -138,7 +143,8 @@ bool DbManager::addNewPath(Path &path) {
 
 Path DbManager::getPath(int id) {
     Path path;
-    QSqlQuery query("select * from path where id = " + QString::number(id));
+    const QString &sql = "select * from path where id = " + QString::number(id);
+    QSqlQuery query = _query(sql);
     while (query.next()) {
         fillPath(path, query);
     }
@@ -156,7 +162,8 @@ void DbManager::fillPath(Path &path, QSqlQuery &query) {
 }
 
 bool DbManager::isPathExist(QString name, int parentId) {
-    QSqlQuery query("select * from path where parent_id = " + QString::number(parentId) + " and name = " + name);
+    const QString sql = "select * from path where parent_id = " + QString::number(parentId) + " and name = " + name;
+    QSqlQuery query = _query(sql);
     while (query.next()) {
         return true;
     }
@@ -164,7 +171,7 @@ bool DbManager::isPathExist(QString name, int parentId) {
 }
 
 bool DbManager::removeNote(int id) {
-    QSqlQuery query;
+    QSqlQuery query = _query();
     query.prepare("update note set trashed = 1 where id = :id");
     query.bindValue(":id", id);
     auto ret = execSql(query);
@@ -172,7 +179,7 @@ bool DbManager::removeNote(int id) {
 }
 
 bool DbManager::removePath(int id) {
-    QSqlQuery query;
+    QSqlQuery query = _query();
     query.prepare("update path set trashed = 1 where id = :id");
     query.bindValue(":id", id);
     auto ret = execSql(query);
@@ -195,7 +202,7 @@ bool DbManager::execSql(QSqlQuery &query, bool batch) {
 
 bool DbManager::updateIndex(QStringList wordList, int id) {
     db.transaction();
-    QSqlQuery query;
+    QSqlQuery query = _query();
 
     query.prepare("delete from note_word where id=:id");
     query.bindValue(":id", id);
@@ -229,11 +236,19 @@ select * from note where id in (
     where word in ('%1')
 )
 )").arg(words.join("', '"));
-    QSqlQuery query(sql);
+    QSqlQuery query = _query(sql);
     while (query.next()) {
         Note note;
         fillNote(note, query);
         ret.push_back(note);
     }
     return ret;
+}
+
+QSqlQuery DbManager::_query() {
+    return QSqlQuery(db);
+}
+
+QSqlQuery DbManager::_query(QString sql) {
+    return QSqlQuery(sql, db);
 }

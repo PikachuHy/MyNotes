@@ -34,8 +34,11 @@ private:
     bool execSql(QSqlQuery& query, bool batch = false);
     void fillNote(Note& note, QSqlQuery& query);
     void fillPath(Path & path, QSqlQuery& query);
+    inline QSqlQuery _query();
+    inline QSqlQuery _query(QString sql);
 private:
     QSqlDatabase db;
+    QString m_connectionName;
 };
 
 
