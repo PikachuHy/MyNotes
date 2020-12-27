@@ -274,7 +274,17 @@ void Widget::on_action_newFolder() {
 
 void Widget::loadMdText() {
     QFile file(m_curNotePath);
-    file.open(QIODevice::ReadOnly);
+    if(!file.exists()) {
+        qDebug() << m_curNotePath << "is not exist.";
+        QMessageBox::critical(this, tr("File"), tr("File not exist."));
+        return;
+    }
+    bool ret = file.open(QIODevice::ReadOnly);
+    if (!ret) {
+        qDebug() << m_curNotePath << "open fail.";
+        QMessageBox::critical(this, tr("File"), tr("File open fail."));
+        return;
+    }
     QString mdText = file.readAll();
     m_textEdit->setText(mdText);
     file.close();

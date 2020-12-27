@@ -67,5 +67,17 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
         <source>Trash Note?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File not exist.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File open fail.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>
