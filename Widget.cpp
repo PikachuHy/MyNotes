@@ -25,6 +25,7 @@
 #include <QtConcurrent>
 #include "cppjieba/Jieba.hpp"
 #include <unordered_set>
+#include <QLineEdit>
 Widget::Widget(QWidget *parent)
         : QWidget(parent) {
     m_treeView = new TreeView();
@@ -69,7 +70,8 @@ Widget::Widget(QWidget *parent)
     auto _font = font();
     _font.setPointSize(16);
     setFont(_font);
-
+    m_lastPressShiftTime = 0;
+    m_maxShiftInterval = 500;
 }
 
 Widget::~Widget() {
@@ -185,6 +187,16 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
                         return true;
                     }
                 }
+            }
+        }
+        if (event->key() == Qt::Key_Shift) {
+            auto curTime = Utils::getTimeStamp();
+            if (curTime - m_lastPressShiftTime < m_maxShiftInterval) {
+                m_lastPressShiftTime = curTime;
+                auto w = new QLineEdit();
+                w->show();
+            } else {
+                m_lastPressShiftTime = curTime;
             }
         }
     }

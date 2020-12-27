@@ -86,6 +86,8 @@ private:
     QModelIndex m_curIndex;
     DbManager* m_dbManager;
     int m_curNoteId;
+    std::time_t m_lastPressShiftTime;
+    std::time_t m_maxShiftInterval;
 };
 
 #endif // WIDGET_H
