@@ -318,38 +318,44 @@ void Widget::loadMdText() {
 }
 
 void Widget::on_action_trashNote() {
-    if (!m_curIndex.isValid()) {
+    auto index = m_treeView->currentIndex();
+    if (!index.isValid()) {
         return;
     }
-    auto item = static_cast<TreeItem *>(m_curIndex.internalPointer());
-    const QString noteOldPath = item->path();
-    QString noteTrashPath = trashPath() + QFileInfo(noteOldPath).fileName();
+    auto item = static_cast<NoteItem *>(index.internalPointer());
+    auto ret = m_dbManager->removeNote(item->note().id());
+    if (!ret) {
+        qDebug() << "trash note fail";
+        showErrorDialog(tr("trash note fail"));
+        return;
+    }
+    const QString noteOldPath = workshopPath() + item->note().strId();
+    QString noteTrashPath = trashPath() + item->note().strId();
     qDebug() << "trash" << noteOldPath << "to" << noteTrashPath;
-    bool ret = QFile::rename(noteOldPath, noteTrashPath);
+    ret = QFile::rename(noteOldPath, noteTrashPath);
     if (!ret) {
         qDebug() << "trash" << noteOldPath << "fail";
-        QMessageBox::critical(this, tr("trash note"), tr("trash note fail"));
+        showErrorDialog(tr("trash note fail"));
         return;
     }
-    m_treeModel->removeNode(m_curIndex);
-    qDebug() << "trash" << noteOldPath << "success";
+    m_treeModel->removeNode(index);
 }
 
 void Widget::on_action_trashFolder() {
-    if (!m_curIndex.isValid()) {
+
+    auto index = m_treeView->currentIndex();
+    if (!index.isValid()) {
         return;
     }
-    m_treeModel->removeNode(m_curIndex);
-    auto item = static_cast<TreeItem *>(m_curIndex.internalPointer());
-    const QString folderPath = item->path();
-    qDebug() << "trash" << folderPath;
-    bool ret = QDir().rmdir(folderPath);
+    auto item = static_cast<FolderItem *>(index.internalPointer());
+    auto ret = m_dbManager->removePath(item->path().id());
     if (!ret) {
-        qDebug() << "trash" << folderPath << "fail";
-        QMessageBox::critical(this, tr("trash folder"), tr("trash folder fail"));
+        qDebug() << "trash path fail";
+        showErrorDialog(tr("trash folder fail"));
         return;
     }
-    qDebug() << "trash" << folderPath << "success";
+    m_treeModel->removeNode(index);
+    qDebug() << "trash" << item->path().name();
 }
 
 TreeItem *Widget::currentTreeItem() {

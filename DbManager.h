@@ -20,11 +20,14 @@ public:
     QList<Note> getNoteList(int pathId = 0);
     bool addNewNote(Note & note);
     bool addNewPath(Path & path);
+    bool removeNote(int id);
+    bool removePath(int id);
     Note getNote(int id);
     Path getPath(int id);
     bool isPathExist(QString name, int parentId);
 private:
     bool execDbSetupSql(QString path);
+    bool execSql(QSqlQuery& query);
     void fillNote(Note& note, QSqlQuery& query);
     void fillPath(Path & path, QSqlQuery& query);
 private:

@@ -156,3 +156,28 @@ bool DbManager::isPathExist(QString name, int parentId) {
     }
     return false;
 }
+
+bool DbManager::removeNote(int id) {
+    QSqlQuery query;
+    query.prepare("update note set trashed = 1 where id = :id");
+    query.bindValue(":id", id);
+    auto ret = execSql(query);
+    return ret;
+}
+
+bool DbManager::removePath(int id) {
+    QSqlQuery query;
+    query.prepare("update path set trashed = 1 where id = :id");
+    query.bindValue(":id", id);
+    auto ret = execSql(query);
+    return ret;
+}
+
+bool DbManager::execSql(QSqlQuery &query) {
+    auto ret = query.exec();
+    if (!ret) {
+        qDebug() << "exec sql fail: " << query.lastQuery();
+        qDebug() << query.lastError().text();
+    }
+    return ret;
+}

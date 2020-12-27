@@ -32,15 +32,7 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>trash note</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>trash note fail</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>trash folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

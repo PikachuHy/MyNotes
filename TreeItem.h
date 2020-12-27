@@ -63,6 +63,7 @@ public:
 
     QString path() override;
 
+    inline const Note& note() const { return m_note; }
 private:
     Note m_note;
 };
@@ -77,6 +78,7 @@ public:
 
     int pathId() override;
 
+    inline const Path& path() const { return m_path; }
 private:
     Path m_path;
 };
