@@ -4,6 +4,7 @@ create table if not exists path
     name varchar(200),
     parent_id integer default 0,
     trashed integer default 0,
+    security integer default 0,
     create_time timestamp not null default (datetime('now','localtime')),
     update_time timestamp not null default (datetime('now','localtime'))
 );

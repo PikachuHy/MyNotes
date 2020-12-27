@@ -81,10 +81,11 @@ DbManager::~DbManager() {
 
 bool DbManager::addNewNote(Note &note) {
     QSqlQuery query;
-    query.prepare("insert into note (str_id, title, path) values (:str_id, :title, :path)");
+    query.prepare("insert into note (str_id, title, path, security) values (:str_id, :title, :path, :security)");
     query.bindValue(":str_id", note.strId());
     query.bindValue(":title", note.title());
     query.bindValue(":path", note.pathId());
+    query.bindValue(":security", note.m_security);
     auto ret = query.exec();
     if (!ret) {
         qDebug() << "exec sql fail: " << query.lastQuery();
@@ -111,15 +112,17 @@ void DbManager::fillNote(Note &note, QSqlQuery &query) {
     note.m_trashed = query.value("trashed").toInt();
     note.m_title = query.value("title").toString();
     note.m_pathId = query.value("path").toInt();
+    note.m_security = query.value("security").toInt();
     note.m_createTime = query.value("create_time").toInt();
     note.m_updateTime = query.value("update_time").toInt();
 }
 
 bool DbManager::addNewPath(Path &path) {
     QSqlQuery query;
-    query.prepare("insert into path (name, parent_id) values (:name, :parent_id)");
+    query.prepare("insert into path (name, parent_id, security) values (:name, :parent_id, :security)");
     query.bindValue(":name", path.name());
     query.bindValue(":parent_id", path.parentId());
+    query.bindValue(":security", path.m_security);
     auto ret = query.exec();
     if (!ret) {
         qDebug() << "exec sql fail: " << query.lastQuery();
@@ -145,6 +148,7 @@ void DbManager::fillPath(Path &path, QSqlQuery &query) {
     path.m_parentId = query.value("parent_id").toInt();
     path.m_trashed = query.value("trashed").toInt();
     path.m_name = query.value("name").toString();
+    path.m_security = query.value("security").toInt();
     path.m_createTime = query.value("create_time").toInt();
     path.m_updateTime = query.value("update_time").toInt();
 }

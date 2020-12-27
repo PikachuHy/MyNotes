@@ -30,6 +30,7 @@ private:
     QString m_strId;
     QString m_title;
     int m_pathId;
+    int m_security;
     friend DbManager;
 };
 
@@ -43,6 +44,7 @@ public:
 private:
     QString m_name;
     int m_parentId;
+    int m_security;
     friend DbManager;
 };
 
