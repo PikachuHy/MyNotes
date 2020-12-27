@@ -12,6 +12,9 @@ public:
     explicit ListView(QWidget *parent = nullptr);
 
 protected:
+    void paintEvent(QPaintEvent *e) override;
+
+protected:
     void keyPressEvent(QKeyEvent *event) override;
 };
 

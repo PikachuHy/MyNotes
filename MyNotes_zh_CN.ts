@@ -14,6 +14,13 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
     </message>
 </context>
 <context>
+    <name>ListView</name>
+    <message>
+        <source>No Results</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Widget</name>
     <message>
         <source>New Note</source>
