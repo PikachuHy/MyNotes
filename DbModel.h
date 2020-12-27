@@ -9,7 +9,7 @@ class DbManager;
 class DbModel {
 public:
     inline int id() const { return m_id; }
-
+    inline bool trashed() const { return m_trashed; }
 private:
     int m_id;
     int m_trashed;

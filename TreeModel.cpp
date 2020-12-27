@@ -191,6 +191,7 @@ void TreeModel::removeNode(const QModelIndex &index) {
 void TreeModel::buildFileTreeFromDb(int parentPathId, TreeItem *parentItem) {
     auto pathList = m_dbManager->getPathList(parentPathId);
     for(const auto& path: pathList) {
+        if(path.trashed()) continue;
         QString realPath = parentItem->path() + "/" + path.name();
         auto item = new FolderItem(path, parentItem);
         item->setPath(realPath);
@@ -199,6 +200,7 @@ void TreeModel::buildFileTreeFromDb(int parentPathId, TreeItem *parentItem) {
     }
     auto noteList = m_dbManager->getNoteList(parentPathId);
     for(const auto& note: noteList) {
+        if (note.trashed()) return;
         QString realPath = parentItem->path() + "/" + note.title();
         auto item = new NoteItem(note, parentItem);
         item->setPath(realPath);
