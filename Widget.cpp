@@ -27,6 +27,11 @@
 #include <unordered_set>
 #include <QLineEdit>
 #include "SearchDialog.h"
+#include <QtWidgets>
+#include "ListModel.h"
+#include "ListView.h"
+#include "Constant.h"
+
 Widget::Widget(QWidget *parent)
         : QWidget(parent) {
     m_treeView = new TreeView();
@@ -73,9 +78,14 @@ Widget::Widget(QWidget *parent)
     setFont(_font);
     m_lastPressShiftTime = 0;
     m_maxShiftInterval = 500;
+    m_listModel = new ListModel(this);
+    m_searchDialog = nullptr;
+    m_listView = nullptr;
 }
 
 Widget::~Widget() {
+    delete m_searchDialog;
+    delete m_listView;
 }
 
 QLayout *Widget::initTitleLayout() {
@@ -390,20 +400,10 @@ void Widget::showErrorDialog(const QString &msg) {
 
 void Widget::updateIndex(QString text, int id) {
     auto f = [this](QString text, int id) {
-        // TODO: change the path
-        const char* const DICT_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/jieba.dict.utf8";
-        const char* const HMM_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/hmm_model.utf8";
-        const char* const USER_DICT_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/user.dict.utf8";
-        const char* const IDF_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/idf.utf8";
-        const char* const STOP_WORD_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/stop_words.utf8";
-        cppjieba::Jieba jieba(DICT_PATH,
-                              HMM_PATH,
-                              USER_DICT_PATH,
-                              IDF_PATH,
-                              STOP_WORD_PATH);
+        if (!m_jieba) initJieba();
         std::vector<std::string> words;
         std::string s = text.toStdString();
-        jieba.Cut(s, words);
+        m_jieba->Cut(s, words);
         std::unordered_set<std::string> wordSet(words.begin(), words.end());
         QStringList wordList;
         for(const auto& word: wordSet) {
@@ -424,6 +424,55 @@ void Widget::initSearchDialog() {
     m_searchDialog->show();
     m_searchDialog->hide();
     auto x = this->geometry().left() + this->geometry().width() / 2 - m_searchDialog->width() / 2;
+    m_searchDialog->move(x, this->geometry().top() + Constant::marginToTop);
+    connect(m_searchDialog, &SearchDialog::searchTextChanged, this, &Widget::on_searchDialog_searchTextChanged);
+}
+
+void Widget::on_searchDialog_searchTextChanged(const QString &text) {
+    std::vector<std::string> words;
+    if (!m_jieba) initJieba();
+    m_jieba->Cut(text.toStdString(), words);
+    QStringList wordList;
+    for(const auto& word: words) {
+        wordList << QString::fromStdString(word);
+    }
+    qDebug() << wordList;
+    QList<Note> noteList = m_dbManager->getNoteList(wordList);
+    qDebug() << noteList.size();
+    auto model = new QStandardItemModel(this);
+    for(const auto& note: noteList) {
+        auto item = new QStandardItem(note.title());
+        item->setData(QVariant::fromValue(note), Qt::UserRole+1);
+        model->appendRow(item);
+    }
+//    m_listModel->reset(noteList);
+    searchResultView()->setModel(model);
+    searchResultView()->show();
+}
+
+void Widget::initJieba() {
+    // TODO: change the path
+    const char* const DICT_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/jieba.dict.utf8";
+    const char* const HMM_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/hmm_model.utf8";
+    const char* const USER_DICT_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/user.dict.utf8";
+    const char* const IDF_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/idf.utf8";
+    const char* const STOP_WORD_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/stop_words.utf8";
+    m_jieba = new cppjieba::Jieba(DICT_PATH,
+                          HMM_PATH,
+                          USER_DICT_PATH,
+                          IDF_PATH,
+                          STOP_WORD_PATH);
+}
+
+QListView* Widget::searchResultView() {
+    if (!m_listView) {
+        m_listView = new ListView();
+        m_listView->setModel(m_listModel);
+    }
+    auto x = this->geometry().left() + this->geometry().width() / 2 - m_searchDialog->width() / 2;
     m_searchDialog->move(x, this->geometry().top() + 50);
+    int y = this->geometry().top() + Constant::marginToTop + Constant::searchDialogHeight + 10;
+    m_listView->move(x, y);
+    return m_listView;
 }
 

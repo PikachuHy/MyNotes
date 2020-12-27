@@ -5,6 +5,7 @@
 #ifndef MYNOTES_DBMODEL_H
 #define MYNOTES_DBMODEL_H
 #include <QString>
+#include <QVariant>
 class DbManager;
 class DbModel {
 public:
@@ -33,7 +34,7 @@ private:
     int m_security;
     friend DbManager;
 };
-
+Q_DECLARE_METATYPE(Note)
 class Path : public DbModel {
 public:
     Path() {}

@@ -3,12 +3,13 @@
 //
 
 #include "SearchDialog.h"
+#include "Constant.h"
 #include <QLineEdit>
 #include <QVBoxLayout>
 SearchDialog::SearchDialog(QWidget *parent): QDialog(parent) {
-    setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint);
+    setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     m_lineEdit = new QLineEdit(this);
-    m_lineEdit->setMinimumSize(400, 50);
+    m_lineEdit->setMinimumSize(Constant::searchDialogWidth, Constant::searchDialogHeight);
     auto vbox = new QVBoxLayout();
     vbox->setContentsMargins(0, 0, 0, 0);
     vbox->addWidget(m_lineEdit);

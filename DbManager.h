@@ -18,6 +18,7 @@ public:
 
     QList<Path> getPathList(int parentPathId = 0);
     QList<Note> getNoteList(int pathId = 0);
+    QList<Note> getNoteList(QStringList words);
     bool addNewNote(Note & note);
     bool addNewPath(Path & path);
     bool removeNote(int id);
@@ -27,6 +28,7 @@ public:
     bool isPathExist(QString name, int parentId);
 
     bool updateIndex(QStringList wordList, int id);
+
 private:
     bool execDbSetupSql(QString path);
     bool execSql(QSqlQuery& query, bool batch = false);

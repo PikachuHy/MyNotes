@@ -33,6 +33,8 @@ set(PROJECT_SOURCES
         main.cpp
         Widget.cpp
         Widget.h
+        ListModel.cpp
+        ListView.cpp
         TreeModel.cpp
         TreeItem.cpp
         TreeView.cpp

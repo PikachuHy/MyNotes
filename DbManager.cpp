@@ -218,3 +218,22 @@ bool DbManager::updateIndex(QStringList wordList, int id) {
     db.commit();
     return true;
 }
+
+QList<Note> DbManager::getNoteList(QStringList words) {
+    QList<Note> ret;
+    if (words.empty()) return ret;
+    QString sql = QString(R"(
+select * from note where id in (
+    select distinct note
+    from note_word
+    where word in ('%1')
+)
+)").arg(words.join("', '"));
+    QSqlQuery query(sql);
+    while (query.next()) {
+        Note note;
+        fillNote(note, query);
+        ret.push_back(note);
+    }
+    return ret;
+}

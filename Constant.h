@@ -11,7 +11,9 @@ public:
     static const QString attachment;
     static const QString trash;
     static const QString tmp;
-
+    static const int searchDialogWidth;
+    static const int searchDialogHeight;
+    static const int marginToTop;
 };
 
 #endif //MYNOTES_CONSTANT_H

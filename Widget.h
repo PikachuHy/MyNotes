@@ -11,12 +11,15 @@
 #include <QLayout>
 #include <QAction>
 #include <QSqlQuery>
-
+#include "cppjieba/Jieba.hpp"
 class TreeItem;
 class TreeModel;
 class DbManager;
 class QSqlRelationalTableModel;
 class SearchDialog;
+using cppjieba::Jieba;
+class QListView;
+class ListModel;
 class Widget : public QWidget {
 Q_OBJECT
 
@@ -46,6 +49,8 @@ private slots:
     void on_action_trashNote();
 
     void on_action_trashFolder();
+
+    void on_searchDialog_searchTextChanged(const QString& text);
 private:
     inline QString attachmentPath() {
         return m_notesPath + "/attachment/";
@@ -69,7 +74,8 @@ private:
     void updatePreview();
     void updateIndex(QString text, int id);
     void initSearchDialog();
-
+    void initJieba();
+    QListView* searchResultView();
 private:
     QTreeView *m_treeView;
     QTextEdit *m_textEdit;
@@ -90,6 +96,9 @@ private:
     std::time_t m_lastPressShiftTime;
     std::time_t m_maxShiftInterval;
     SearchDialog* m_searchDialog;
+    Jieba* m_jieba;
+    QListView* m_listView;
+    ListModel* m_listModel;
 };
 
 #endif // WIDGET_H
