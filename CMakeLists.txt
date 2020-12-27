@@ -39,6 +39,7 @@ set(PROJECT_SOURCES
         DbModel.cpp
         DbManager.cpp
         Constant.cpp
+        SearchDialog.cpp
         Utils.cpp
         ${TS_FILES}
         db.qrc

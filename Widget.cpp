@@ -26,6 +26,7 @@
 #include "cppjieba/Jieba.hpp"
 #include <unordered_set>
 #include <QLineEdit>
+#include "SearchDialog.h"
 Widget::Widget(QWidget *parent)
         : QWidget(parent) {
     m_treeView = new TreeView();
@@ -193,8 +194,8 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
             auto curTime = Utils::getTimeStamp();
             if (curTime - m_lastPressShiftTime < m_maxShiftInterval) {
                 m_lastPressShiftTime = curTime;
-                auto w = new QLineEdit();
-                w->show();
+                if (!m_searchDialog) initSearchDialog();
+                m_searchDialog->show();
             } else {
                 m_lastPressShiftTime = curTime;
             }
@@ -415,5 +416,14 @@ void Widget::updateIndex(QString text, int id) {
     qDebug() << "update index for note" << id << "start";
 //    QtConcurrent::run(f, text, id);
     f(text, id);
+}
+
+void Widget::initSearchDialog() {
+    m_searchDialog = new SearchDialog(this);
+    // 强制计算搜索框的实际大小
+    m_searchDialog->show();
+    m_searchDialog->hide();
+    auto x = this->geometry().left() + this->geometry().width() / 2 - m_searchDialog->width() / 2;
+    m_searchDialog->move(x, this->geometry().top() + 50);
 }
 

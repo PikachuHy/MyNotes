@@ -16,6 +16,7 @@ class TreeItem;
 class TreeModel;
 class DbManager;
 class QSqlRelationalTableModel;
+class SearchDialog;
 class Widget : public QWidget {
 Q_OBJECT
 
@@ -67,7 +68,7 @@ private:
     void saveMdText();
     void updatePreview();
     void updateIndex(QString text, int id);
-
+    void initSearchDialog();
 
 private:
     QTreeView *m_treeView;
@@ -88,6 +89,7 @@ private:
     int m_curNoteId;
     std::time_t m_lastPressShiftTime;
     std::time_t m_maxShiftInterval;
+    SearchDialog* m_searchDialog;
 };
 
 #endif // WIDGET_H
