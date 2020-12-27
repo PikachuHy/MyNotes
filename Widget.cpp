@@ -259,6 +259,7 @@ void Widget::on_action_newNote() {
     m_curNotePath = newNotePath;
     loadMdText();
     updatePreview();
+    m_textEdit->setFocus();
 }
 
 void Widget::on_action_newFolder() {
