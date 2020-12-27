@@ -192,7 +192,7 @@ void TreeModel::buildFileTreeFromDb(int parentPathId, TreeItem *parentItem) {
     auto pathList = m_dbManager->getPathList(parentPathId);
     for(const auto& path: pathList) {
         QString realPath = parentItem->path() + "/" + path.name();
-        auto item = new TreeItem({path.name()}, true, parentItem);
+        auto item = new FolderItem(path, parentItem);
         item->setPath(realPath);
         parentItem->appendChild(item);
         buildFileTreeFromDb(path.id(), item);
@@ -200,7 +200,7 @@ void TreeModel::buildFileTreeFromDb(int parentPathId, TreeItem *parentItem) {
     auto noteList = m_dbManager->getNoteList(parentPathId);
     for(const auto& note: noteList) {
         QString realPath = parentItem->path() + "/" + note.title();
-        auto item = new TreeItem({note.title()}, false, parentItem);
+        auto item = new NoteItem(note, parentItem);
         item->setPath(realPath);
         parentItem->appendChild(item);
     }

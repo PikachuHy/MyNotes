@@ -36,6 +36,7 @@ set(PROJECT_SOURCES
         TreeModel.cpp
         TreeItem.cpp
         TreeView.cpp
+        DbModel.cpp
         DbManager.cpp
         Constant.cpp
         Utils.cpp

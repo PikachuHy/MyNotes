@@ -8,39 +8,7 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-class DbManager;
-class DbModel {
-public:
-    inline int id() const { return m_id; };
-
-private:
-    int m_id;
-    int m_trashed;
-    int m_createTime;
-    int m_updateTime;
-    friend DbManager;
-};
-
-class Note : public DbModel {
-public:
-    inline QString strId() const { return m_strId; }
-    inline QString title() const { return m_title; }
-    inline int pathId() const { return m_pathId; }
-private:
-    QString m_strId;
-    QString m_title;
-    int m_pathId;
-    friend DbManager;
-};
-
-class Path : public DbModel {
-public:
-    inline QString name() const { return m_name; }
-private:
-    QString m_name;
-    friend DbManager;
-};
-
+#include "DbModel.h"
 class DbManager : public QObject {
 Q_OBJECT
 public:
@@ -50,9 +18,11 @@ public:
 
     QList<Path> getPathList(int parentPathId = 0);
     QList<Note> getNoteList(int pathId = 0);
+    bool addNewNote(Note & note);
+    Note getNote(int id);
 private:
     bool execDbSetupSql(QString path);
-
+    void fillNote(Note& note, QSqlQuery& query);
 private:
     QSqlDatabase db;
 };

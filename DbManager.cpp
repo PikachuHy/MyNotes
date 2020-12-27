@@ -87,3 +87,39 @@ QList<Note> DbManager::getNoteList(int pathId) {
 DbManager::~DbManager() {
     db.close();
 }
+
+bool DbManager::addNewNote(Note &note) {
+    QSqlQuery query;
+    query.prepare("insert into note (str_id, title, path) values (:str_id, :title, :path)");
+    query.bindValue(":str_id", note.strId());
+    query.bindValue(":title", note.title());
+    query.bindValue(":path", note.pathId());
+    auto ret = query.exec();
+    if (!ret) {
+        qDebug() << "exec sql fail: " << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return false;
+    }
+    int id = query.lastInsertId().toInt();
+    note = getNote(id);
+    return true;
+}
+
+Note DbManager::getNote(int id) {
+    Note note;
+    QSqlQuery query("select * from note where id = " + QString::number(id));
+    while (query.next()) {
+        fillNote(note, query);
+    }
+    return note;
+}
+
+void DbManager::fillNote(Note &note, QSqlQuery &query) {
+    note.m_id = query.value("id").toInt();
+    note.m_strId = query.value("str_id").toString();
+    note.m_trashed = query.value("trashed").toInt();
+    note.m_title = query.value("title").toString();
+    note.m_pathId = query.value("path").toInt();
+    note.m_createTime = query.value("create_time").toInt();
+    note.m_updateTime = query.value("update_time").toInt();
+}

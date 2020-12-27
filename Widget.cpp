@@ -221,32 +221,44 @@ void Widget::on_action_newNote() {
     bool ok;
     QString noteName = QInputDialog::getText(this, tr("New Note"),tr("Note name"), QLineEdit::Normal,"untitled", &ok);
     qDebug() << "new note name:" << noteName;
-    if (ok && !noteName.isEmpty()) {
-        QString newNotePath = m_curCheckedPath + "/" + noteName;
-        QFile file = QFile(newNotePath);
-        if (file.exists()) {
-            QMessageBox::warning(this, tr("warning"), tr("Note already exist!"));
-        } else {
-            qDebug() << "create new note:" << noteName;
-            ok = file.open(QIODevice::WriteOnly);
-            if (!ok) {
-                qDebug() << "open file fail:" << newNotePath;
-            } else {
-                QList<QVariant> data;
-                data << noteName;
-                auto item = new TreeItem(data, m_curItem);
-                item->setPath(newNotePath);
-                auto newNoteIndex = m_treeModel->addNewNode(m_curIndex, item);
-                m_treeView->setCurrentIndex(newNoteIndex);
-                QString newNoteText = "# " + noteName;
-                file.write(newNoteText.toUtf8());
-                file.close();
-                m_curNotePath = newNotePath;
-                loadMdText();
-                updatePreview();
-            }
-        }
+    if (!ok) {
+        qDebug() << "user cancel";
+        return;
     }
+    if (noteName.isEmpty()) {
+        qDebug() << "user input is empty";
+        return;
+    }
+    auto item = currentTreeItem();
+    if (!item) {
+        qDebug() << "current item is nullptr";
+        showErrorDialog(tr("current item is null"));
+        return;
+    }
+    int pathId = item->pathId();
+    auto strId = Utils::generateId();
+    Note note(strId, noteName, pathId);
+    QString newNotePath = workshopPath() + note.strId();
+    QFile file = QFile(newNotePath);
+
+    qDebug() << "create new note:" << noteName << "in" << newNotePath;
+    ok = file.open(QIODevice::WriteOnly);
+    if (!ok) {
+        qDebug() << "open file fail:" << newNotePath;
+        return;
+    }
+    m_dbManager->addNewNote(note);
+    TreeItem* parentItem = item->isFile() ? item->parentItem() : item;
+    auto noteItem = new NoteItem(note, parentItem);
+    item->setPath(newNotePath);
+    auto newNoteIndex = m_treeModel->addNewNode(m_treeView->currentIndex(), noteItem);
+    m_treeView->setCurrentIndex(newNoteIndex);
+    QString newNoteText = "# " + noteName;
+    file.write(newNoteText.toUtf8());
+    file.close();
+    m_curNotePath = newNotePath;
+    loadMdText();
+    updatePreview();
 }
 
 void Widget::on_action_newFolder() {
@@ -323,5 +335,15 @@ void Widget::on_action_trashFolder() {
         return;
     }
     qDebug() << "trash" << folderPath << "success";
+}
+
+TreeItem *Widget::currentTreeItem() {
+    auto index = m_treeView->currentIndex();
+    if (!index.isValid()) return nullptr;
+    return static_cast<TreeItem*>(index.internalPointer());
+}
+
+void Widget::showErrorDialog(const QString &msg) {
+    QMessageBox::critical(this, tr("ERROR"), msg);
 }
 

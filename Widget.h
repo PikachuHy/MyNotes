@@ -49,6 +49,9 @@ private:
     inline QString attachmentPath() {
         return m_notesPath + "/attachment/";
     }
+    inline QString workshopPath() {
+        return m_notesPath + "/workshop/";
+    }
     inline QString tmpHtmlPath() {
         return m_notesPath + "/tmp/note.html";
     }
@@ -58,6 +61,8 @@ private:
     inline QString imageMdText(const QString & url) {
         return "![image]("+url+")";
     }
+    inline TreeItem* currentTreeItem();
+    inline void showErrorDialog(const QString & msg);
     void loadMdText();
     void saveMdText();
     void updatePreview();

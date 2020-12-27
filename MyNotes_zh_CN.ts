@@ -28,10 +28,6 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Note already exist!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>New Folder</source>
         <translation type="unfinished"></translation>
     </message>
@@ -77,6 +73,14 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
     </message>
     <message>
         <source>File open fail.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>current item is null</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ERROR</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

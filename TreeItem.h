@@ -3,10 +3,10 @@
 #define TREEITEM_H
 
 #include <QVariant>
-
+#include "DbModel.h"
 class TreeItem {
 public:
-    explicit TreeItem(const QList<QVariant> &data, bool isFolder = false, TreeItem *parentItem = nullptr);
+    explicit TreeItem(const QList<QVariant> &data, TreeItem *parentItem = nullptr);
 
     ~TreeItem();
 
@@ -36,7 +36,9 @@ public:
 
     virtual bool isWorkshopItem();
 
-    bool isFile();
+    virtual bool isFile();
+
+    virtual int pathId();
 
     int removeChild(TreeItem* item);
 
@@ -49,6 +51,34 @@ private:
     bool m_isFolder;
 };
 
+class NoteItem: public TreeItem {
+public:
+    explicit NoteItem(Note note, TreeItem* parentItem = nullptr);
+
+    QVariant data(int column, int role) const override;
+
+    bool isFile() override;
+
+    int pathId() override;
+
+private:
+    Note m_note;
+};
+
+class FolderItem: public TreeItem {
+public:
+    explicit FolderItem(Path path, TreeItem* parentItem = nullptr);
+
+    QVariant data(int column, int role) const override;
+
+    bool isFile() override;
+
+    int pathId() override;
+
+private:
+    Path m_path;
+};
+
 class TrashItem : public TreeItem {
 public:
     explicit TrashItem(const QString & path, TreeItem *parentItem = nullptr);
@@ -56,6 +86,8 @@ public:
     QVariant data(int column, int role) const override;
 
     bool isTrashItem() override;
+
+    bool isFile() override;
 };
 
 class AttachmentItem : public TreeItem {
@@ -65,6 +97,8 @@ public:
     QVariant data(int column, int role) const override;
 
     bool isAttachmentItem() override;
+
+    bool isFile() override;
 };
 
 class WorkshopItem : public TreeItem {
@@ -74,6 +108,8 @@ public:
     QVariant data(int column, int role) const override;
 
     bool isWorkshopItem() override;
+
+    bool isFile() override;
 };
 
 #endif

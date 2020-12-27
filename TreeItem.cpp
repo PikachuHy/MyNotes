@@ -4,8 +4,8 @@
 #include <QFileIconProvider>
 #include <QIcon>
 
-TreeItem::TreeItem(const QList<QVariant> &data, bool isFolder, TreeItem *parent)
-        : m_itemData(data), m_isFolder(isFolder), m_parentItem(parent) {}
+TreeItem::TreeItem(const QList<QVariant> &data, TreeItem *parent)
+        : m_itemData(data), m_parentItem(parent) {}
 
 TreeItem::~TreeItem() {
     qDeleteAll(m_childItems);
@@ -32,16 +32,6 @@ int TreeItem::columnCount() const {
 QVariant TreeItem::data(int column, int role) const {
     if (column < 0 || column >= m_itemData.size())
         return QVariant();
-    if (role == Qt::DecorationRole && column == 0) {
-        if (m_path.isEmpty()) return QVariant();
-
-        QFileInfo fileInfo(m_path);
-        if (m_isFolder) {
-            return QFileIconProvider().icon(QFileIconProvider::Folder);
-        } else {
-            return QFileIconProvider().icon(QFileIconProvider::File);
-        }
-    }
     return m_itemData.at(column);
 }
 
@@ -103,6 +93,10 @@ int TreeItem::indexInParent() {
     return m_parentItem->m_childItems.indexOf(this);
 }
 
+int TreeItem::pathId() {
+    return 0;
+}
+
 QVariant TrashItem::data(int column, int role) const {
     if (role == Qt::DecorationRole && column == 0) {
         QFileIconProvider provider;
@@ -115,8 +109,12 @@ bool TrashItem::isTrashItem() {
     return true;
 }
 
-TrashItem::TrashItem(const QString & path, TreeItem *parentItem) : TreeItem({"Trash"}, true, parentItem) {
+TrashItem::TrashItem(const QString & path, TreeItem *parentItem) : TreeItem({"Trash"}, parentItem) {
     setPath(path);
+}
+
+bool TrashItem::isFile() {
+    return false;
 }
 
 QVariant AttachmentItem::data(int column, int role) const {
@@ -131,8 +129,12 @@ bool AttachmentItem::isAttachmentItem() {
     return true;
 }
 
-AttachmentItem::AttachmentItem(const QString & path, TreeItem *parentItem) : TreeItem({"Attachment"}, true, parentItem) {
+AttachmentItem::AttachmentItem(const QString & path, TreeItem *parentItem) : TreeItem({"Attachment"}, parentItem) {
     setPath(path);
+}
+
+bool AttachmentItem::isFile() {
+    return false;
 }
 
 QVariant WorkshopItem::data(int column, int role) const {
@@ -147,6 +149,50 @@ bool WorkshopItem::isWorkshopItem() {
     return true;
 }
 
-WorkshopItem::WorkshopItem(const QString & path, TreeItem *parentItem) : TreeItem({"Workshop"}, true, parentItem) {
+WorkshopItem::WorkshopItem(const QString & path, TreeItem *parentItem) : TreeItem({"Workshop"}, parentItem) {
     setPath(path);
+}
+
+bool WorkshopItem::isFile() {
+    return false;
+}
+
+bool NoteItem::isFile() {
+    return true;
+}
+
+NoteItem::NoteItem(Note note, TreeItem *parentItem): TreeItem({note.title()}, parentItem), m_note(note) {
+
+}
+
+int NoteItem::pathId() {
+    return m_note.pathId();
+}
+
+QVariant NoteItem::data(int column, int role) const {
+    if (role == Qt::DecorationRole && column == 0) {
+        QFileIconProvider provider;
+        return provider.icon(QFileIconProvider::File);
+    }
+    return TreeItem::data(column, role);
+}
+
+bool FolderItem::isFile() {
+    return false;
+}
+
+FolderItem::FolderItem(Path path, TreeItem *parentItem): TreeItem({path.name()}, parentItem), m_path(path) {
+
+}
+
+int FolderItem::pathId() {
+    return m_path.id();
+}
+
+QVariant FolderItem::data(int column, int role) const {
+    if (role == Qt::DecorationRole && column == 0) {
+        QFileIconProvider provider;
+        return provider.icon(QFileIconProvider::Folder);
+    }
+    return TreeItem::data(column, role);
 }
