@@ -28,7 +28,7 @@ public:
 
     void setPath(QString path);
 
-    QString path();
+    virtual QString path();
 
     virtual bool isTrashItem();
 
@@ -60,6 +60,8 @@ public:
     bool isFile() override;
 
     int pathId() override;
+
+    QString path() override;
 
 private:
     Note m_note;

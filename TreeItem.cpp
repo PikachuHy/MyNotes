@@ -177,6 +177,10 @@ QVariant NoteItem::data(int column, int role) const {
     return TreeItem::data(column, role);
 }
 
+QString NoteItem::path() {
+    return m_note.strId();
+}
+
 bool FolderItem::isFile() {
     return false;
 }

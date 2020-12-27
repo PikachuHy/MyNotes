@@ -73,12 +73,7 @@ QList<Note> DbManager::getNoteList(int pathId) {
     QSqlQuery query("select * from note where path = " + QString::number(pathId));
     while (query.next()) {
         Note note;
-        note.m_id = query.value("id").toInt();
-        note.m_trashed = query.value("trashed").toInt();
-        note.m_title = query.value("title").toString();
-        note.m_pathId = query.value("path").toInt();
-        note.m_createTime = query.value("create_time").toInt();
-        note.m_updateTime = query.value("update_time").toInt();
+        fillNote(note, query);
         ret.append(note);
     }
     return ret;

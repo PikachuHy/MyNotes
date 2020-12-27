@@ -88,7 +88,7 @@ void Widget::on_treeView_pressed(const QModelIndex &index) {
     auto item = static_cast<TreeItem *>(index.internalPointer());
     if (item->isFile()) {
         m_titleLabel->setText(item->path().mid(m_notesPath.size()));
-        m_curNotePath = item->path();
+        m_curNotePath = workshopPath() + item->path();
         loadMdText();
         updatePreview();
     }
