@@ -79,12 +79,15 @@ private:
     void updateIndex(QString text, int id);
     void initSearchDialog();
     void initJieba();
+    void updateStatistics();
     QListView* searchResultView();
+    Jieba* jieba();
 private:
     QTreeView *m_treeView;
     QTextEdit *m_textEdit;
     QTextBrowser *m_textPreview;
     QLabel *m_titleLabel;
+    QLabel *m_wordCountLabel;
     QLineEdit *m_titleLineEdit;
     QPushButton *m_toggleEditAndPreview;
     QPushButton *m_showEditButton;

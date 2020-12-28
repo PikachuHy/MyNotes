@@ -82,5 +82,13 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
         <source>new folder: save to db fail</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>total 0 words</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Statistics: %1 words, %2 characters</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>

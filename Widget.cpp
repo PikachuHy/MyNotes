@@ -32,6 +32,9 @@
 #include "ListView.h"
 #include "Constant.h"
 #include "DbThread.h"
+#include <vector>
+#include <QFuture>
+#include <functional>
 
 Widget::Widget(QWidget *parent)
         : QWidget(parent) {
@@ -57,6 +60,8 @@ Widget::Widget(QWidget *parent)
     hbox->addWidget(m_textEdit);
     hbox->addWidget(m_textPreview);
     vbox->addLayout(hbox);
+    m_wordCountLabel = new QLabel(tr("total 0 words"));
+    vbox->addWidget(m_wordCountLabel);
     auto w = new QWidget();
     w->setLayout(vbox);
 
@@ -246,6 +251,7 @@ void Widget::saveMdText() {
     file.write(mdText.toUtf8());
     file.close();
     updateIndex(mdText, m_curNoteId);
+    updateStatistics();
 }
 
 void Widget::on_action_newNote() {
@@ -348,6 +354,7 @@ void Widget::loadMdText() {
     QString mdText = file.readAll();
     m_textEdit->setText(mdText);
     file.close();
+    updateStatistics();
 }
 
 void Widget::on_action_trashNote() {
@@ -495,5 +502,37 @@ void Widget::loadNote(const Note &note) {
     m_curNotePath = workshopPath() + note.strId();
     loadMdText();
     updatePreview();
+}
+
+template<typename T>
+void checkFuture(QFuture<T> future, std::function<void(T)> callback) {
+    if (!future.isFinished()) {
+        QTimer::singleShot(1000, [future, callback](){
+            checkFuture(future, callback);
+        });
+    } else {
+        callback(future.template result());
+    }
+}
+
+void Widget::updateStatistics() {
+    QString mdText = m_textEdit->toPlainText();
+    m_wordCountLabel->setText(tr("Statistics: %1 words, %2 characters").arg("...").arg(mdText.size()));
+    auto f = [this](const QString& mdText) -> int {
+        std::vector<std::string> words;
+        jieba()->Cut(mdText.toStdString(), words);
+        return words.size();
+    };
+    QFuture<int> ret = QtConcurrent::run(f, mdText);
+    auto callback = [this](int wordCount) {
+        m_wordCountLabel->setText(tr("Statistics: %1 words, %2 characters")
+        .arg(wordCount).arg(m_textEdit->toPlainText().size()));
+    };
+    checkFuture<int>(ret, callback);
+}
+
+Jieba *Widget::jieba() {
+    if (!m_jieba) initJieba();
+    return m_jieba;
 }
 
