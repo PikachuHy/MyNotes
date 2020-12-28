@@ -440,25 +440,32 @@ void Widget::initSearchDialog() {
 }
 
 void Widget::on_searchDialog_searchTextChanged(const QString &text) {
-    std::vector<std::string> words;
-    if (!m_jieba) initJieba();
-    m_jieba->Cut(text.toStdString(), words);
-    QStringList wordList;
-    for(const auto& word: words) {
-        wordList << QString::fromStdString(word);
-    }
-    qDebug() << wordList;
-    QList<Note> noteList = m_dbManager->getNoteList(wordList);
-    qDebug() << noteList.size();
-    auto model = new QStandardItemModel(this);
-    for(const auto& note: noteList) {
-        auto item = new QStandardItem(note.title());
-        item->setData(QVariant::fromValue(note), Qt::UserRole+1);
-        model->appendRow(item);
-    }
+    auto f = [this](const QString& text) -> QList<Note> {
+        std::vector<std::string> words;
+        if (!m_jieba) initJieba();
+        m_jieba->Cut(text.toStdString(), words);
+        QStringList wordList;
+        for(const auto& word: words) {
+            wordList << QString::fromStdString(word);
+        }
+        qDebug() << wordList;
+        QList<Note> noteList = m_dbManager->getNoteList(wordList);
+        qDebug() << noteList.size();
+        return noteList;
+    };
+    auto callback = [this](QList<Note> noteList) {
+        auto model = new QStandardItemModel(this);
+        for(const auto& note: noteList) {
+            auto item = new QStandardItem(note.title());
+            item->setData(QVariant::fromValue(note), Qt::UserRole+1);
+            model->appendRow(item);
+        }
 //    m_listModel->reset(noteList);
-    searchResultView()->setModel(model);
-    searchResultView()->show();
+        searchResultView()->setModel(model);
+        searchResultView()->show();
+    };
+    auto ret = QtConcurrent::run(f, text);
+    Utils::checkFuture<QList<Note>>(ret, callback);
 }
 
 void Widget::initJieba() {
