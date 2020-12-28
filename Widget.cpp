@@ -504,16 +504,6 @@ void Widget::loadNote(const Note &note) {
     updatePreview();
 }
 
-template<typename T>
-void checkFuture(QFuture<T> future, std::function<void(T)> callback) {
-    if (!future.isFinished()) {
-        QTimer::singleShot(1000, [future, callback](){
-            checkFuture(future, callback);
-        });
-    } else {
-        callback(future.template result());
-    }
-}
 
 void Widget::updateStatistics() {
     QString mdText = m_textEdit->toPlainText();
@@ -528,7 +518,7 @@ void Widget::updateStatistics() {
         m_wordCountLabel->setText(tr("Statistics: %1 words, %2 characters")
         .arg(wordCount).arg(m_textEdit->toPlainText().size()));
     };
-    checkFuture<int>(ret, callback);
+    Utils::checkFuture<int>(ret, callback);
 }
 
 Jieba *Widget::jieba() {

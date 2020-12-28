@@ -7,6 +7,7 @@
 #include <iostream>
 #include <chrono>
 #include <QThread>
+#include <QTimer>
 using namespace std;
 
 

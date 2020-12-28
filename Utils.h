@@ -6,6 +6,8 @@
 #define MYNOTES_UTILS_H
 
 #include <QString>
+#include <QFuture>
+#include <QTimer>
 namespace Utils {
     /**
      * 获取当前时间戳
@@ -21,6 +23,21 @@ namespace Utils {
      * @return
      */
     QString currentThreadId();
+
+    /**
+     * 轮询future是否完成，如果没有完成，反复轮询直到完成。完成时调用callback。
+     */
+
+    template<typename T>
+    void checkFuture(QFuture<T> future, std::function<void(T)> callback) {
+        if (!future.isFinished()) {
+            QTimer::singleShot(1000, [future, callback](){
+                checkFuture(future, callback);
+            });
+        } else {
+            callback(future.template result());
+        }
+    }
 };
 
 
