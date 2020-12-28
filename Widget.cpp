@@ -111,8 +111,13 @@ void Widget::on_treeView_pressed(const QModelIndex &index) {
     auto item = static_cast<TreeItem *>(index.internalPointer());
     if (item->isFile()) {
         auto noteItem = static_cast<NoteItem*>(item);
+        QString notePath = workshopPath() + item->path();
+        // 右键选中笔记时，如果当前笔记就是选中的笔记，不重新载入笔记内容
+        if (notePath == m_curNotePath) {
+            return;
+        }
+        m_curNotePath = notePath;
         m_titleLabel->setText(item->path().mid(m_notesPath.size()));
-        m_curNotePath = workshopPath() + item->path();
         m_curNoteId = noteItem->note().id();
         loadMdText();
         updatePreview();
