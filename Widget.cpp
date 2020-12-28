@@ -78,7 +78,7 @@ Widget::Widget(QWidget *parent)
     _font.setPointSize(16);
     setFont(_font);
     m_lastPressShiftTime = 0;
-    m_maxShiftInterval = 500;
+    m_maxShiftInterval = 200;
     m_listModel = new ListModel(this);
     m_searchDialog = nullptr;
     m_listView = nullptr;
