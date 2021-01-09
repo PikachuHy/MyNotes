@@ -5,7 +5,7 @@
 #include "ListModel.h"
 
 #include <utility>
-
+#include <QDebug>
 void ListModel::reset(QList<Note> noteList) {
     beginRemoveRows(index(0, 0), 0, m_noteList.size());
     endRemoveRows();

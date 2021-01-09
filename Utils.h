@@ -35,7 +35,8 @@ namespace Utils {
                 checkFuture(future, callback);
             });
         } else {
-            callback(future.template result());
+//            callback(future.template result());
+            callback(future.result());
         }
     }
 };

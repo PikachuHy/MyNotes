@@ -214,7 +214,10 @@ bool DbManager::updateIndex(QStringList wordList, int id) {
     }
     query.prepare("insert into note_word (word, note) values (:word, :note)");
     query.bindValue(":word", wordList);
-    QVariantList idList(wordList.size(), id);
+    QVariantList idList;
+    for(int i=0;i<wordList.size();i++) {
+        idList << id;
+    }
     query.bindValue(":note", idList);
     ret = execSql(query, true);
     if (!ret) {

@@ -9,7 +9,7 @@ DbThread::DbThread(const QString &dataPath, QObject *parent) : m_dataPath(dataPa
 }
 
 void DbThread::run() {
-    auto db = DbManager(m_dataPath);
+//    auto db = DbManager(m_dataPath);
     while (true) {
 
     }

@@ -4,11 +4,8 @@
 #include "Constant.h"
 #include "DbManager.h"
 #include <QStringList>
-#include <filesystem>
-#include <regex>
 #include <QDir>
-
-namespace fs = std::filesystem;
+#include <QDebug>
 
 TreeModel::TreeModel(const QString &path, DbManager* dbManager, QObject *parent)
         : QAbstractItemModel(parent), m_dataPath(path), m_dbManager(dbManager) {
