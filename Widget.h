@@ -85,6 +85,9 @@ private:
     void openInTypora(QString path);
     QListView* searchResultView();
     Jieba* jieba();
+    QString currentNotePath();
+    QString noteRealPath(int id);
+    QString noteRealPath(const QString& idStr);
 private:
     QTreeView *m_treeView;
     QTextEdit *m_textEdit;
@@ -97,7 +100,6 @@ private:
     QPushButton *m_showPreviewButton;
     TreeModel *m_treeModel;
     QString m_notesPath;
-    QString m_curNotePath;
     QString m_curCheckedPath;
     TreeItem* m_curItem;
     QModelIndex m_curIndex;

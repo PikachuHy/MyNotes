@@ -113,10 +113,9 @@ void Widget::on_treeView_pressed(const QModelIndex &index) {
         auto noteItem = static_cast<NoteItem*>(item);
         QString notePath = workshopPath() + item->path();
         // 右键选中笔记时，如果当前笔记就是选中的笔记，不重新载入笔记内容
-        if (notePath == m_curNotePath) {
+        if (notePath == currentNotePath()) {
             return;
         }
-        m_curNotePath = notePath;
         m_titleLabel->setText(item->path().mid(m_notesPath.size()));
         m_curNoteId = noteItem->note().id();
         loadMdText();
@@ -233,7 +232,7 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
 void Widget::updatePreview() {
     std::ifstream ifile;
     std::ofstream ofile;
-    ifile.open(m_curNotePath.toStdString());
+    ifile.open(currentNotePath().toStdString());
     ofile.open(tmpHtmlPath().toStdString());
     std::istream *in=&ifile;
     markdown::Document doc;
@@ -250,10 +249,11 @@ void Widget::updatePreview() {
 
 
 void Widget::saveMdText() {
-    if (m_curNotePath.isEmpty()) {
+    auto notePath = currentNotePath();
+    if (notePath.isEmpty()) {
         return;
     }
-    QFile file(m_curNotePath);
+    QFile file(notePath);
     file.open(QIODevice::WriteOnly);
     const QString &mdText = m_textEdit->toPlainText();
     file.write(mdText.toUtf8());
@@ -283,7 +283,7 @@ void Widget::on_action_newNote() {
     int pathId = item->pathId();
     auto strId = Utils::generateId();
     Note note(strId, noteName, pathId);
-    QString newNotePath = workshopPath() + note.strId();
+    QString newNotePath = noteRealPath(note.strId());
     QFile file = QFile(newNotePath);
 
     qDebug() << "create new note:" << noteName << "in" << newNotePath;
@@ -301,7 +301,6 @@ void Widget::on_action_newNote() {
     QString newNoteText = "# " + noteName;
     file.write(newNoteText.toUtf8());
     file.close();
-    m_curNotePath = newNotePath;
     m_curNoteId = note.id();
     loadMdText();
     updatePreview();
@@ -347,15 +346,16 @@ void Widget::on_action_newFolder() {
 }
 
 void Widget::loadMdText() {
-    QFile file(m_curNotePath);
+    auto notePath = currentNotePath();
+    QFile file(notePath);
     if(!file.exists()) {
-        qDebug() << m_curNotePath << "is not exist.";
+        qDebug() << notePath << "is not exist.";
         QMessageBox::critical(this, tr("File"), tr("File not exist."));
         return;
     }
     bool ret = file.open(QIODevice::ReadOnly);
     if (!ret) {
-        qDebug() << m_curNotePath << "open fail.";
+        qDebug() << notePath << "open fail.";
         QMessageBox::critical(this, tr("File"), tr("File open fail."));
         return;
     }
@@ -514,7 +514,6 @@ void Widget::on_listView_pressed(const QModelIndex &index) {
 }
 
 void Widget::loadNote(const Note &note) {
-    m_curNotePath = workshopPath() + note.strId();
     loadMdText();
     updatePreview();
 }
@@ -559,7 +558,20 @@ void Widget::on_action_openInTypora() {
         showErrorDialog(tr("open in typora fail"));
         return;
     }
-    const QString notePath = workshopPath() + item->note().strId();
+    const QString notePath = noteRealPath(item->note().strId());
     openInTypora(notePath);
+}
+
+QString Widget::currentNotePath() {
+    return noteRealPath(m_curNoteId);
+}
+
+QString Widget::noteRealPath(int id) {
+    auto idStr = m_dbManager->getNote(id).strId();
+    return noteRealPath(idStr);
+}
+
+QString Widget::noteRealPath(const QString& idStr) {
+    return workshopPath() + idStr + "/index.md";
 }
 
