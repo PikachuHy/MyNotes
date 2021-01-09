@@ -46,7 +46,7 @@ set(PROJECT_SOURCES
         Utils.cpp
         ${TS_FILES}
         db.qrc
-)
+        MdToHtml.cpp MdToHtml.h)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(MyNotes

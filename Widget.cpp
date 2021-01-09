@@ -3,6 +3,7 @@
 #include "TreeModel.h"
 #include "TreeView.h"
 #include "DbManager.h"
+#include "MdToHtml.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSplitter>
@@ -243,8 +244,19 @@ void Widget::updatePreview() {
     QFile file(tmpHtmlPath());
     file.open(QIODevice::ReadOnly);
     QString html = file.readAll();
-//    std::cout << html.toStdString() << std::endl;
     m_textPreview->setHtml(html);
+//    std::cout << html.toStdString() << std::endl;
+    /*
+    auto f = [this](QString mdText) {
+        return MdToHtml::toHtml(mdText);
+    };
+    auto callback = [this](QString html) {
+        m_textPreview->setHtml(html);
+    };
+    auto ret = QtConcurrent::run(f, m_textEdit->toPlainText());
+
+    Utils::checkFuture<QString>(ret, callback);
+     */
 }
 
 
