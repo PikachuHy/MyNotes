@@ -59,10 +59,10 @@ Widget::Widget(QWidget *parent)
     auto hbox = new QHBoxLayout();
     hbox->setContentsMargins(0, 0, 0, 0);
 //    hbox->addWidget(m_treeView);
-    hbox->addWidget(m_textEdit, 1);
+//    hbox->addWidget(m_textEdit, 1);
 //    m_textPreview->setMinimumWidth(100);
     hbox->addWidget(m_textPreview, 1);
-    vbox->addLayout(hbox);
+    vbox->addLayout(hbox, 1);
     m_wordCountLabel = new QLabel(tr("total 0 words"));
     vbox->addWidget(m_wordCountLabel);
     auto w = new QWidget();
