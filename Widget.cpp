@@ -144,9 +144,12 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
         } else if (item->isAttachmentItem()) {
 
         } else if (item->isFile()) {
-            auto a = new QAction("Trash Note", &menu);
+            auto a = new QAction("Open in Typora", &menu);
             menu.addAction(a);
-            connect(a, &QAction::triggered, this, &Widget::on_action_trashNote);
+            connect(a, &QAction::triggered, this, &Widget::on_action_openInTypora);
+            auto b = new QAction("Trash Note", &menu);
+            menu.addAction(b);
+            connect(b, &QAction::triggered, this, &Widget::on_action_trashNote);
         } else {
             auto a = new QAction("New Note", &menu);
             menu.addAction(a);
@@ -536,5 +539,27 @@ void Widget::updateStatistics() {
 Jieba *Widget::jieba() {
     if (!m_jieba) initJieba();
     return m_jieba;
+}
+
+void Widget::openInTypora(QString notePath) {
+    QStringList cmd;
+    cmd << "-a" << "typora" << notePath;
+    QProcess p;
+    p.startDetached("open",cmd);
+}
+
+void Widget::on_action_openInTypora() {
+    auto index = m_treeView->currentIndex();
+    if (!index.isValid()) {
+        return;
+    }
+    auto item = static_cast<NoteItem *>(index.internalPointer());
+    if (!item) {
+        qDebug() << "open in typora fail, NPE";
+        showErrorDialog(tr("open in typora fail"));
+        return;
+    }
+    const QString notePath = workshopPath() + item->note().strId();
+    openInTypora(notePath);
 }
 

@@ -51,6 +51,8 @@ private slots:
 
     void on_action_trashNote();
 
+    void on_action_openInTypora();
+
     void on_action_trashFolder();
 
     void on_searchDialog_searchTextChanged(const QString& text);
@@ -80,6 +82,7 @@ private:
     void initSearchDialog();
     void initJieba();
     void updateStatistics();
+    void openInTypora(QString path);
     QListView* searchResultView();
     Jieba* jieba();
 private:
