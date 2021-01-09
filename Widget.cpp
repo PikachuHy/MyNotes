@@ -41,7 +41,7 @@ Widget::Widget(QWidget *parent)
         : QWidget(parent) {
     m_treeView = new TreeView();
     m_textEdit = new QTextEdit();
-    m_textPreview = new QTextBrowser();
+    m_textPreview = new QWebEngineView();
     m_titleLabel = new QLabel("untitled");
     m_titleLineEdit = new QLineEdit();
     m_toggleEditAndPreview = new QPushButton("toggle");
@@ -50,6 +50,7 @@ Widget::Widget(QWidget *parent)
     // 处理Ctrl+S保存
     m_textEdit->installEventFilter(this);
     m_treeView->installEventFilter(this);
+    m_treeView->setFixedWidth(300);
     auto splitter = new QSplitter();
     splitter->addWidget(m_treeView);
     auto vbox = new QVBoxLayout();
@@ -58,8 +59,9 @@ Widget::Widget(QWidget *parent)
     auto hbox = new QHBoxLayout();
     hbox->setContentsMargins(0, 0, 0, 0);
 //    hbox->addWidget(m_treeView);
-    hbox->addWidget(m_textEdit);
-    hbox->addWidget(m_textPreview);
+    hbox->addWidget(m_textEdit, 1);
+//    m_textPreview->setMinimumWidth(100);
+    hbox->addWidget(m_textPreview, 1);
     vbox->addLayout(hbox);
     m_wordCountLabel = new QLabel(tr("total 0 words"));
     vbox->addWidget(m_wordCountLabel);

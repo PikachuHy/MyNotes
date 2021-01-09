@@ -13,6 +13,7 @@
 #include <QSqlQuery>
 #include "cppjieba/Jieba.hpp"
 #include "DbModel.h"
+#include <QWebEngineView>
 class TreeItem;
 class TreeModel;
 class DbManager;
@@ -91,7 +92,7 @@ private:
 private:
     QTreeView *m_treeView;
     QTextEdit *m_textEdit;
-    QTextBrowser *m_textPreview;
+    QWebEngineView *m_textPreview;
     QLabel *m_titleLabel;
     QLabel *m_wordCountLabel;
     QLineEdit *m_titleLineEdit;
