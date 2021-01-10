@@ -298,6 +298,8 @@ void Widget::on_action_newNote() {
     auto strId = Utils::generateId();
     Note note(strId, noteName, pathId);
     QString newNotePath = noteRealPath(note.strId());
+    QDir dir;
+    dir.mkpath(QFileInfo(newNotePath).path());
     QFile file = QFile(newNotePath);
 
     qDebug() << "create new note:" << noteName << "in" << newNotePath;
