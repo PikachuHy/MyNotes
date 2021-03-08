@@ -252,7 +252,7 @@ void Widget::updatePreview() {
            R"(</article></body></html>)";
     htmlFile.write(html.toUtf8());
     htmlFile.close();
-    m_textPreview->setHtml(html);
+    m_textPreview->setHtml(html, QUrl("file://"));
     /*
     std::ifstream ifile;
     std::ofstream ofile;
