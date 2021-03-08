@@ -20,7 +20,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QDir>
-#include "markdown.h"
+#include "md/markdown.h"
 #include "Utils.h"
 #include <QtSql>
 #include <QtConcurrent>
@@ -233,6 +233,28 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
 }
 
 void Widget::updatePreview() {
+    QFile mdFile(currentNotePath());
+    mdFile.open(QIODevice::ReadOnly);
+    Document doc(mdFile.readAll());
+    auto html = doc.toHtml();
+    QFile htmlFile(tmpHtmlPath());
+    htmlFile.open(QIODevice::WriteOnly);
+
+    html = R"(<!DOCTYPE html><html><head>
+<meta charset="utf-8">
+<title>Markdown</title>
+<link rel="stylesheet" href="github-markdown.css">
+</head>
+<body>
+<article class="markdown-body">)"
+           +
+           html
+           +
+           R"(</article></body></html>)";
+    htmlFile.write(html.toUtf8());
+    htmlFile.close();
+    m_textPreview->setHtml(html);
+    /*
     std::ifstream ifile;
     std::ofstream ofile;
     ifile.open(currentNotePath().toStdString());
@@ -247,6 +269,7 @@ void Widget::updatePreview() {
     file.open(QIODevice::ReadOnly);
     QString html = file.readAll();
     m_textPreview->setHtml(html);
+     */
 //    std::cout << html.toStdString() << std::endl;
     /*
     auto f = [this](QString mdText) {

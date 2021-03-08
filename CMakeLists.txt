@@ -76,5 +76,6 @@ target_link_libraries(MyNotes PRIVATE
         Qt${QT_VERSION_MAJOR}::Sql
         Qt${QT_VERSION_MAJOR}::Concurrent
         Qt${QT_VERSION_MAJOR}::WebEngineWidgets
-        cppmarkdown
+#        cppmarkdown
+        QtMarkdownParser
         )
