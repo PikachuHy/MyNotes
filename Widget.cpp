@@ -121,8 +121,7 @@ void Widget::on_treeView_pressed(const QModelIndex &index) {
         }
         m_titleLabel->setText(item->path().mid(m_notesPath.size()));
         m_curNoteId = noteItem->note().id();
-        loadMdText();
-        updatePreview();
+        loadNote(noteItem->note());
     }
 }
 
@@ -553,6 +552,7 @@ void Widget::on_listView_pressed(const QModelIndex &index) {
 }
 
 void Widget::loadNote(const Note &note) {
+    qDebug() << "load" << note.strId() << note.title();
     loadMdText();
     updatePreview();
 }
