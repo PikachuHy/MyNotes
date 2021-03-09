@@ -84,7 +84,7 @@ void Toast::showTip(const QString& text, QWidget* parent /*= nullptr*/)
 
 void Toast::paintEvent(QPaintEvent *event)
 {
-    QPainter paint(this);
+    QPainter paint;
     paint.begin(this);
     auto kBackgroundColor = QColor(255, 255, 255);
     kBackgroundColor.setAlpha(0.0 * 255);// 透明度为0
