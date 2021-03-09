@@ -36,6 +36,7 @@
 #include <vector>
 #include <QFuture>
 #include <functional>
+#include "Toast.h"
 
 Widget::Widget(QWidget *parent)
         : QWidget(parent) {
@@ -564,6 +565,11 @@ void Widget::loadNote(const Note &note) {
     m_curNote = note;
     loadMdText();
     updatePreview();
+
+    Toast::showTip("Press E Open in Typora");
+//    auto toast = new Toast(this);
+//    toast->setText("Press E Open in Typora");
+//    toast->pop();
 }
 
 
