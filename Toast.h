@@ -19,9 +19,8 @@ padding-right:25px;
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
 #include <QPushButton>
-
+#include <QLabel>
 #include <QHBoxLayout>
-#include "ui_Toast.h"
 
 class Toast : public QWidget
 {
@@ -43,7 +42,7 @@ protected:
     virtual void paintEvent(QPaintEvent *event);
 
 private:
-    Ui::ToastClass ui;
+    QLabel *m_label;
 };
 
 

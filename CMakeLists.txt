@@ -50,7 +50,6 @@ set(PROJECT_SOURCES
         ${TS_FILES}
         db.qrc
         Toast.cpp
-        Toast.ui
         MdToHtml.cpp MdToHtml.h)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

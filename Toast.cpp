@@ -16,10 +16,22 @@
 Toast::Toast(QWidget *parent)
         : QWidget(parent)
 {
-    ui.setupUi(this);
-
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint | Qt::Tool);// 无边框 无任务栏
     setAttribute(Qt::WA_TranslucentBackground, true);   // 背景透明
+    m_label = new QLabel(this);
+    m_label->setAlignment(Qt::AlignCenter);
+    m_label->setStyleSheet(R"(
+background-color: rgba(0,0,0,0.80);
+border-radius: 26px;
+color: #FFFFFF;
+font-size: 16px;
+padding-left:25px;
+padding-right:25px;
+)");
+    auto layout = new QHBoxLayout();
+    layout->addWidget(m_label);
+    setLayout(layout);
+    m_label->setMinimumSize(0, 52);
 }
 
 Toast::~Toast()
@@ -28,7 +40,7 @@ Toast::~Toast()
 
 void Toast::setText(const QString& text)
 {
-    ui.label->setText(text);
+    m_label->setText(text);
 }
 
 void Toast::showAnimation(int timeout /*= 2000*/)
