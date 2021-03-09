@@ -55,7 +55,7 @@ Widget::Widget(QWidget *parent)
     splitter->addWidget(m_treeView);
     auto vbox = new QVBoxLayout();
     vbox->setContentsMargins(0, 0, 0, 0);
-    vbox->addLayout(initTitleLayout());
+//    vbox->addLayout(initTitleLayout());
     auto hbox = new QHBoxLayout();
     hbox->setContentsMargins(0, 0, 0, 0);
 //    hbox->addWidget(m_treeView);
