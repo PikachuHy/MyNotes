@@ -83,6 +83,7 @@ private:
     void initSearchDialog();
     void initJieba();
     void updateStatistics();
+    void openNoteInTypora(const Note& note);
     void openInTypora(QString path);
     QListView* searchResultView();
     Jieba* jieba();
@@ -112,6 +113,7 @@ private:
     Jieba* m_jieba;
     QListView* m_listView;
     ListModel* m_listModel;
+    Note m_curNote;
 };
 
 #endif // WIDGET_H

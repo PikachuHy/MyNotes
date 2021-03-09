@@ -201,6 +201,10 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
                 qDebug() << "other";
             }
         }
+        // 按e进入编辑
+        if (event->key() == Qt::Key_E) {
+            openNoteInTypora(m_curNote);
+        }
         if (watched == m_treeView) {
             if (event->key() == Qt::Key_Backspace) {
                 auto item = static_cast<TreeItem*>(m_treeView->currentIndex().internalPointer());
@@ -557,6 +561,7 @@ void Widget::on_listView_pressed(const QModelIndex &index) {
 
 void Widget::loadNote(const Note &note) {
     qDebug() << "load" << note.strId() << note.title();
+    m_curNote = note;
     loadMdText();
     updatePreview();
 }
@@ -590,6 +595,9 @@ void Widget::openInTypora(QString notePath) {
     p.startDetached("open",cmd);
 }
 
+void Widget::openNoteInTypora(const Note& note) {
+    openInTypora(noteRealPath(note.strId()));
+}
 void Widget::on_action_openInTypora() {
     auto index = m_treeView->currentIndex();
     if (!index.isValid()) {
