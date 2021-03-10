@@ -39,7 +39,7 @@
 #include "Toast.h"
 
 Widget::Widget(QWidget *parent)
-        : QWidget(parent) {
+        : QWidget(parent), m_showOpenInTyporaTip(true) {
     m_treeView = new TreeView();
     m_textEdit = new QTextEdit();
     m_textPreview = new QWebEngineView();
@@ -564,11 +564,10 @@ void Widget::loadNote(const Note &note) {
     m_curNote = note;
     loadMdText();
     updatePreview();
-
-    Toast::showTip("Press E Open in Typora", this);
-//    auto toast = new Toast(this);
-//    toast->setText("Press E Open in Typora");
-//    toast->pop();
+    if (m_showOpenInTyporaTip) {
+        Toast::showTip("Press E Open in Typora", this);
+        m_showOpenInTyporaTip = false;
+    }
 }
 
 

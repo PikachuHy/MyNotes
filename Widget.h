@@ -114,6 +114,7 @@ private:
     QListView* m_listView;
     ListModel* m_listModel;
     Note m_curNote;
+    bool m_showOpenInTyporaTip;
 };
 
 #endif // WIDGET_H
