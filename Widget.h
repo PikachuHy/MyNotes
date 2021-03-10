@@ -14,6 +14,7 @@
 #include "cppjieba/Jieba.hpp"
 #include "DbModel.h"
 #include <QWebEngineView>
+#include <QSettings>
 class TreeItem;
 class TreeModel;
 class DbManager;
@@ -115,6 +116,7 @@ private:
     ListModel* m_listModel;
     Note m_curNote;
     bool m_showOpenInTyporaTip;
+    QSettings m_settings;
 };
 
 #endif // WIDGET_H

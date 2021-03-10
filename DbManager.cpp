@@ -105,6 +105,8 @@ bool DbManager::addNewNote(Note &note) {
 
 Note DbManager::getNote(int id) {
     Note note;
+    // -1表示不存在
+    note.m_id = -1;
     const QString &sql = "select * from note where id = " + QString::number(id);
     QSqlQuery query = _query(sql);
     while (query.next()) {

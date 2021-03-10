@@ -39,7 +39,10 @@
 #include "Toast.h"
 
 Widget::Widget(QWidget *parent)
-        : QWidget(parent), m_showOpenInTyporaTip(true) {
+        : QWidget(parent),
+        m_showOpenInTyporaTip(true),
+        m_settings(this),
+        m_jieba(nullptr) {
     m_treeView = new TreeView();
     m_textEdit = new QTextEdit();
     m_textPreview = new QWebEngineView();
@@ -93,6 +96,20 @@ Widget::Widget(QWidget *parent)
     m_listView = nullptr;
     auto t = new DbThread(m_notesPath);
     t->start();
+    QTimer::singleShot(50, [this](){
+        auto lastNoteId = m_settings.value("last_note", -1).toInt();
+        if (lastNoteId != -1) {
+            auto lastNote = m_dbManager->getNote(lastNoteId);
+            if (lastNote.id() != -1) {
+                qDebug() << "load last note";
+                loadNote(lastNote);
+            } else {
+                qWarning() << "no last note id error:" << lastNoteId;
+            }
+        } else {
+            qDebug() << "no last note";
+        }
+    });
 }
 
 Widget::~Widget() {
@@ -568,6 +585,7 @@ void Widget::loadNote(const Note &note) {
         Toast::showTip("Press E Open in Typora", this);
         m_showOpenInTyporaTip = false;
     }
+    m_settings.setValue("last_note", note.id());
 }
 
 
@@ -618,7 +636,7 @@ void Widget::on_action_openInTypora() {
 }
 
 QString Widget::currentNotePath() {
-    return noteRealPath(m_curNoteId);
+    return noteRealPath(m_curNote.strId());
 }
 
 QString Widget::noteRealPath(int id) {
