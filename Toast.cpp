@@ -75,10 +75,17 @@ void Toast::showTip(const QString& text, QWidget* parent /*= nullptr*/)
     toast->setWindowFlags(toast->windowFlags() | Qt::WindowStaysOnTopHint); // 置顶
     toast->setText(text);
     toast->adjustSize();    //设置完文本后调整下大小
+    // 显示在窗口中央，高度约70%的位置
+    auto winSize = parent ? parent->size() : QGuiApplication::primaryScreen()->size();
+    auto offsetX = (winSize.width() - toast->width()) / 2;
+    auto offsetY = (winSize.height() * 7 / 10);
 
-    // 测试显示位于主屏的70%高度位置
-    QScreen* pScreen = QGuiApplication::primaryScreen();
-    toast->move((pScreen->size().width() - toast->width()) / 2, pScreen->size().height() * 7 / 10);
+    if (parent) {
+        auto bl = parent->geometry().topLeft();
+        toast->move(bl.x() + offsetX, bl.y() + offsetY);
+    } else {
+        toast->move(offsetX, offsetY);
+    }
     toast->showAnimation();
 }
 

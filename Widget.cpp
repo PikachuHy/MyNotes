@@ -565,7 +565,7 @@ void Widget::loadNote(const Note &note) {
     loadMdText();
     updatePreview();
 
-    Toast::showTip("Press E Open in Typora");
+    Toast::showTip("Press E Open in Typora", this);
 //    auto toast = new Toast(this);
 //    toast->setText("Press E Open in Typora");
 //    toast->pop();
