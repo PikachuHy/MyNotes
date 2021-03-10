@@ -278,7 +278,8 @@ R"(">
            R"(</article></body></html>)";
     htmlFile.write(html.toUtf8());
     htmlFile.close();
-    m_textPreview->setHtml(html, QUrl("file://"));
+    auto url = QString("file:///Users/pikachu/Documents/MyNotes/workshop/%1/").arg(m_curNote.strId());
+    m_textPreview->setHtml(html, QUrl(url));
     /*
     std::ifstream ifile;
     std::ofstream ofile;
