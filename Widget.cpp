@@ -169,6 +169,9 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
             auto b = new QAction("Trash Note", &menu);
             menu.addAction(b);
             connect(b, &QAction::triggered, this, &Widget::on_action_trashNote);
+            auto c = new QAction("Export to HTML", &menu);
+            menu.addAction(c);
+            connect(c, &QAction::triggered, this, &Widget::on_action_exportNoteToHTML);
         } else {
             auto a = new QAction("New Note", &menu);
             menu.addAction(a);
@@ -647,5 +650,40 @@ QString Widget::noteRealPath(int id) {
 
 QString Widget::noteRealPath(const QString& idStr) {
     return workshopPath() + idStr + "/index.md";
+}
+
+void Widget::on_action_exportNoteToHTML() {
+    auto index = m_treeView->currentIndex();
+    if (!index.isValid()) {
+        return;
+    }
+    auto item = static_cast<NoteItem *>(index.internalPointer());
+    if (!item) {
+        qDebug() << "export to HTML fail, NPE";
+        showErrorDialog(tr("export to HTML fail"));
+        return;
+    }
+    const QString notePath = noteRealPath(item->note().strId());
+    // dirName是完整路径
+    auto dirName = QFileDialog::getSaveFileName(this, tr("Export Note to HTML"));
+    qDebug() << "export Note to" << dirName;
+    if (!QDir().exists(dirName)) {
+        qDebug() << "mkdir" << dirName;
+        QDir().mkdir(dirName);
+    }
+    QDir targetDir(dirName);
+    QDir noteDir(notePath);
+    noteDir.cdUp();
+    qDebug() << "note dir:" << noteDir.dirName();
+    QFileInfoList fileInfoList = noteDir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
+    for(const auto & fileInfo: fileInfoList) {
+        if (fileInfo.fileName() == "index.md") {
+            continue;
+        }
+        auto targetFile = targetDir.filePath(fileInfo.fileName());
+        qDebug() << "copy" << fileInfo.filePath() << "to" << targetFile;
+        QFile::copy(fileInfo.filePath(), targetFile);
+    }
+    QDesktopServices::openUrl(QUrl(QString("file://%1").arg(dirName)));
 }
 

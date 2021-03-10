@@ -57,6 +57,8 @@ private slots:
 
     void on_action_trashFolder();
 
+    void on_action_exportNoteToHTML();
+
     void on_searchDialog_searchTextChanged(const QString& text);
 private:
     inline QString attachmentPath() {
