@@ -684,6 +684,44 @@ void Widget::on_action_exportNoteToHTML() {
         qDebug() << "copy" << fileInfo.filePath() << "to" << targetFile;
         QFile::copy(fileInfo.filePath(), targetFile);
     }
+    generateHTML(item->note(), targetDir.filePath("index.html"));
     QDesktopServices::openUrl(QUrl(QString("file://%1").arg(dirName)));
+}
+
+void Widget::generateHTML(const Note& note, const QString& path) {
+    auto html = generateHTML(note);
+    QFile htmlFile(path);
+    htmlFile.open(QIODevice::WriteOnly);
+    htmlFile.write(html.toUtf8());
+    htmlFile.close();
+}
+
+QString Widget::noteRealPath(const Note& note) {
+    return noteRealPath(note.strId());
+}
+
+QString Widget::generateHTML(const Note& note) {
+    QFile mdFile(noteRealPath(note));
+    mdFile.open(QIODevice::ReadOnly);
+    Document doc(mdFile.readAll());
+    mdFile.close();
+    auto html = doc.toHtml();
+    QString mdCssPath = "github-markdown.css";
+    html = R"(<!DOCTYPE html><html><head>
+<meta charset="utf-8">
+<title>Markdown</title>
+<link rel="stylesheet" href=")"
+           +
+           mdCssPath
+           +
+           R"(">
+</head>
+<body>
+<article class="markdown-body">)"
+           +
+           html
+           +
+           R"(</article></body></html>)";
+    return html;
 }
 

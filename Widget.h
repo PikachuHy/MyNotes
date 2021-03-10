@@ -93,6 +93,9 @@ private:
     QString currentNotePath();
     QString noteRealPath(int id);
     QString noteRealPath(const QString& idStr);
+    QString noteRealPath(const Note& note);
+    QString generateHTML(const Note& note);
+    void generateHTML(const Note& note, const QString& path);
 private:
     QTreeView *m_treeView;
     QTextEdit *m_textEdit;
