@@ -349,8 +349,7 @@ void Widget::on_action_newNote() {
     file.write(newNoteText.toUtf8());
     file.close();
     m_curNoteId = note.id();
-    loadMdText();
-    updatePreview();
+    loadNote(note);
     m_textEdit->setFocus();
 }
 
