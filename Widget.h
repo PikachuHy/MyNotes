@@ -27,7 +27,7 @@ class Widget : public QWidget {
 Q_OBJECT
 
 public:
-    Widget(QWidget *parent = nullptr);
+    explicit Widget(QWidget *parent = nullptr);
 
     ~Widget();
 
