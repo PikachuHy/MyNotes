@@ -3,7 +3,6 @@
 #include "TreeModel.h"
 #include "TreeView.h"
 #include "DbManager.h"
-#include "MdToHtml.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSplitter>
@@ -32,7 +31,6 @@
 #include "ListModel.h"
 #include "ListView.h"
 #include "Constant.h"
-#include "DbThread.h"
 #include <vector>
 #include <QFuture>
 #include <functional>
@@ -81,9 +79,6 @@ Widget::Widget(QWidget *parent)
     m_listModel = new ListModel(this);
     m_searchDialog = nullptr;
     m_listView = nullptr;
-    // 数据库后台操作
-    auto t = new DbThread(m_notesPath);
-    t->start();
     // 读最后一次打开的笔记
     loadLastOpenedNote();
 }

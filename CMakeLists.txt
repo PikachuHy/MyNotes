@@ -43,14 +43,13 @@ set(PROJECT_SOURCES
         TreeView.cpp
         DbModel.cpp
         DbManager.cpp
-        DbThread.cpp
         Constant.cpp
         SearchDialog.cpp
         Utils.cpp
         ${TS_FILES}
         db.qrc
         Toast.cpp
-        MdToHtml.cpp MdToHtml.h)
+        )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(MyNotes
