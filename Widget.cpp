@@ -46,36 +46,23 @@ Widget::Widget(QWidget *parent)
     m_treeView = new TreeView();
     m_textEdit = new QTextEdit();
     m_textPreview = new QWebEngineView();
-    m_titleLabel = new QLabel("untitled");
-    m_titleLineEdit = new QLineEdit();
-    m_toggleEditAndPreview = new QPushButton("toggle");
-    m_showEditButton = new QPushButton("Edit");
-    m_showPreviewButton = new QPushButton("Preview");
     // 处理Ctrl+S保存
-    m_textEdit->installEventFilter(this);
     m_treeView->installEventFilter(this);
     m_treeView->setFixedWidth(300);
     auto splitter = new QSplitter();
     splitter->addWidget(m_treeView);
     auto vbox = new QVBoxLayout();
     vbox->setContentsMargins(0, 0, 0, 0);
-//    vbox->addLayout(initTitleLayout());
     auto hbox = new QHBoxLayout();
     hbox->setContentsMargins(0, 0, 0, 0);
-//    hbox->addWidget(m_treeView);
-//    hbox->addWidget(m_textEdit, 1);
-//    m_textPreview->setMinimumWidth(100);
     hbox->addWidget(m_textPreview, 1);
     vbox->addLayout(hbox, 1);
     m_wordCountLabel = new QLabel(tr("total 0 words"));
     vbox->addWidget(m_wordCountLabel);
     auto w = new QWidget();
     w->setLayout(vbox);
-
     splitter->addWidget(w);
-
     splitter->setParent(this);
-
     auto mainLayout = new QHBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(splitter);
@@ -119,16 +106,6 @@ Widget::~Widget() {
     delete m_listView;
 }
 
-QLayout *Widget::initTitleLayout() {
-    auto hbox = new QHBoxLayout();
-    hbox->addWidget(m_titleLabel);
-    hbox->addStretch(1);
-    hbox->addWidget(m_toggleEditAndPreview);
-    hbox->addWidget(m_showEditButton);
-    hbox->addWidget(m_showPreviewButton);
-    return hbox;
-}
-
 void Widget::on_treeView_pressed(const QModelIndex &index) {
     if (!index.isValid()) return;
     auto item = static_cast<TreeItem *>(index.internalPointer());
@@ -139,8 +116,6 @@ void Widget::on_treeView_pressed(const QModelIndex &index) {
         if (notePath == currentNotePath()) {
             return;
         }
-        m_titleLabel->setText(item->path().mid(m_notesPath.size()));
-        m_curNoteId = noteItem->note().id();
         loadNote(noteItem->note());
     }
 }
@@ -148,7 +123,6 @@ void Widget::on_treeView_pressed(const QModelIndex &index) {
 void Widget::initSlots() {
     connect(m_treeView, &QTreeView::pressed, this, &Widget::on_treeView_pressed);
     connect(m_treeView, &QTreeView::customContextMenuRequested, this, &Widget::on_treeView_customContextMenuRequested);
-//    connect(m_textEdit, &QTextEdit:)
 }
 
 void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
@@ -156,9 +130,6 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
     auto index = m_treeView->indexAt(pos);
     if (index.isValid()) {
         auto item = static_cast<TreeItem *>(index.internalPointer());
-        m_curItem = item;
-        m_curCheckedPath = item->path();
-        m_curIndex = index;
         if (item->isTrashItem()) {
             auto a = new QAction("Clear Trash", &menu);
             menu.addAction(a);
@@ -237,7 +208,6 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
                                                      QMessageBox::Yes|QMessageBox::No,
                                                      QMessageBox::Yes);
                     if (ret == QMessageBox::Yes) {
-                        m_curIndex = m_treeView->currentIndex();
                         on_action_trashNote();
                         return true;
                     }
@@ -285,34 +255,6 @@ R"(">
     htmlFile.close();
     auto url = QString("file://%1/%2/").arg(workshopPath()).arg(m_curNote.strId());
     m_textPreview->setHtml(html, QUrl(url));
-    /*
-    std::ifstream ifile;
-    std::ofstream ofile;
-    ifile.open(currentNotePath().toStdString());
-    ofile.open(tmpHtmlPath().toStdString());
-    std::istream *in=&ifile;
-    markdown::Document doc;
-    doc.read(*in);
-    doc.write(ofile);
-    ofile.close();
-    ifile.close();
-    QFile file(tmpHtmlPath());
-    file.open(QIODevice::ReadOnly);
-    QString html = file.readAll();
-    m_textPreview->setHtml(html);
-     */
-//    std::cout << html.toStdString() << std::endl;
-    /*
-    auto f = [this](QString mdText) {
-        return MdToHtml::toHtml(mdText);
-    };
-    auto callback = [this](QString html) {
-        m_textPreview->setHtml(html);
-    };
-    auto ret = QtConcurrent::run(f, m_textEdit->toPlainText());
-
-    Utils::checkFuture<QString>(ret, callback);
-     */
 }
 
 
@@ -326,7 +268,7 @@ void Widget::saveMdText() {
     const QString &mdText = m_textEdit->toPlainText();
     file.write(mdText.toUtf8());
     file.close();
-    updateIndex(mdText, m_curNoteId);
+    updateIndex(mdText, m_curNote.id());
     updateStatistics();
 }
 
@@ -371,7 +313,6 @@ void Widget::on_action_newNote() {
     QString newNoteText = "# " + noteName;
     file.write(newNoteText.toUtf8());
     file.close();
-    m_curNoteId = note.id();
     loadNote(note);
     m_textEdit->setFocus();
 }
@@ -643,11 +584,6 @@ void Widget::on_action_openInTypora() {
 
 QString Widget::currentNotePath() {
     return noteRealPath(m_curNote.strId());
-}
-
-QString Widget::noteRealPath(int id) {
-    auto idStr = m_dbManager->getNote(id).strId();
-    return noteRealPath(idStr);
 }
 
 QString Widget::noteRealPath(const QString& idStr) {

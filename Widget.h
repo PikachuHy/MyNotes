@@ -32,7 +32,6 @@ public:
     ~Widget();
 
 private:
-    QLayout *initTitleLayout();
 
     void initSlots();
 
@@ -91,7 +90,7 @@ private:
     QListView* searchResultView();
     Jieba* jieba();
     QString currentNotePath();
-    QString noteRealPath(int id);
+
     QString noteRealPath(const QString& idStr);
     QString noteRealPath(const Note& note);
     QString generateHTML(const Note& note);
@@ -102,21 +101,12 @@ private:
     QTextEdit *m_textEdit;
     // markdown转html后预览，用GitHub到样式
     QWebEngineView *m_textPreview;
-    QLabel *m_titleLabel;
     QLabel *m_wordCountLabel;
-    QLineEdit *m_titleLineEdit;
-    QPushButton *m_toggleEditAndPreview;
-    QPushButton *m_showEditButton;
-    QPushButton *m_showPreviewButton;
     TreeModel *m_treeModel;
     // 笔记所在路径
     QString m_notesPath;
-    QString m_curCheckedPath;
-    TreeItem* m_curItem;
-    QModelIndex m_curIndex;
     // SQLite数据库操作
     DbManager* m_dbManager;
-    int m_curNoteId;
     // 双击Shift出现搜索框用
     std::time_t m_lastPressShiftTime;
     std::time_t m_maxShiftInterval;
