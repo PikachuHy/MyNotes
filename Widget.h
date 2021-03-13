@@ -38,6 +38,8 @@ private:
 public:
     bool eventFilter(QObject *watched, QEvent *event) override;
 
+protected:
+    void resizeEvent(QResizeEvent *event) override;
 private slots:
 
     void on_treeView_pressed(const QModelIndex &index);

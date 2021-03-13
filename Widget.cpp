@@ -75,7 +75,14 @@ Widget::Widget(QWidget *parent)
     m_treeModel = new TreeModel(m_notesPath, m_dbManager);
     m_treeView->setModel(m_treeModel);
     initSlots();
-    resize(1500, 800);
+    auto screenSize = QApplication::primaryScreen()->size();
+    auto winGeometry = m_settings.value("win_geometry", QRect(
+            (screenSize.width()-1500) / 2,
+            (screenSize.height()-800) / 2,
+            1500, 800
+            )).toRect();
+    qDebug() << "load window geometry" << winGeometry;
+    setGeometry(winGeometry);
     auto _font = font();
     _font.setPointSize(16);
     setFont(_font);
@@ -662,5 +669,11 @@ QString Widget::generateHTML(const Note& note) {
            +
            R"(</article></body></html>)";
     return html;
+}
+
+void Widget::resizeEvent(QResizeEvent *event) {
+    QWidget::resizeEvent(event);
+    qDebug() << "resize" << this->geometry();
+    m_settings.setValue("win_geometry", this->geometry());
 }
 
