@@ -93,8 +93,6 @@ private:
     QListView* searchResultView();
     Jieba* jieba();
     QString currentNotePath();
-
-    QString noteRealPath(const QString& idStr);
     QString noteRealPath(const Note& note);
     QString generateHTML(const Note& note);
     void generateHTML(const Note& note, const QString& path);

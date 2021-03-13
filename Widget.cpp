@@ -294,7 +294,7 @@ void Widget::on_action_newNote() {
     int pathId = item->pathId();
     auto strId = Utils::generateId();
     Note note(strId, noteName, pathId);
-    QString newNotePath = noteRealPath(note.strId());
+    QString newNotePath = noteRealPath(note);
     QDir dir;
     dir.mkpath(QFileInfo(newNotePath).path());
     QFile file = QFile(newNotePath);
@@ -566,7 +566,7 @@ void Widget::openInTypora(QString notePath) {
 }
 
 void Widget::openNoteInTypora(const Note& note) {
-    openInTypora(noteRealPath(note.strId()));
+    openInTypora(noteRealPath(note));
 }
 void Widget::on_action_openInTypora() {
     auto index = m_treeView->currentIndex();
@@ -579,16 +579,12 @@ void Widget::on_action_openInTypora() {
         showErrorDialog(tr("open in typora fail"));
         return;
     }
-    const QString notePath = noteRealPath(item->note().strId());
+    const QString notePath = noteRealPath(item->note());
     openInTypora(notePath);
 }
 
 QString Widget::currentNotePath() {
-    return noteRealPath(m_curNote.strId());
-}
-
-QString Widget::noteRealPath(const QString& idStr) {
-    return workshopPath() + idStr + "/index.md";
+    return noteRealPath(m_curNote);
 }
 
 void Widget::on_action_exportNoteToHTML() {
@@ -602,7 +598,7 @@ void Widget::on_action_exportNoteToHTML() {
         showErrorDialog(tr("export to HTML fail"));
         return;
     }
-    const QString notePath = noteRealPath(item->note().strId());
+    const QString notePath = noteRealPath(item->note());
     // dirName是完整路径
     auto dirName = QFileDialog::getSaveFileName(this, tr("Export Note to HTML"));
     qDebug() << "export Note to" << dirName;
@@ -636,7 +632,7 @@ void Widget::generateHTML(const Note& note, const QString& path) {
 }
 
 QString Widget::noteRealPath(const Note& note) {
-    return noteRealPath(note.strId());
+    return workshopPath() + note.strId() + "/index.md";
 }
 
 QString Widget::generateHTML(const Note& note) {
