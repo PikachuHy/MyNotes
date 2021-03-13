@@ -66,6 +66,9 @@ private:
     inline QString workshopPath() {
         return m_notesPath + "/workshop/";
     }
+    inline QString tmpPath() {
+        return m_notesPath + "/tmp/";
+    }
     inline QString tmpHtmlPath() {
         return m_notesPath + "/tmp/note.html";
     }
