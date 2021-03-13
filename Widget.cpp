@@ -94,8 +94,10 @@ Widget::Widget(QWidget *parent)
     m_listModel = new ListModel(this);
     m_searchDialog = nullptr;
     m_listView = nullptr;
+    // 数据库后台操作
     auto t = new DbThread(m_notesPath);
     t->start();
+    // 读最后一次打开的笔记
     QTimer::singleShot(50, [this](){
         auto lastNoteId = m_settings.value("last_note", -1).toInt();
         if (lastNoteId != -1) {

@@ -97,8 +97,10 @@ private:
     QString generateHTML(const Note& note);
     void generateHTML(const Note& note, const QString& path);
 private:
+    // 左边到文档树
     QTreeView *m_treeView;
     QTextEdit *m_textEdit;
+    // markdown转html后预览，用GitHub到样式
     QWebEngineView *m_textPreview;
     QLabel *m_titleLabel;
     QLabel *m_wordCountLabel;
@@ -107,20 +109,25 @@ private:
     QPushButton *m_showEditButton;
     QPushButton *m_showPreviewButton;
     TreeModel *m_treeModel;
+    // 笔记所在路径
     QString m_notesPath;
     QString m_curCheckedPath;
     TreeItem* m_curItem;
     QModelIndex m_curIndex;
+    // SQLite数据库操作
     DbManager* m_dbManager;
     int m_curNoteId;
+    // 双击Shift出现搜索框用
     std::time_t m_lastPressShiftTime;
     std::time_t m_maxShiftInterval;
     SearchDialog* m_searchDialog;
+    // 分词
     Jieba* m_jieba;
     QListView* m_listView;
     ListModel* m_listModel;
     Note m_curNote;
     bool m_showOpenInTyporaTip;
+    // 持久化的配置
     QSettings m_settings;
 };
 
