@@ -236,7 +236,7 @@ void Widget::updatePreview() {
     auto html = doc.toHtml();
     QFile htmlFile(tmpHtmlPath());
     htmlFile.open(QIODevice::WriteOnly);
-    QString mdCssPath = "/Users/pikachu/Documents/MyNotes/tmp/github-markdown.css";
+    QString mdCssPath = tmpPath() + "github-markdown.css";
     html = R"(<!DOCTYPE html><html><head>
 <meta charset="utf-8">
 <title>Markdown</title>
