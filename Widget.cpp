@@ -65,7 +65,12 @@ Widget::Widget(QWidget *parent)
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(splitter);
     setLayout(mainLayout);
-    m_notesPath = "/Users/pikachu/Documents/MyNotes/";
+    auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
+    m_notesPath = docPath + "/MyNotes/";
+    if (!QFile(m_notesPath).exists()) {
+        qDebug() << "mkdir" << m_notesPath;
+        QDir().mkdir(m_notesPath);
+    }
     m_dbManager = new DbManager(m_notesPath, this);
     m_treeModel = new TreeModel(m_notesPath, m_dbManager);
     m_treeView->setModel(m_treeModel);
