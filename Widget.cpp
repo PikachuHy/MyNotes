@@ -558,11 +558,10 @@ Jieba *Widget::jieba() {
     return m_jieba;
 }
 
-void Widget::openInTypora(QString notePath) {
+void Widget::openInTypora(const QString& notePath) {
     QStringList cmd;
     cmd << "-a" << "typora" << notePath;
-    QProcess p;
-    p.startDetached("open",cmd);
+    QProcess::startDetached("open",cmd);
 }
 
 void Widget::openNoteInTypora(const Note& note) {
