@@ -85,6 +85,10 @@ Widget::Widget(QWidget *parent)
     auto t = new DbThread(m_notesPath);
     t->start();
     // 读最后一次打开的笔记
+    loadLastOpenedNote();
+}
+
+void Widget::loadLastOpenedNote() {
     QTimer::singleShot(50, [this](){
         auto lastNoteId = m_settings.value("last_note", -1).toInt();
         if (lastNoteId != -1) {
@@ -171,6 +175,7 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
             updatePreview();
             return true;
         }
+        /*
         if (event->key() == Qt::Key_V && (event->modifiers() & Qt::ControlModifier)) {
             qDebug() << "paste";
             auto mimeData = QApplication::clipboard()->mimeData();
@@ -195,6 +200,7 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
                 qDebug() << "other";
             }
         }
+        */
         // 按e进入编辑
         if (event->key() == Qt::Key_E) {
             openNoteInTypora(m_curNote);

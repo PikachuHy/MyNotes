@@ -119,6 +119,8 @@ private:
     bool m_showOpenInTyporaTip;
     // 持久化的配置
     QSettings m_settings;
+
+    void loadLastOpenedNote();
 };
 
 #endif // WIDGET_H
