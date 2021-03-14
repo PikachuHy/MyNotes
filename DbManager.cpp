@@ -12,6 +12,11 @@ DbManager::DbManager(const QString& dataPath, QObject *parent): QObject(parent) 
     m_connectionName = "db_connect_" + threadId;
     db = QSqlDatabase::addDatabase("QSQLITE", m_connectionName);
 //    db = QSqlDatabase::addDatabase("QSQLITE");
+    QString dbPath = dataPath+"db";
+    if (!QDir(dbPath).exists()) {
+        qDebug() << "mkdir" << dbPath;
+        QDir().mkdir(dbPath);
+    }
     QString database = dataPath+"db/sqlite.db";
     db.setDatabaseName(database);
     if (!db.open()) {
