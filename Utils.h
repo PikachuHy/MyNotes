@@ -12,7 +12,7 @@ namespace Utils {
     /**
      * 获取当前时间戳
      */
-    std::time_t getTimeStamp();
+    time_t getTimeStamp();
     /**
      * 生成一个唯一的字符串ID
      * @return

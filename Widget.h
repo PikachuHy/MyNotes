@@ -111,8 +111,8 @@ private:
     // SQLite数据库操作
     DbManager* m_dbManager;
     // 双击Shift出现搜索框用
-    std::time_t m_lastPressShiftTime;
-    std::time_t m_maxShiftInterval;
+    time_t m_lastPressShiftTime;
+    time_t m_maxShiftInterval;
     SearchDialog* m_searchDialog;
     // 分词
 //    Jieba* m_jieba;
