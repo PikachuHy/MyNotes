@@ -39,8 +39,9 @@
 Widget::Widget(QWidget *parent)
         : QWidget(parent),
         m_showOpenInTyporaTip(true),
-        m_settings(this),
-        m_jieba(nullptr) {
+        m_settings(this)
+//        ,m_jieba(nullptr)
+        {
     m_treeView = new TreeView();
     m_textEdit = new QTextEdit();
     m_textPreview = new QWebEngineView();
@@ -441,10 +442,10 @@ void Widget::showErrorDialog(const QString &msg) {
 
 void Widget::updateIndex(QString text, int id) {
     auto f = [this](QString text, int id) {
-        if (!m_jieba) initJieba();
+//        if (!m_jieba) initJieba();
         std::vector<std::string> words;
         std::string s = text.toStdString();
-        m_jieba->Cut(s, words);
+//        m_jieba->Cut(s, words);
         std::unordered_set<std::string> wordSet(words.begin(), words.end());
         QStringList wordList;
         for(const auto& word: wordSet) {
@@ -473,8 +474,10 @@ void Widget::initSearchDialog() {
 void Widget::on_searchDialog_searchTextChanged(const QString &text) {
     auto f = [this](const QString& text) -> QList<Note> {
         std::vector<std::string> words;
+        /*
         if (!m_jieba) initJieba();
         m_jieba->Cut(text.toStdString(), words);
+         */
         QStringList wordList;
         for(const auto& word: words) {
             wordList << QString::fromStdString(word);
@@ -506,11 +509,13 @@ void Widget::initJieba() {
     const char* const USER_DICT_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/user.dict.utf8";
     const char* const IDF_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/idf.utf8";
     const char* const STOP_WORD_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/stop_words.utf8";
+    /*
     m_jieba = new cppjieba::Jieba(DICT_PATH,
                           HMM_PATH,
                           USER_DICT_PATH,
                           IDF_PATH,
                           STOP_WORD_PATH);
+                          */
 }
 
 QListView* Widget::searchResultView() {
@@ -550,6 +555,7 @@ void Widget::loadNote(const Note &note) {
 
 
 void Widget::updateStatistics() {
+    /*
     QString mdText = m_textEdit->toPlainText();
     m_wordCountLabel->setText(tr("Statistics: %1 words, %2 characters").arg("...").arg(mdText.size()));
     auto f = [this](const QString& mdText) -> int {
@@ -563,13 +569,14 @@ void Widget::updateStatistics() {
         .arg(wordCount).arg(m_textEdit->toPlainText().size()));
     };
     Utils::checkFuture<int>(ret, callback);
+     */
 }
-
+/*
 Jieba *Widget::jieba() {
     if (!m_jieba) initJieba();
     return m_jieba;
 }
-
+*/
 void Widget::openInTypora(const QString& notePath) {
     QStringList cmd;
     cmd << "-a" << "typora" << notePath;

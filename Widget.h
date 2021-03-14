@@ -11,7 +11,7 @@
 #include <QLayout>
 #include <QAction>
 #include <QSqlQuery>
-#include "cppjieba/Jieba.hpp"
+//#include "cppjieba/Jieba.hpp"
 #include "DbModel.h"
 #include <QWebEngineView>
 #include <QSettings>
@@ -20,7 +20,7 @@ class TreeModel;
 class DbManager;
 class QSqlRelationalTableModel;
 class SearchDialog;
-using cppjieba::Jieba;
+//using cppjieba::Jieba;
 class QListView;
 class ListModel;
 class Widget : public QWidget {
@@ -93,7 +93,7 @@ private:
     void openNoteInTypora(const Note& note);
     static void openInTypora(const QString& path);
     QListView* searchResultView();
-    Jieba* jieba();
+//    Jieba* jieba();
     QString currentNotePath();
     QString noteRealPath(const Note& note);
     QString generateHTML(const Note& note);
@@ -115,7 +115,7 @@ private:
     std::time_t m_maxShiftInterval;
     SearchDialog* m_searchDialog;
     // 分词
-    Jieba* m_jieba;
+//    Jieba* m_jieba;
     QListView* m_listView;
     ListModel* m_listModel;
     Note m_curNote;
