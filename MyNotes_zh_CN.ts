@@ -21,6 +21,17 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
     </message>
 </context>
 <context>
+    <name>ToastClass</name>
+    <message>
+        <source>Toast</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Widget</name>
     <message>
         <source>New Note</source>
@@ -92,6 +103,14 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
     </message>
     <message>
         <source>open in typora fail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>export to HTML fail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export Note to HTML</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
