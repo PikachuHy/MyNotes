@@ -228,6 +228,7 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
                 }
             }
         }
+        /*
         if (event->key() == Qt::Key_Shift) {
             auto curTime = Utils::getTimeStamp();
             if (curTime - m_lastPressShiftTime < m_maxShiftInterval) {
@@ -238,6 +239,7 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
                 m_lastPressShiftTime = curTime;
             }
         }
+         */
     }
     return QObject::eventFilter(watched, e);
 }
