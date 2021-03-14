@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>css/github-markdown.css</file>
+        <file>css/github.css</file>
+    </qresource>
+</RCC>

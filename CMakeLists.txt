@@ -48,6 +48,7 @@ set(PROJECT_SOURCES
         Utils.cpp
         ${TS_FILES}
         db.qrc
+        css.qrc
         Toast.cpp
         )
 
