@@ -98,10 +98,6 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Statistics: %1 words, %2 characters</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>open in typora fail</source>
         <translation type="unfinished"></translation>
     </message>
