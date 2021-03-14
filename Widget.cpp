@@ -19,7 +19,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QDir>
-#include "md/markdown.h"
+#include "QtMarkdownParser/QtMarkdownParser"
 #include "Utils.h"
 #include <QtSql>
 #include <QtConcurrent>
