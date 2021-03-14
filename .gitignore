@@ -73,6 +73,7 @@ Thumbs.db
 
 .idea
 cmake-build-debug
+cmake-build-minsizerel
 CMakeLists.txt.user
 
 md
