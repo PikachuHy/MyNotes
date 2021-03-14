@@ -91,7 +91,7 @@ private:
     void initJieba();
     void updateStatistics();
     void openNoteInTypora(const Note& note);
-    static void openInTypora(const QString& path);
+    void openInTypora(const QString& path);
     QListView* searchResultView();
 //    Jieba* jieba();
     QString currentNotePath();

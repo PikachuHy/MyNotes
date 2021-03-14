@@ -23,7 +23,7 @@
 #include "Utils.h"
 #include <QtSql>
 #include <QtConcurrent>
-#include "cppjieba/Jieba.hpp"
+//#include "cppjieba/Jieba.hpp"
 #include <unordered_set>
 #include <QLineEdit>
 #include "SearchDialog.h"
@@ -582,9 +582,31 @@ Jieba *Widget::jieba() {
 }
 */
 void Widget::openInTypora(const QString& notePath) {
+#ifdef Q_OS_WIN
+    QStringList pathList;
+    pathList << "C:\\Program Files\\Typora\\Typora.exe";
+    pathList << "C:\\Program Files (x86)\\Typora\\Typora.exe";
+    pathList << "D:\\typora\\Typora\\Typora.exe";
+    QString exePath;
+    bool exeFind = false;
+    for(auto path: pathList) {
+        if (QFile(path).exists()) {
+            exeFind = true;
+            exePath = path;
+        }
+    }
+    if (!exeFind) {
+        showErrorDialog("Please install Typora first.");
+    } else {
+        QStringList cmd;
+        cmd << notePath;
+        QProcess::startDetached(exePath,cmd);
+    }
+#else
     QStringList cmd;
     cmd << "-a" << "typora" << notePath;
     QProcess::startDetached("open",cmd);
+#endif
 }
 
 void Widget::openNoteInTypora(const Note& note) {
