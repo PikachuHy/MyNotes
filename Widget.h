@@ -98,6 +98,7 @@ private:
     QString noteRealPath(const Note& note);
     QString generateHTML(const Note& note);
     void generateHTML(const Note& note, const QString& path);
+    void addNoteTo();
 private:
     // 左边到文档树
     QTreeView *m_treeView;

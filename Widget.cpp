@@ -35,6 +35,7 @@
 #include <QFuture>
 #include <functional>
 #include "Toast.h"
+#include "ChooseFolderWidget.h"
 
 Widget::Widget(QWidget *parent)
         : QWidget(parent),
@@ -157,6 +158,9 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
             auto c = new QAction("Export to HTML", &menu);
             menu.addAction(c);
             connect(c, &QAction::triggered, this, &Widget::on_action_exportNoteToHTML);
+            menu.addAction(tr("Add to ..."), [this](){
+                this->addNoteTo();
+            });
         } else {
             auto a = new QAction("New Note", &menu);
             menu.addAction(a);
@@ -708,5 +712,16 @@ void Widget::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
     qDebug() << "resize" << this->geometry();
     m_settings.setValue("win_geometry", this->geometry());
+}
+
+void Widget::addNoteTo() {
+    auto item = currentTreeItem();
+    if (!item) {
+        qDebug() << "item is nullptr";
+        return;
+    }
+    qDebug() << "add note to";
+//    ChooseFolderWidget w;
+
 }
 

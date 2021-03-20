@@ -50,6 +50,7 @@ set(PROJECT_SOURCES
         db.qrc
         css.qrc
         Toast.cpp
+        ChooseFolderWidget.cpp
         )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
