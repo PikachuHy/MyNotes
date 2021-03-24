@@ -15,6 +15,7 @@
 #include "DbModel.h"
 #include <QWebEngineView>
 #include <QSettings>
+#include "ElasticSearchRestApi.h"
 class TreeItem;
 class TreeModel;
 class DbManager;
@@ -23,6 +24,7 @@ class SearchDialog;
 //using cppjieba::Jieba;
 class QListView;
 class ListModel;
+class ElasticSearchRestApi;
 class Widget : public QWidget {
 Q_OBJECT
 
@@ -125,6 +127,7 @@ private:
     QSettings m_settings;
 
     void loadLastOpenedNote();
+    ElasticSearchRestApi* m_esApi;
 };
 
 #endif // WIDGET_H

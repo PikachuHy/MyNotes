@@ -36,11 +36,12 @@
 #include <functional>
 #include "Toast.h"
 #include "ChooseFolderWidget.h"
-
+#include "ElasticSearchRestApi.h"
 Widget::Widget(QWidget *parent)
         : QWidget(parent),
         m_showOpenInTyporaTip(true),
         m_settings(this)
+        , m_esApi(new ElasticSearchRestApi(this))
 //        ,m_jieba(nullptr)
         {
     m_treeView = new TreeView();
@@ -277,6 +278,7 @@ R"(">
     htmlFile.close();
     auto url = QString("file://%1/%2/").arg(workshopPath()).arg(m_curNote.strId());
     m_textPreview->setHtml(html, QUrl(url));
+    m_esApi->putNote("PikachuHy", html, m_curNote);
 }
 
 
