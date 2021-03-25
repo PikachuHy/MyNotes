@@ -28,6 +28,7 @@ void ElasticSearchRestApi::putNote(const QString &owner, const QString &noteHtml
     QJsonObject jsonObject;
     jsonObject.insert("owner", owner);
     jsonObject.insert("note", noteHtml);
+    jsonObject.insert("title", note.title());
     QJsonDocument document;
     document.setObject(jsonObject);
     QByteArray append = document.toJson(QJsonDocument::Compact);
