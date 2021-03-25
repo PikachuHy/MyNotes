@@ -16,7 +16,7 @@ public:
 
 // Singleton, to be used by any part of the app
 private:
-    Settings(){}
+    Settings();
     Settings(const Settings& other);
     Settings &operator=(const Settings& other);
     QSettings settings;

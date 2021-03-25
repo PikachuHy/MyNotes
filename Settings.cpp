@@ -3,6 +3,7 @@
 //
 
 #include "Settings.h"
+#include <QApplication>
 
 /* Returns the singleton Settings, to which all parts of the
  * app have access.
@@ -40,3 +41,10 @@ void Settings::apply(QVariant setting, std::function<void(QVariant)> handler)
         handler(setting);
     }
 }
+
+Settings::Settings() : settings(
+        QSettings(QSettings::IniFormat,
+                  QSettings::UserScope,
+                  QApplication::organizationName(),
+                  QApplication::applicationName()
+                  )){}
