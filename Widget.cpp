@@ -46,39 +46,6 @@ Widget::Widget(QWidget *parent)
         , m_esApi(new ElasticSearchRestApi(this))
 //        ,m_jieba(nullptr)
         {
-    auto baseUrl = m_settings->value("server.base_url", QString()).toString();
-    if (baseUrl.isEmpty()) {
-        showErrorDialog("please set server.base_url first!");
-        return;
-    }
-    qDebug() << "baseUrl:" << baseUrl;
-
-    auto owner = m_settings->value("server.owner", QString()).toString();
-    if (owner.isEmpty()) {
-        showErrorDialog("please set server.owner first!");
-        return;
-    }
-    qDebug() << "owner:" << owner;
-    auto port = m_settings->value("server.port", 0).toInt();
-    if (port == 0) {
-        showErrorDialog("please set server.port first!");
-        return;
-    }
-    qDebug() << "port:" << port;
-    auto password = m_settings->value("server.password", 0).toInt();
-    if (password == 0) {
-        showErrorDialog("please set server.password first!");
-        return;
-    }
-    qDebug() << "password:" << password;
-#ifdef Q_OS_WIN
-    auto typoraPath = m_settings->value("path.typora", "").toString();
-    if (typoraPath.isEmpty()) {
-        showErrorDialog("please set path.typora first!");
-        return;
-    }
-    qDebug() << "typoraPath:" << typoraPath;
-#endif
     m_treeView = new TreeView();
     m_textEdit = new QTextEdit();
     m_textPreview = new QWebEngineView();
