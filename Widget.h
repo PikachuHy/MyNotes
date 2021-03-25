@@ -25,6 +25,7 @@ class SearchDialog;
 class QListView;
 class ListModel;
 class ElasticSearchRestApi;
+class Settings;
 class Widget : public QWidget {
 Q_OBJECT
 
@@ -124,7 +125,7 @@ private:
     Note m_curNote;
     bool m_showOpenInTyporaTip;
     // 持久化的配置
-    QSettings m_settings;
+    Settings *m_settings;
 
     void loadLastOpenedNote();
     ElasticSearchRestApi* m_esApi;

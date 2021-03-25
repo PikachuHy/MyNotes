@@ -37,10 +37,11 @@
 #include "Toast.h"
 #include "ChooseFolderWidget.h"
 #include "ElasticSearchRestApi.h"
+#include "Settings.h"
 Widget::Widget(QWidget *parent)
         : QWidget(parent),
         m_showOpenInTyporaTip(true),
-        m_settings(this)
+        m_settings(Settings::instance())
         , m_esApi(new ElasticSearchRestApi(this))
 //        ,m_jieba(nullptr)
         {
@@ -79,7 +80,7 @@ Widget::Widget(QWidget *parent)
     m_treeView->setModel(m_treeModel);
     initSlots();
     auto screenSize = QApplication::primaryScreen()->size();
-    auto winGeometry = m_settings.value("win_geometry", QRect(
+    auto winGeometry = m_settings->value("win_geometry", QRect(
             (screenSize.width()-1500) / 2,
             (screenSize.height()-800) / 2,
             1500, 800
@@ -100,7 +101,7 @@ Widget::Widget(QWidget *parent)
 
 void Widget::loadLastOpenedNote() {
     QTimer::singleShot(50, [this](){
-        auto lastNoteId = m_settings.value("last_note", -1).toInt();
+        auto lastNoteId = m_settings->value("last_note", -1).toInt();
         if (lastNoteId != -1) {
             auto lastNote = m_dbManager->getNote(lastNoteId);
             if (lastNote.id() != -1) {
@@ -560,7 +561,7 @@ void Widget::loadNote(const Note &note) {
         Toast::showTip("Press E Open in Typora", this);
         m_showOpenInTyporaTip = false;
     }
-    m_settings.setValue("last_note", note.id());
+    m_settings->setValue("last_note", note.id());
 }
 
 
@@ -713,7 +714,7 @@ QString Widget::generateHTML(const Note& note) {
 void Widget::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
     qDebug() << "resize" << this->geometry();
-    m_settings.setValue("win_geometry", this->geometry());
+    m_settings->setValue("win_geometry", this->geometry());
 }
 
 void Widget::addNoteTo() {
