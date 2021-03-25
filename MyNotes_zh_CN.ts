@@ -16,6 +16,44 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
     </message>
 </context>
 <context>
+    <name>Editor</name>
+    <message>
+        <location filename="QtMarkdownParser/Editor.cpp" line="183"/>
+        <source>Character formats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="QtMarkdownParser/Editor.cpp" line="188"/>
+        <source>Text can be displayed in a variety of different character formats. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="QtMarkdownParser/Editor.cpp" line="190"/>
+        <source>We can emphasize text by </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="QtMarkdownParser/Editor.cpp" line="191"/>
+        <source>making it italic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="QtMarkdownParser/Editor.cpp" line="208"/>
+        <source>Team %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="QtMarkdownParser/Editor.cpp" line="214"/>
+        <source>%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="QtMarkdownParser/Editor.cpp" line="220"/>
+        <source>On duty</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ListView</name>
     <message>
         <location filename="ListView.cpp" line="28"/>
@@ -99,120 +137,102 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
     </message>
 </context>
 <context>
-    <name>ToastClass</name>
-    <message>
-        <location filename="cmake-build-debug/MyNotes_autogen/include/ui_Toast.h" line="59"/>
-        <source>Toast</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="cmake-build-debug/MyNotes_autogen/include/ui_Toast.h" line="60"/>
-        <source>TextLabel</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Widget</name>
     <message>
-        <location filename="Widget.cpp" line="82"/>
-        <source>total 0 words</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Widget.cpp" line="183"/>
+        <location filename="Widget.cpp" line="182"/>
         <source>Add to ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="250"/>
+        <location filename="Widget.cpp" line="249"/>
         <source>Trash Note</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="251"/>
+        <location filename="Widget.cpp" line="250"/>
         <source>Trash Note?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="328"/>
+        <location filename="Widget.cpp" line="327"/>
         <source>New Note</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="328"/>
+        <location filename="Widget.cpp" line="327"/>
         <source>Note name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="341"/>
-        <location filename="Widget.cpp" line="388"/>
+        <location filename="Widget.cpp" line="340"/>
+        <location filename="Widget.cpp" line="387"/>
         <source>current item is null</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="374"/>
+        <location filename="Widget.cpp" line="373"/>
         <source>New Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="374"/>
+        <location filename="Widget.cpp" line="373"/>
         <source>Folder name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="394"/>
+        <location filename="Widget.cpp" line="393"/>
         <source>folder exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="401"/>
+        <location filename="Widget.cpp" line="400"/>
         <source>new folder: save to db fail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="414"/>
-        <location filename="Widget.cpp" line="420"/>
+        <location filename="Widget.cpp" line="413"/>
+        <location filename="Widget.cpp" line="419"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="414"/>
+        <location filename="Widget.cpp" line="413"/>
         <source>File not exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="420"/>
+        <location filename="Widget.cpp" line="419"/>
         <source>File open fail.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="438"/>
-        <location filename="Widget.cpp" line="447"/>
+        <location filename="Widget.cpp" line="437"/>
+        <location filename="Widget.cpp" line="446"/>
         <source>trash note fail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="463"/>
+        <location filename="Widget.cpp" line="462"/>
         <source>trash folder fail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="477"/>
+        <location filename="Widget.cpp" line="476"/>
         <source>ERROR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="658"/>
+        <location filename="Widget.cpp" line="657"/>
         <source>open in typora fail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="677"/>
+        <location filename="Widget.cpp" line="676"/>
         <source>export to HTML fail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="682"/>
+        <location filename="Widget.cpp" line="681"/>
         <source>Export Note to HTML</source>
         <translation type="unfinished"></translation>
     </message>
