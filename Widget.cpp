@@ -71,6 +71,12 @@ Widget::Widget(QWidget *parent)
     // 处理Ctrl+S保存
     m_treeView->installEventFilter(this);
     m_treeView->setFixedWidth(300);
+    // 用一种比较奇怪的方式，兼容焦点在webengine时没法按E进入Typora编辑的问题
+    QShortcut* shortcut = new QShortcut((Qt::Key_E), m_textPreview);
+    QObject::connect(shortcut, &QShortcut::activated, m_textPreview, [this]() {
+        qDebug() << "from web engine";
+        openNoteInTypora(m_curNote);
+    });
     auto mainLayout = new QHBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(m_treeView);
