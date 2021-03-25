@@ -139,7 +139,7 @@ QList<SearchResult> ElasticSearchRestApi::search(const QString &q) {
 }
 
 ElasticSearchRestApi::ElasticSearchRestApi(QObject *parent) : QObject(parent), m_settings(Settings::instance()) {
-    baseUrl = m_settings->value("server.base_url").toString();
+    baseUrl = "http://" + m_settings->value("server.ip").toString() + ":9200";
 }
 
 QByteArray ElasticSearchRestApi::buildSearchJson(const QString& q) {
