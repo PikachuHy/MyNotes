@@ -45,6 +45,33 @@ Widget::Widget(QWidget *parent)
         , m_esApi(new ElasticSearchRestApi(this))
 //        ,m_jieba(nullptr)
         {
+    auto baseUrl = m_settings->value("server.base_url", QString()).toString();
+    if (baseUrl.isEmpty()) {
+        showErrorDialog("please set server.base_url first!");
+        return;
+    }
+    qDebug() << "baseUrl:" << baseUrl;
+
+    auto owner = m_settings->value("server.owner", QString()).toString();
+    if (owner.isEmpty()) {
+        showErrorDialog("please set server.owner first!");
+        return;
+    }
+    qDebug() << "owner:" << owner;
+    auto port = m_settings->value("server.port", 0).toInt();
+    if (port == 0) {
+        showErrorDialog("please set server.port first!");
+        return;
+    }
+    qDebug() << "port:" << port;
+#ifdef Q_OS_WIN
+    auto typoraPath = m_settings->value("path.typora", "").toString();
+    if (typoraPath.isEmpty()) {
+        showErrorDialog("please set path.typora first!");
+        return;
+    }
+    qDebug() << "typoraPath:" << typoraPath;
+#endif
     m_treeView = new TreeView();
     m_textEdit = new QTextEdit();
     m_textPreview = new QWebEngineView();
@@ -279,7 +306,8 @@ R"(">
     htmlFile.close();
     auto url = QString("file://%1/%2/").arg(workshopPath()).arg(m_curNote.strId());
     m_textPreview->setHtml(html, QUrl(url));
-    m_esApi->putNote("PikachuHy", html, m_curNote);
+    QString owner = m_settings->value("server.owner").toString();
+    m_esApi->putNote(owner, html, m_curNote);
 }
 
 
@@ -591,6 +619,8 @@ Jieba *Widget::jieba() {
 void Widget::openInTypora(const QString& notePath) {
 #ifdef Q_OS_WIN
     QStringList pathList;
+    auto typoraPath = m_settings->value("path.typora", "").toString();
+    pathList << typoraPath;
     pathList << "C:\\Program Files\\Typora\\Typora.exe";
     pathList << "C:\\Program Files (x86)\\Typora\\Typora.exe";
     pathList << "D:\\typora\\Typora\\Typora.exe";

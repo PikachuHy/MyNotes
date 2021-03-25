@@ -8,6 +8,7 @@
 #include <QString>
 #include <QObject>
 #include "DbModel.h"
+class Settings;
 struct SearchResult {
     QString strId;
     QString note;
@@ -23,6 +24,7 @@ public:
     QByteArray buildSearchJson(const QString& q);
 private:
     QString baseUrl;
+    Settings* m_settings;
 };
 
 

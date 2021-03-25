@@ -16,6 +16,7 @@
 #include <QEventLoop>
 #include <QObject>
 #include <QJsonArray>
+#include <Settings.h>
 void ElasticSearchRestApi::putNote(const QString &owner, const QString &noteHtml, const Note& note) {
 
     QNetworkAccessManager* manager = new QNetworkAccessManager;
@@ -137,8 +138,8 @@ QList<SearchResult> ElasticSearchRestApi::search(const QString &q) {
     return ret;
 }
 
-ElasticSearchRestApi::ElasticSearchRestApi(QObject *parent) : QObject(parent) {
-    baseUrl = "http://192.168.3.100:9200";
+ElasticSearchRestApi::ElasticSearchRestApi(QObject *parent) : QObject(parent), m_settings(Settings::instance()) {
+    baseUrl = m_settings->value("server.base_url").toString();
 }
 
 QByteArray ElasticSearchRestApi::buildSearchJson(const QString& q) {
