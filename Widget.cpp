@@ -185,6 +185,10 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
 bool Widget::eventFilter(QObject *watched, QEvent *e) {
     if (e->type() == QEvent::KeyPress) {
         auto *event = static_cast<QKeyEvent *>(e);
+        if (event->key() == Qt::Key_Comma && (event->modifiers() & Qt::ControlModifier)) {
+            SettingsDialog dialog;
+            dialog.exec();
+        }
         if (event->key() == Qt::Key_S && (event->modifiers() & Qt::ControlModifier)) {
             saveMdText();
             updatePreview();
