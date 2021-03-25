@@ -64,6 +64,12 @@ Widget::Widget(QWidget *parent)
         return;
     }
     qDebug() << "port:" << port;
+    auto password = m_settings->value("server.password", 0).toInt();
+    if (password == 0) {
+        showErrorDialog("please set server.password first!");
+        return;
+    }
+    qDebug() << "password:" << password;
 #ifdef Q_OS_WIN
     auto typoraPath = m_settings->value("path.typora", "").toString();
     if (typoraPath.isEmpty()) {
