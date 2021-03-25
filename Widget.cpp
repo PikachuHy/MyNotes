@@ -71,23 +71,10 @@ Widget::Widget(QWidget *parent)
     // 处理Ctrl+S保存
     m_treeView->installEventFilter(this);
     m_treeView->setFixedWidth(300);
-    auto splitter = new QSplitter();
-    splitter->addWidget(m_treeView);
-    auto vbox = new QVBoxLayout();
-    vbox->setContentsMargins(0, 0, 0, 0);
-    auto hbox = new QHBoxLayout();
-    hbox->setContentsMargins(0, 0, 0, 0);
-    hbox->addWidget(m_textPreview, 1);
-    vbox->addLayout(hbox, 1);
-    m_wordCountLabel = new QLabel(tr("total 0 words"));
-    vbox->addWidget(m_wordCountLabel);
-    auto w = new QWidget();
-    w->setLayout(vbox);
-    splitter->addWidget(w);
-    splitter->setParent(this);
     auto mainLayout = new QHBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
-    mainLayout->addWidget(splitter);
+    mainLayout->addWidget(m_treeView);
+    mainLayout->addWidget(m_textPreview);
     setLayout(mainLayout);
     auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
     m_notesPath = docPath + "/MyNotes/";
