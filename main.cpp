@@ -1,5 +1,5 @@
 #include "Widget.h"
-
+#include "SettingsDialog.h"
 #include <QApplication>
 
 int main(int argc, char *argv[]) {
@@ -8,7 +8,13 @@ int main(int argc, char *argv[]) {
     QApplication::setOrganizationName("PikachuHy");
     QApplication::setOrganizationDomain("pikachu.net.cn");
     QApplication::setApplicationName("MyNotes");
-    Widget w;
-    w.show();
-    return a.exec();
+
+    auto settingsDialog = new SettingsDialog();
+    auto ret = settingsDialog->exec();
+    if (ret == QDialog::Accepted) {
+        Widget w;
+        w.show();
+        return a.exec();
+    }
+    return 0;
 }

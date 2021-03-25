@@ -38,6 +38,7 @@
 #include "ChooseFolderWidget.h"
 #include "ElasticSearchRestApi.h"
 #include "Settings.h"
+#include "SettingsDialog.h"
 Widget::Widget(QWidget *parent)
         : QWidget(parent),
         m_showOpenInTyporaTip(true),

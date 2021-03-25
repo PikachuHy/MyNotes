@@ -52,6 +52,7 @@ set(PROJECT_SOURCES
         Toast.cpp
         ChooseFolderWidget.cpp
         Settings.cpp
+        SettingsDialog.cpp
         ElasticSearchRestApi.cpp ElasticSearchRestApi.h)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
