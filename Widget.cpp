@@ -108,7 +108,12 @@ Widget::Widget(QWidget *parent)
     qDebug() << "load window geometry" << winGeometry;
     setGeometry(winGeometry);
     auto _font = font();
+#ifdef Q_OS_WIN
+    _font.setPointSize(12);
+    _font.setFamily("微软雅黑");
+#else
     _font.setPointSize(16);
+#endif
     setFont(_font);
     m_lastPressShiftTime = 0;
     m_maxShiftInterval = 200;
