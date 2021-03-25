@@ -99,8 +99,12 @@ int TreeItem::pathId() {
 
 QVariant TrashItem::data(int column, int role) const {
     if (role == Qt::DecorationRole && column == 0) {
+#ifdef Q_OS_WIN
+        return QIcon(QPixmap(":/icon/trash_16x16.png"));
+#else
         QFileIconProvider provider;
         return provider.icon(QFileIconProvider::Trashcan);
+#endif
     }
     return TreeItem::data(column, role);
 }
@@ -119,8 +123,12 @@ bool TrashItem::isFile() {
 
 QVariant AttachmentItem::data(int column, int role) const {
     if (role == Qt::DecorationRole && column == 0) {
+#ifdef Q_OS_WIN
+        return QIcon(QPixmap(":/icon/attachment_16x16.png"));
+#else
         QFileIconProvider provider;
         return provider.icon(QFileIconProvider::Drive);
+#endif
     }
     return TreeItem::data(column, role);
 }
@@ -139,8 +147,12 @@ bool AttachmentItem::isFile() {
 
 QVariant WorkshopItem::data(int column, int role) const {
     if (role == Qt::DecorationRole && column == 0) {
+#ifdef Q_OS_WIN
+        return QIcon(QPixmap(":/icon/workshop_16x16.png"));
+#else
         QFileIconProvider provider;
         return provider.icon(QFileIconProvider::Computer);
+#endif
     }
     return TreeItem::data(column, role);
 }
@@ -171,8 +183,12 @@ int NoteItem::pathId() {
 
 QVariant NoteItem::data(int column, int role) const {
     if (role == Qt::DecorationRole && column == 0) {
+#ifdef Q_OS_WIN
+        return QIcon(QPixmap(":/icon/note_16x16.png"));
+#else
         QFileIconProvider provider;
         return provider.icon(QFileIconProvider::File);
+#endif
     }
     return TreeItem::data(column, role);
 }
@@ -195,8 +211,12 @@ int FolderItem::pathId() {
 
 QVariant FolderItem::data(int column, int role) const {
     if (role == Qt::DecorationRole && column == 0) {
+#ifdef Q_OS_WIN
+        return QIcon(QPixmap(":/icon/folder_16x16.png"));
+#else
         QFileIconProvider provider;
         return provider.icon(QFileIconProvider::Folder);
+#endif
     }
     return TreeItem::data(column, role);
 }

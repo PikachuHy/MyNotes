@@ -49,6 +49,7 @@ set(PROJECT_SOURCES
         ${TS_FILES}
         db.qrc
         css.qrc
+        icon.qrc
         Toast.cpp
         ChooseFolderWidget.cpp
         Http.cpp
