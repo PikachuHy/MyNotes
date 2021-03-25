@@ -15,6 +15,7 @@
 #include "DbModel.h"
 #include <QWebEngineView>
 #include <QSettings>
+#include <QFile>
 #include "ElasticSearchRestApi.h"
 class TreeItem;
 class TreeModel;
@@ -102,6 +103,7 @@ private:
     QString generateHTML(const Note& note);
     void generateHTML(const Note& note, const QString& path);
     void addNoteTo();
+    void uploadNoteAttachment(const Note& note);
 private:
     // 左边到文档树
     QTreeView *m_treeView;

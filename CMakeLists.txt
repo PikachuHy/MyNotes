@@ -51,6 +51,7 @@ set(PROJECT_SOURCES
         css.qrc
         Toast.cpp
         ChooseFolderWidget.cpp
+        Http.cpp
         Settings.cpp
         SettingsDialog.cpp
         ElasticSearchRestApi.cpp ElasticSearchRestApi.h)
@@ -81,4 +82,11 @@ target_link_libraries(MyNotes PRIVATE
         Qt${QT_VERSION_MAJOR}::Concurrent
         Qt${QT_VERSION_MAJOR}::WebEngineWidgets
         QtMarkdownParser
+        )
+add_executable(upfile_test upfile_test.cpp Http.cpp)
+target_link_libraries(upfile_test PRIVATE
+        Qt${QT_VERSION_MAJOR}::Widgets
+        Qt${QT_VERSION_MAJOR}::Sql
+        Qt${QT_VERSION_MAJOR}::Concurrent
+        Qt${QT_VERSION_MAJOR}::WebEngineWidgets
         )

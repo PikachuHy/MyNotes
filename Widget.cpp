@@ -39,6 +39,25 @@
 #include "ElasticSearchRestApi.h"
 #include "Settings.h"
 #include "SettingsDialog.h"
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include "Http.h"
+
+// Returns empty QByteArray() on failure.
+QByteArray fileChecksum(const QString &fileName,
+                        QCryptographicHash::Algorithm hashAlgorithm)
+{
+    QFile f(fileName);
+    if (f.open(QFile::ReadOnly)) {
+        QCryptographicHash hash(hashAlgorithm);
+        if (hash.addData(&f)) {
+            return hash.result();
+        }
+    }
+    return QByteArray();
+}
+
+
 Widget::Widget(QWidget *parent)
         : QWidget(parent),
         m_showOpenInTyporaTip(true),
@@ -286,6 +305,7 @@ R"(">
     m_textPreview->setHtml(html, QUrl(url));
     QString owner = m_settings->value("server.owner").toString();
     m_esApi->putNote(owner, html, m_curNote);
+    uploadNoteAttachment(m_curNote);
 }
 
 
@@ -734,5 +754,66 @@ void Widget::addNoteTo() {
     qDebug() << "add note to";
 //    ChooseFolderWidget w;
 
+}
+
+void Widget::uploadNoteAttachment(const Note &note) {
+    auto http = Http::instance();
+    QString owner = m_settings->value("server.owner").toString();
+    QString noteId = note.strId();
+    QString serverIp = m_settings->value("server.ip").toString();
+    auto uploadFile = [http, owner, noteId, serverIp](QFile file) {
+        auto checksum = fileChecksum(file.fileName(), QCryptographicHash::Sha512).toHex();
+        qDebug() << "checksum:" << checksum;
+        QString _url = QString("http://%1:9201/upload").arg(serverIp);
+        const QString &filename = QFileInfo(file).fileName();
+        QString staticFileServerBaseUrl = QString("http://%1").arg(serverIp);
+        QString serverFilePath = QString("/%1/%2/%3.checksum.txt").arg(owner).arg(noteId).arg(filename);
+        auto serverFileChecksum = http->get(QString("%1%2").arg(staticFileServerBaseUrl).arg(serverFilePath));
+        auto realServerFileChecksum = serverFileChecksum.left(checksum.size());
+        qDebug() << "serverFileChecksum:" << realServerFileChecksum;
+        if (realServerFileChecksum == checksum) {
+            qDebug () << "ignore file: " << filename;
+            return ;
+        } else {
+            QString checksumUploadUrl = QString("%1?owner=%2&filename=%3.checksum.txt&note_id=%4").arg(_url).arg(owner).arg(filename).arg(noteId);
+            QString magic = "\nasldjlaskfdjlasdjfklsajdfkljasldflalsfdkajsf";
+            for (int i=0;i<20;i++)
+                checksum += magic;
+            auto res = http->uploadFile(checksumUploadUrl, checksum);
+            qDebug() << "res:" << res;
+        }
+        QString uploadFileUrl = QString("%1?owner=%2&filename=%3&note_id=%4").arg(_url).arg(owner).arg(filename).arg(noteId);
+        auto res = http->uploadFile(uploadFileUrl, file);
+        qDebug() << "res:" << res;
+    };
+    auto notePath = noteRealPath(note);
+    auto dir = QFileInfo(notePath).dir();
+    auto infoList = dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
+    for(const auto& info: infoList) {
+        uploadFile(QFile(info.absoluteFilePath()));
+    }
+    QFile mdFile(noteRealPath(note));
+    mdFile.open(QIODevice::ReadOnly);
+    Document doc(mdFile.readAll());
+    mdFile.close();
+    auto html = doc.toHtml();
+    QString mdCssPath = "/github.css";
+    html = R"(<!DOCTYPE html><html><head>
+<meta charset="utf-8">
+<title>Markdown</title>
+<link rel="stylesheet" href=")"
+           +
+           mdCssPath
+           +
+           R"(">
+</head>
+<body>
+<article class="markdown-body">)"
+           +
+           html
+           +
+           R"(</article></body></html>)";
+    QString uploadHtmlUrl = QString("http://%1:9201/upload?owner=%2&filename=index.html&note_id=%3").arg(serverIp).arg(owner).arg(noteId);
+    http->uploadFile(uploadHtmlUrl, html.toUtf8());
 }
 

@@ -13,7 +13,7 @@
 #include <QDebug>
 SettingsDialog::SettingsDialog(QWidget *parent): QDialog(parent), m_settings(Settings::instance()) {
     auto layout = new QGridLayout();
-    layout->addWidget(new QLabel(tr("server.base_url")), 0, 0);
+    layout->addWidget(new QLabel(tr("server.ip")), 0, 0);
     layout->addWidget(new QLabel(tr("server.port")), 1, 0);
     layout->addWidget(new QLabel(tr("server.owner")), 2, 0);
     layout->addWidget(new QLabel(tr("server.password")), 3, 0);
@@ -37,7 +37,7 @@ SettingsDialog::SettingsDialog(QWidget *parent): QDialog(parent), m_settings(Set
     layout->addWidget(m_typoraPathLineEdit, 4, 1, 1, 1);
     layout->addWidget(m_typoraPathChooseBtn, 4, 2);
 #endif
-    m_baseUrlLineEdit->setText(m_settings->value("server.base_url").toString());
+    m_baseUrlLineEdit->setText(m_settings->value("server.ip").toString());
     m_portSpinBox->setValue(m_settings->value("server.port").toInt());
     m_ownerLineEdit->setText(m_settings->value("server.owner").toString());
     m_passwordLineEdit->setText(m_settings->value("server.password").toString());
@@ -80,7 +80,7 @@ SettingsDialog::SettingsDialog(QWidget *parent): QDialog(parent), m_settings(Set
         auto password = this->m_passwordLineEdit->text();
         auto typoraPath = this->m_typoraPathLineEdit->text();
         if (baseUrl.isEmpty()) {
-            warning(tr("server.base_url can't be empty"));
+            warning(tr("server.ip can't be empty"));
             return ;
         }
         if (owner.isEmpty()) {
@@ -97,7 +97,7 @@ SettingsDialog::SettingsDialog(QWidget *parent): QDialog(parent), m_settings(Set
             return ;
         }
 #endif
-        this->m_settings->setValue("server.base_url", baseUrl);
+        this->m_settings->setValue("server.ip", baseUrl);
         this->m_settings->setValue("server.port", port);
         this->m_settings->setValue("server.owner", owner);
         this->m_settings->setValue("server.password", password);

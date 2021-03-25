@@ -14,11 +14,11 @@ int main(int argc, char *argv[]) {
     QApplication::setApplicationName("MyNotes");
     bool needSetConfig = false;
     auto m_settings = Settings::instance();
-    auto baseUrl = m_settings->value("server.base_url", QString()).toString();
+    auto baseUrl = m_settings->value("server.ip", QString()).toString();
     if (baseUrl.isEmpty()) {
         needSetConfig = true;
     }
-    qDebug() << "baseUrl:" << baseUrl;
+    qDebug() << "serverIp:" << baseUrl;
 
     auto owner = m_settings->value("server.owner", QString()).toString();
     if (owner.isEmpty()) {
