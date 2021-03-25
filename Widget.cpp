@@ -76,6 +76,7 @@ Widget::Widget(QWidget *parent)
     mainLayout->addWidget(m_treeView);
     mainLayout->addWidget(m_textPreview);
     setLayout(mainLayout);
+    setWindowIcon(QIcon(QPixmap(":/icon/notebook_128x128.png")));
     auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
     m_notesPath = docPath + "/MyNotes/";
     if (!QFile(m_notesPath).exists()) {
