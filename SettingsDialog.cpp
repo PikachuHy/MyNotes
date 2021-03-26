@@ -51,6 +51,9 @@ SettingsDialog::SettingsDialog(QWidget *parent): QDialog(parent), m_settings(Set
     m_portSpinBox->setValue(m_settings->value("server.port").toInt());
     m_ownerLineEdit->setText(m_settings->value("server.owner").toString());
     m_passwordLineEdit->setText(m_settings->value("server.password").toString());
+#ifdef Q_OS_WIN
+    m_typoraPathLineEdit->setText(m_settings->value("path.typora").toString());
+#endif
     m_confirmBtn = new QPushButton(tr("Confirm"));
     m_cancelBtn = new QPushButton(tr("Cancel"));
     auto hbox = new QHBoxLayout();
