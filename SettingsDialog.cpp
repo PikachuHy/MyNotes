@@ -12,6 +12,8 @@
 #include <QFileDialog>
 #include <QDebug>
 SettingsDialog::SettingsDialog(QWidget *parent): QDialog(parent), m_settings(Settings::instance()) {
+    setWindowIcon(QIcon(QPixmap(":/icon/settings_16x16.png")));
+    setWindowTitle(tr("MyNotes Settings"));
     auto _font = font();
 #ifdef Q_OS_WIN
     _font.setPointSize(12);
