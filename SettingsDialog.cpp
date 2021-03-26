@@ -12,6 +12,14 @@
 #include <QFileDialog>
 #include <QDebug>
 SettingsDialog::SettingsDialog(QWidget *parent): QDialog(parent), m_settings(Settings::instance()) {
+    auto _font = font();
+#ifdef Q_OS_WIN
+    _font.setPointSize(12);
+    _font.setFamily("微软雅黑");
+#else
+    _font.setPointSize(16);
+#endif
+    setFont(_font);
     auto layout = new QGridLayout();
     layout->addWidget(new QLabel(tr("server.ip")), 0, 0);
     layout->addWidget(new QLabel(tr("server.port")), 1, 0);
