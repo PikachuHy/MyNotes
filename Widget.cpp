@@ -77,6 +77,12 @@ Widget::Widget(QWidget *parent)
         qDebug() << "from web engine";
         openNoteInTypora(m_curNote);
     });
+    auto searchShortcut = new QShortcut((Qt::Key_F), m_textPreview);
+    connect(searchShortcut, &QShortcut::activated, m_textPreview, [this]() {
+        qDebug() << "search";
+        auto ip = m_settings->value("server.ip").toString();
+        m_textPreview->setUrl(QUrl("http://"+ip));
+    });
     auto mainLayout = new QHBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(m_treeView);
