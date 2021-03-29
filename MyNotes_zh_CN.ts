@@ -16,44 +16,6 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
     </message>
 </context>
 <context>
-    <name>Editor</name>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="183"/>
-        <source>Character formats</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="188"/>
-        <source>Text can be displayed in a variety of different character formats. </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="190"/>
-        <source>We can emphasize text by </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="191"/>
-        <source>making it italic</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="208"/>
-        <source>Team %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="214"/>
-        <source>%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="220"/>
-        <source>On duty</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>ListView</name>
     <message>
         <location filename="ListView.cpp" line="28"/>
@@ -64,75 +26,93 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
 <context>
     <name>SettingsDialog</name>
     <message>
-        <location filename="SettingsDialog.cpp" line="16"/>
+        <location filename="SettingsDialog.cpp" line="15"/>
+        <source>MyNotes Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="SettingsDialog.cpp" line="27"/>
         <source>server.ip</source>
         <oldsource>server.base_url</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="17"/>
+        <location filename="SettingsDialog.cpp" line="28"/>
         <source>server.port</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="18"/>
+        <location filename="SettingsDialog.cpp" line="29"/>
         <source>server.owner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="19"/>
+        <location filename="SettingsDialog.cpp" line="30"/>
         <source>server.password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="21"/>
+        <location filename="SettingsDialog.cpp" line="32"/>
         <source>Typora path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="31"/>
+        <location filename="SettingsDialog.cpp" line="42"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="44"/>
+        <location filename="SettingsDialog.cpp" line="58"/>
         <source>Confirm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="45"/>
+        <location filename="SettingsDialog.cpp" line="59"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="66"/>
+        <location filename="SettingsDialog.cpp" line="80"/>
         <source>Choose Typora Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="75"/>
+        <location filename="SettingsDialog.cpp" line="89"/>
         <source>SettingsDialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="83"/>
+        <location filename="SettingsDialog.cpp" line="97"/>
         <source>server.ip can&apos;t be empty</source>
         <oldsource>server.base_url can&apos;t be empty</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="87"/>
+        <location filename="SettingsDialog.cpp" line="101"/>
         <source>server.owner can&apos;t be empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="91"/>
+        <location filename="SettingsDialog.cpp" line="105"/>
         <source>server.password can&apos;t be empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="96"/>
+        <location filename="SettingsDialog.cpp" line="110"/>
         <source>Typora path can&apos;t be empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ToastClass</name>
+    <message>
+        <location filename="cmake-build-debug/MyNotes_autogen/include/ui_Toast.h" line="59"/>
+        <source>Toast</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="cmake-build-debug/MyNotes_autogen/include/ui_Toast.h" line="60"/>
+        <source>TextLabel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
