@@ -42,7 +42,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include "Http.h"
-
+#include <QDesktopServices>
 // Returns empty QByteArray() on failure.
 QByteArray fileChecksum(const QString &fileName,
                         QCryptographicHash::Algorithm hashAlgorithm)
@@ -82,6 +82,12 @@ Widget::Widget(QWidget *parent)
         qDebug() << "search";
         auto ip = m_settings->value("server.ip").toString();
         m_textPreview->setUrl(QUrl("http://"+ip));
+    });
+    auto openInBrowserShortcut = new QShortcut((Qt::Key_B), m_textPreview);
+    connect(openInBrowserShortcut, &QShortcut::activated, m_textPreview, [this]() {
+        qDebug() << "open in browser";
+        auto ip = m_settings->value("server.ip").toString();
+        QDesktopServices::openUrl(QUrl("http://"+ip));
     });
     auto mainLayout = new QHBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
