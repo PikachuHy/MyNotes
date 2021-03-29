@@ -64,7 +64,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(MyNotes
         ${PROJECT_SOURCES}
     )
-if(${CMAKE_BUILD_TYPE} EQUAL "MinSizeRel")
+if(${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
     qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 else()
@@ -78,7 +78,7 @@ else()
         )
     endif()
 
-if(${CMAKE_BUILD_TYPE} EQUAL "MinSizeRel")
+if(${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
     qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 endif()

@@ -33,7 +33,6 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
     <message>
         <location filename="SettingsDialog.cpp" line="27"/>
         <source>server.ip</source>
-        <oldsource>server.base_url</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -84,7 +83,6 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
     <message>
         <location filename="SettingsDialog.cpp" line="97"/>
         <source>server.ip can&apos;t be empty</source>
-        <oldsource>server.base_url can&apos;t be empty</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
