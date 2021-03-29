@@ -61,8 +61,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(MyNotes
         ${PROJECT_SOURCES}
     )
-
+if(${CMAKE_BUILD_TYPE} EQUAL "MinSizeRel")
     qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
+endif()
 else()
     if(ANDROID)
         add_library(MyNotes SHARED
@@ -74,7 +75,9 @@ else()
         )
     endif()
 
+if(${CMAKE_BUILD_TYPE} EQUAL "MinSizeRel")
     qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
+endif()
 endif()
 add_subdirectory(QtMarkdownParser)
 target_link_libraries(MyNotes PRIVATE
