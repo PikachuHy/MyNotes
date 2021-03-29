@@ -10,7 +10,10 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
+message("CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
+if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+    add_definitions(-D_DEBUG)
+endif()
 # QtCreator supports the following variables for Android, which are identical to qmake Android variables.
 # Check https://doc.qt.io/qt/deployment-android.html for more information.
 # They need to be set before the find_package( ...) calls below.
@@ -79,6 +82,7 @@ if(${CMAKE_BUILD_TYPE} EQUAL "MinSizeRel")
     qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 endif()
+add_subdirectory(CuteLogger)
 add_subdirectory(QtMarkdownParser)
 target_link_libraries(MyNotes PRIVATE
         Qt${QT_VERSION_MAJOR}::Widgets
@@ -86,4 +90,5 @@ target_link_libraries(MyNotes PRIVATE
         Qt${QT_VERSION_MAJOR}::Concurrent
         Qt${QT_VERSION_MAJOR}::WebEngineWidgets
         QtMarkdownParser
+        CuteLogger
         )

@@ -1,13 +1,32 @@
 #include "Widget.h"
 #include "SettingsDialog.h"
 #include <QApplication>
+#include <Logger.h>
+#include <ConsoleAppender.h>
+#include <FileAppender.h>
+#include <QStandardPaths>
+#include <QDir>
 int showWindow() {
     Widget w;
     w.show();
-    return QApplication::exec();
+    auto ret = QApplication::exec();
+    LOG_WARNING() << "Something went wrong." << "Result code is" << ret;
+    return ret;
 }
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
+#ifdef _DEBUG
+#else
+    auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
+    auto logPath = docPath + "/MyNotes/logs";
+    QDir logDir(logPath);
+    if (!logDir.exists()) {
+        logDir.mkdir(logPath);
+    }
+    auto fileAppender = new FileAppender(logPath+"/log.txt");
+    fileAppender->setFormat("[%{type:-7}] <%{Function}> %{message}\n");
+    cuteLogger->registerAppender(fileAppender);
+#endif
     // QSettings会用到
     QApplication::setOrganizationName("PikachuHy");
     QApplication::setOrganizationDomain("pikachu.net.cn");
