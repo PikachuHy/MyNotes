@@ -12,13 +12,14 @@
 #include <QFileDialog>
 #include <QDebug>
 SettingsDialog::SettingsDialog(QWidget *parent): QDialog(parent), m_settings(Settings::instance()) {
-    setWindowIcon(QIcon(QPixmap(":/icon/settings_16x16.png")));
     setWindowTitle(tr("MyNotes Settings"));
     auto _font = font();
 #ifdef Q_OS_WIN
+    setWindowIcon(QIcon(QPixmap(":/icon/settings_16x16.png")));
     _font.setPointSize(12);
     _font.setFamily("微软雅黑");
 #else
+    setWindowIcon(QIcon(QPixmap(":/icon/notebook_128x128.png")));
     _font.setPointSize(16);
 #endif
     setFont(_font);
