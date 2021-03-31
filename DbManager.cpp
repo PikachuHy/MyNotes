@@ -120,6 +120,20 @@ Note DbManager::getNote(int id) {
     return note;
 }
 
+Note DbManager::getNote(const QString &strId)
+{
+    Note note;
+    // -1表示不存在
+    note.m_id = -1;
+    const QString &sql = "select * from note where str_id = '" + strId + "'";
+    qDebug() << "exec sql:" << sql;
+    QSqlQuery query = _query(sql);
+    while (query.next()) {
+        fillNote(note, query);
+    }
+    return note;
+}
+
 void DbManager::fillNote(Note &note, QSqlQuery &query) {
     note.m_id = query.value("id").toInt();
     note.m_strId = query.value("str_id").toString();

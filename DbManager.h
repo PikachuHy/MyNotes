@@ -24,6 +24,7 @@ public:
     bool removeNote(int id);
     bool removePath(int id);
     Note getNote(int id);
+    Note getNote(const QString& strId);
     Path getPath(int id);
     bool isPathExist(QString name, int parentId);
 
