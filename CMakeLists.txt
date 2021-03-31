@@ -14,6 +14,9 @@ message("CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     add_definitions(-D_DEBUG)
 endif()
+if(MSVC)
+    add_compile_options("/utf-8")
+endif()
 # QtCreator supports the following variables for Android, which are identical to qmake Android variables.
 # Check https://doc.qt.io/qt/deployment-android.html for more information.
 # They need to be set before the find_package( ...) calls below.
