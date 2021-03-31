@@ -16,6 +16,7 @@
 #include <QWebEngineView>
 #include <QSettings>
 #include <QFile>
+#include <QFileSystemWatcher>
 #include "ElasticSearchRestApi.h"
 class TreeItem;
 class TreeModel;
@@ -131,6 +132,7 @@ private:
 
     void loadLastOpenedNote();
     ElasticSearchRestApi* m_esApi;
+    QFileSystemWatcher* m_fileSystemWatcher;
 };
 
 #endif // WIDGET_H

@@ -43,6 +43,7 @@
 #include <QNetworkReply>
 #include "Http.h"
 #include <QDesktopServices>
+#include <QStringList>
 // Returns empty QByteArray() on failure.
 QByteArray fileChecksum(const QString &fileName,
                         QCryptographicHash::Algorithm hashAlgorithm)
@@ -63,8 +64,31 @@ Widget::Widget(QWidget *parent)
         m_showOpenInTyporaTip(true),
         m_settings(Settings::instance())
         , m_esApi(new ElasticSearchRestApi(this))
+        , m_fileSystemWatcher(new QFileSystemWatcher(this))
 //        ,m_jieba(nullptr)
         {
+    connect(m_fileSystemWatcher, &QFileSystemWatcher::fileChanged, [this](const QString &path){
+        qDebug () << "file change:" << path;
+        if (path.startsWith(workshopPath())) {
+            if (path.endsWith("index.md")) {
+                // 标准的笔记处理
+                QStringList segs = path.split('/');
+                QString noteStrId = segs[segs.size() - 2];
+                qDebug() << "note id:" << noteStrId;
+                auto note = m_dbManager->getNote(noteStrId);
+                if (note.id() == -1) {
+                    qWarning() << "invalid note from strId:" << noteStrId;
+                    showErrorDialog(tr("invalid note from strId: %1").arg(noteStrId));
+                } else {
+                    updatePreview();
+                }
+            } else {
+
+            }
+        } else {
+            // TODO: 直接监听的文件处理
+        }
+    });
     m_treeView = new TreeView();
     m_textEdit = new QTextEdit();
     m_textPreview = new QWebEngineView();
@@ -592,6 +616,8 @@ void Widget::on_listView_pressed(const QModelIndex &index) {
 void Widget::loadNote(const Note &note) {
     qDebug() << "load" << note.strId() << note.title();
     m_curNote = note;
+    m_fileSystemWatcher->addPath(noteRealPath(note));
+    qDebug() << m_fileSystemWatcher->files();
     loadMdText();
     updatePreview();
     if (m_showOpenInTyporaTip) {
