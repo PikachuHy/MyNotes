@@ -276,3 +276,15 @@ QSqlQuery DbManager::_query() {
 QSqlQuery DbManager::_query(QString sql) {
     return QSqlQuery(sql, db);
 }
+
+QList<Note> DbManager::getAllNotes() {
+    QList<Note> ret;
+    const QString &sql = "select * from note";
+    QSqlQuery query = _query(sql);
+    while (query.next()) {
+        Note note;
+        fillNote(note, query);
+        ret.append(note);
+    }
+    return ret;
+}

@@ -19,6 +19,7 @@ public:
     QList<Path> getPathList(int parentPathId = 0);
     QList<Note> getNoteList(int pathId = 0);
     QList<Note> getNoteList(QStringList words);
+    QList<Note> getAllNotes();
     bool addNewNote(Note & note);
     bool addNewPath(Path & path);
     bool removeNote(int id);
