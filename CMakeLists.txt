@@ -61,6 +61,7 @@ set(PROJECT_SOURCES
         Http.cpp
         Settings.cpp
         SettingsDialog.cpp
+        FileSystemWatcher.cpp FileSystemWatcher.h
         ElasticSearchRestApi.cpp ElasticSearchRestApi.h)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

@@ -44,6 +44,7 @@
 #include "Http.h"
 #include <QDesktopServices>
 #include <QStringList>
+#include "FileSystemWatcher.h"
 // Returns empty QByteArray() on failure.
 QByteArray fileChecksum(const QString &fileName,
                         QCryptographicHash::Algorithm hashAlgorithm)
@@ -64,12 +65,12 @@ Widget::Widget(QWidget *parent)
         m_showOpenInTyporaTip(true),
         m_settings(Settings::instance())
         , m_esApi(new ElasticSearchRestApi(this))
-        , m_fileSystemWatcher(new QFileSystemWatcher(this))
+        , m_fileSystemWatcher(FileSystemWatcher::instance())
         , m_systemTrayIcon(new QSystemTrayIcon(this))
 //        ,m_jieba(nullptr)
         {
     initSystemTrayIcon();
-    connect(m_fileSystemWatcher, &QFileSystemWatcher::fileChanged, [this](const QString &path){
+    connect(m_fileSystemWatcher, &FileSystemWatcher::fileChanged, [this](const QString &path){
         qDebug () << "file change:" << path;
         if (path.startsWith(workshopPath())) {
             if (path.endsWith("index.md")) {

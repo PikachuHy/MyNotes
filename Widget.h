@@ -29,6 +29,7 @@ class QListView;
 class ListModel;
 class ElasticSearchRestApi;
 class Settings;
+class FileSystemWatcher;
 class Widget : public QWidget {
 Q_OBJECT
 
@@ -143,7 +144,7 @@ private:
 
     void loadLastOpenedNote();
     ElasticSearchRestApi* m_esApi;
-    QFileSystemWatcher* m_fileSystemWatcher;
+    FileSystemWatcher* m_fileSystemWatcher;
     QSystemTrayIcon* m_systemTrayIcon;
 };
 
