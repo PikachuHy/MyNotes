@@ -387,7 +387,7 @@ void Widget::updatePreview(const QString& path) {
 //    QString mdCssPath = tmpPath() + "github-markdown.css";
     QString mdCssPath = "qrc:///css/github-markdown.css";
 //    QString mdCssPath = "qrc:///css/github.css";
-    html = R"(<!DOCTYPE html><html><head>
+    auto allHtml = R"(<!DOCTYPE html><html><head>
 <meta charset="utf-8">
 <title>Markdown</title>
 <link rel="stylesheet" href=")"
@@ -402,8 +402,8 @@ R"(">
            html
            +
            R"(</article></body></html>)";
-    m_textPreview->setHtml(html);
-    htmlFile.write(html.toUtf8());
+    m_textPreview->setHtml(allHtml);
+    htmlFile.write(allHtml.toUtf8());
     htmlFile.close();
     // auto url = QString("file://%1/%2/").arg(workshopPath()).arg(m_curNote.strId());
     // m_textPreview->setHtml(html, QUrl(url));
