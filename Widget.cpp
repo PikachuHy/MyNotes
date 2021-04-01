@@ -187,6 +187,10 @@ void Widget::on_treeView_pressed(const QModelIndex &index) {
             return;
         }
         loadNote(noteItem->note());
+    } else if (item->isWatchingFileItem()) {
+        auto fileItem = static_cast<WatchingFileItem*>(item);
+        auto filePath = fileItem->path();
+        loadNote(filePath);
     }
 }
 
@@ -330,7 +334,11 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
 }
 
 void Widget::updatePreview() {
-    QFile mdFile(currentNotePath());
+    updatePreview(currentNotePath());
+}
+
+void Widget::updatePreview(const QString& path) {
+    QFile mdFile(path);
     mdFile.open(QIODevice::ReadOnly);
     Document doc(mdFile.readAll());
     auto html = doc.toHtml();
@@ -354,10 +362,11 @@ R"(">
            html
            +
            R"(</article></body></html>)";
+    m_textPreview->setHtml(html);
     htmlFile.write(html.toUtf8());
     htmlFile.close();
-    auto url = QString("file://%1/%2/").arg(workshopPath()).arg(m_curNote.strId());
-    m_textPreview->setHtml(html, QUrl(url));
+    // auto url = QString("file://%1/%2/").arg(workshopPath()).arg(m_curNote.strId());
+    // m_textPreview->setHtml(html, QUrl(url));
     QString owner = m_settings->value("server.owner").toString();
     m_esApi->putNote(owner, html, m_curNote);
     uploadNoteAttachment(m_curNote);
@@ -460,9 +469,12 @@ void Widget::on_action_newFolder() {
     auto newNoteIndex = m_treeModel->addNewFolder(m_treeView->currentIndex(), newPathItem);
     m_treeView->setCurrentIndex(newNoteIndex);
 }
-
 void Widget::loadMdText() {
     auto notePath = currentNotePath();
+    loadMdText(notePath);
+}
+void Widget::loadMdText(const QString &notePath) {
+
     QFile file(notePath);
     if(!file.exists()) {
         qDebug() << notePath << "is not exist.";
@@ -645,6 +657,13 @@ void Widget::loadNote(const Note &note) {
         m_showOpenInTyporaTip = false;
     }
     m_settings->setValue("last_note", note.id());
+}
+
+void Widget::loadNote(const QString &path)
+{
+    qDebug() << "load" << path;
+    loadMdText(path);
+    updatePreview(path);
 }
 
 

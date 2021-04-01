@@ -88,9 +88,12 @@ private:
     inline TreeItem* currentTreeItem();
     inline void showErrorDialog(const QString & msg);
     void loadNote(const Note& note);
+    void loadNote(const QString& path);
     void loadMdText();
+    void loadMdText(const QString& path);
     void saveMdText();
     void updatePreview();
+    void updatePreview(const QString& path);
     void updateIndex(QString text, int id);
     void initSearchDialog();
     void initJieba();
