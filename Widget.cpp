@@ -926,7 +926,11 @@ void Widget::uploadNoteAttachment(const Note &note) {
 
 void Widget::initSystemTrayIcon()
 {
+#ifdef Q_OS_MAC
+    m_systemTrayIcon->setIcon(QIcon(QPixmap(":/icon/tray_128x128.png")));
+#else
     m_systemTrayIcon->setIcon(QIcon(QPixmap(":/icon/notebook_128x128.png")));
+#endif
     auto menu = new QMenu();
     menu->addAction(tr("Show"), [this](){
        this->showNormal();
