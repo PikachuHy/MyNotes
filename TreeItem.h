@@ -135,7 +135,7 @@ public:
 
     QVariant data(int column, int role) const override;
 
-    bool isWatchingItem() override { return true; }
+    bool isWatchingFolderItem() override { return true; }
 };
 
 class WatchingFileItem : public TreeItem {
