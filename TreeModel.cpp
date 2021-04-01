@@ -157,7 +157,7 @@ void TreeModel::buildWatchingTree(QString path, TreeItem *parent)
     QFileInfoList info_list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
     for (int i = 0; i < info_list.count(); i++) {
         auto info = info_list[i];
-        if (info.isFile() && !info.baseName().endsWith(".md")) continue;
+        if (info.isFile() && !info.fileName().endsWith(".md")) continue;
         QString data = info.fileName();
         TreeItem* child;
         if (info.isDir()) {
