@@ -232,7 +232,7 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
                 auto dir = QFileDialog::getExistingDirectory(this, tr("Add Watch Folder"));
                 auto watchingDirs = m_settings->value("watching_dirs").toStringList();
                 bool watchSuccess = true;
-                for(auto watchingDir: watchingDirs) {
+                for (auto watchingDir: watchingDirs) {
                     if (dir.startsWith(watchingDir)) {
                         watchSuccess = false;
                         showErrorDialog(tr("Folder %1 has already in watching.").arg(dir));
@@ -271,6 +271,11 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
                 connect(c, &QAction::triggered, this, &Widget::on_action_trashFolder);
                 menu.addAction(c);
                 c->setEnabled(item->childCount() == 0);
+            }
+            if (item->isWorkshopItem()) {
+                menu.addAction(tr("Sync All"), [this](){
+                    this->syncAll();
+                });
             }
         }
     }
@@ -959,5 +964,16 @@ void Widget::initSystemTrayIcon()
             break;
         }
     });
+}
+
+void Widget::syncAll() {
+    auto notes = m_dbManager->getAllNotes();
+    for(const auto& note: notes) {
+        if (note.trashed()) continue;
+        QString owner = m_settings->value("server.owner").toString();
+        auto html = generateHTML(note);
+        m_esApi->putNote(owner, html, note);
+        uploadNoteAttachment(note);
+    }
 }
 

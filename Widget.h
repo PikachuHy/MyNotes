@@ -115,6 +115,7 @@ private:
     void addNoteTo();
     void uploadNoteAttachment(const Note& note);
     void initSystemTrayIcon();
+    void syncAll();
 private:
     // 左边到文档树
     QTreeView *m_treeView;
