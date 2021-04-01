@@ -39,7 +39,7 @@ public:
 
     void removeNode(const QModelIndex& index);
 
-    void addWatchingDir(const QString& path);
+    void addWatchingDir(const QModelIndex& parent, const QString& path);
 private:
     void setupModelData(TreeItem *parent);
     void buildFileTreeFromDb(int parentPathId, TreeItem* parentItem);

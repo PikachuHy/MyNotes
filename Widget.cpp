@@ -211,6 +211,10 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
             menu.addAction(a);
         } else if (item->isAttachmentItem()) {
 
+        } else if (item->isWatchingFolderItem()) {
+
+        } else if (item->isWatchingFileItem()) {
+
         } else if (item->isWatchingItem()) {
             menu.addAction(tr("Add Watch Folder"), [this]() {
                 qDebug() << "watch folder";
@@ -228,7 +232,7 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
                     watchingDirs.append(dir);
                     m_settings->setValue("watching_dirs", watchingDirs);
                     qDebug() << "add " << dir << "to watching";
-                    m_treeModel->addWatchingDir(dir);
+                    m_treeModel->addWatchingDir(m_treeView->currentIndex(), dir);
                 }
             });
         } else if (item->isFile()) {

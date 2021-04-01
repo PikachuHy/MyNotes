@@ -9,7 +9,8 @@
 
 TreeModel::TreeModel(const QString &path, DbManager* dbManager, QObject *parent)
         : QAbstractItemModel(parent), m_dataPath(path), m_dbManager(dbManager)
-        , m_settings(Settings::instance()){
+        , m_settings(Settings::instance())
+        , m_watchingItem(nullptr) {
     m_dataPath = path;
     ensurePathExist(path);
     ensurePathExist(path + "/" + Constant::workshop);
@@ -124,10 +125,13 @@ void buildFileTree(QString path, TreeItem *parent) {
 void TreeModel::setupModelData(TreeItem *parent) {
     auto workshopItem = new WorkshopItem(workshopPath(), parent);
     parent->appendChild(workshopItem);
-    auto m_watchingItem = new WatchingItem(parent);
+    m_watchingItem = new WatchingItem(parent);
     auto watchingDirs = m_settings->value("watching_dirs").toStringList();
     for(const QString& watchingDir: watchingDirs) {
-        buildWatchingTree(watchingDir, m_watchingItem);
+        auto dirName = QDir(watchingDir).dirName();
+        auto watchingFolder = new WatchingFolderItem(dirName, m_watchingItem);
+        m_watchingItem->appendChild(watchingFolder);
+        buildWatchingTree(watchingDir, watchingFolder);
     }
     parent->appendChild(m_watchingItem);
     parent->appendChild(new AttachmentItem(attachmentPath(), parent));
@@ -219,12 +223,16 @@ void TreeModel::removeNode(const QModelIndex &index) {
     endRemoveRows();
 }
 
-void TreeModel::addWatchingDir(const QString &path)
+void TreeModel::addWatchingDir(const QModelIndex& parent, const QString &watchingDir)
 {
-    int insertRowNum = m_watchingItem->row();
-//    beginInsertRows(m_watchingItem->, insertRowNum, insertRowNum);
-    buildFileTree(path, m_watchingItem);
-//    endInsertRows();
+    int insertRowNum = m_watchingItem->childCount();
+    qDebug() << "watching row: " << insertRowNum;
+     beginInsertRows(parent, insertRowNum, insertRowNum);
+     auto dirName = QDir(watchingDir).dirName();
+     auto watchingFolder = new WatchingFolderItem(dirName, m_watchingItem);
+     m_watchingItem->appendChild(watchingFolder);
+     buildWatchingTree(watchingDir, watchingFolder);
+     endInsertRows();
 }
 
 void TreeModel::buildFileTreeFromDb(int parentPathId, TreeItem *parentItem) {
