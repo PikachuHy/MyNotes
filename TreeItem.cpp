@@ -238,8 +238,8 @@ QVariant WatchingItem::data(int column, int role) const {
     return TreeItem::data(column, role);
 }
 
-WatchingFolderItem::WatchingFolderItem(const QString& path, TreeItem *parentItem): TreeItem({path}, parentItem){
-
+WatchingFolderItem::WatchingFolderItem(const QString& path, const QString& displayName, TreeItem *parentItem): TreeItem({displayName}, parentItem){
+    setPath(path);
 }
 
 QVariant WatchingFolderItem::data(int column, int role) const {
@@ -254,8 +254,8 @@ QVariant WatchingFolderItem::data(int column, int role) const {
     return TreeItem::data(column, role);
 }
 
-WatchingFileItem::WatchingFileItem(const QString &path, TreeItem *parentItem): TreeItem({path}, parentItem) {
-
+WatchingFileItem::WatchingFileItem(const QString &path, const QString& displayName, TreeItem *parentItem): TreeItem({displayName}, parentItem) {
+    setPath(path);
 }
 
 QVariant WatchingFileItem::data(int column, int role) const {

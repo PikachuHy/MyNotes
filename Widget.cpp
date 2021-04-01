@@ -212,7 +212,16 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
         } else if (item->isAttachmentItem()) {
 
         } else if (item->isWatchingFolderItem()) {
-
+            // 如果当前文件夹是监控文件夹的根目录
+            if (item->parentItem()->isWatchingItem()) {
+                menu.addAction(tr("Remove Watching Folder"), [this, item](){
+                    qDebug() << "remove watching folder: " << item->path();
+                    m_treeModel->removeNode(m_treeView->currentIndex());
+                    auto watchingDirs = m_settings->value("watching_dirs").toStringList();
+                    watchingDirs.removeOne(item->path());
+                    m_settings->setValue("watching_dirs", watchingDirs);
+                });
+            }
         } else if (item->isWatchingFileItem()) {
 
         } else if (item->isWatchingItem()) {

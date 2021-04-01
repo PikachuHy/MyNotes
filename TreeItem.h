@@ -131,7 +131,7 @@ public:
 
 class WatchingFolderItem : public TreeItem {
 public:
-    explicit WatchingFolderItem(const QString& path, TreeItem *parentItem = nullptr);
+    explicit WatchingFolderItem(const QString& path, const QString& displayName, TreeItem *parentItem = nullptr);
 
     QVariant data(int column, int role) const override;
 
@@ -140,7 +140,7 @@ public:
 
 class WatchingFileItem : public TreeItem {
 public:
-    explicit WatchingFileItem(const QString& path, TreeItem *parentItem = nullptr);
+    explicit WatchingFileItem(const QString& path, const QString& displayName, TreeItem *parentItem = nullptr);
 
     QVariant data(int column, int role) const override;
 

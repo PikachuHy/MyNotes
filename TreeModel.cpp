@@ -129,7 +129,7 @@ void TreeModel::setupModelData(TreeItem *parent) {
     auto watchingDirs = m_settings->value("watching_dirs").toStringList();
     for(const QString& watchingDir: watchingDirs) {
         auto dirName = QDir(watchingDir).dirName();
-        auto watchingFolder = new WatchingFolderItem(dirName, m_watchingItem);
+        auto watchingFolder = new WatchingFolderItem(watchingDir, dirName, m_watchingItem);
         m_watchingItem->appendChild(watchingFolder);
         buildWatchingTree(watchingDir, watchingFolder);
     }
@@ -165,11 +165,11 @@ void TreeModel::buildWatchingTree(QString path, TreeItem *parent)
         QString data = info.fileName();
         TreeItem* child;
         if (info.isDir()) {
-            child = new WatchingFolderItem(data, parent);
+            child = new WatchingFolderItem(info.absoluteFilePath(), data, parent);
             child->setPath(info.absoluteFilePath());
             buildWatchingTree(info.absoluteFilePath(), child);
         } else {
-            child = new WatchingFileItem(data, parent);
+            child = new WatchingFileItem(info.absoluteFilePath(), data, parent);
             child->setPath(info.absoluteFilePath());
         }
         parent->appendChild(child);
@@ -229,12 +229,11 @@ void TreeModel::addWatchingDir(const QModelIndex& parent, const QString &watchin
     qDebug() << "watching row: " << insertRowNum;
      beginInsertRows(parent, insertRowNum, insertRowNum);
      auto dirName = QDir(watchingDir).dirName();
-     auto watchingFolder = new WatchingFolderItem(dirName, m_watchingItem);
+     auto watchingFolder = new WatchingFolderItem(watchingDir, dirName, m_watchingItem);
      m_watchingItem->appendChild(watchingFolder);
      buildWatchingTree(watchingDir, watchingFolder);
      endInsertRows();
 }
-
 void TreeModel::buildFileTreeFromDb(int parentPathId, TreeItem *parentItem) {
     auto pathList = m_dbManager->getPathList(parentPathId);
     for(const auto& path: pathList) {
