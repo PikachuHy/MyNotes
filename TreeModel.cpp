@@ -8,7 +8,8 @@
 #include <QDebug>
 
 TreeModel::TreeModel(const QString &path, DbManager* dbManager, QObject *parent)
-        : QAbstractItemModel(parent), m_dataPath(path), m_dbManager(dbManager) {
+        : QAbstractItemModel(parent), m_dataPath(path), m_dbManager(dbManager)
+        , m_settings(Settings::instance()){
     m_dataPath = path;
     ensurePathExist(path);
     ensurePathExist(path + "/" + Constant::workshop);
@@ -123,6 +124,12 @@ void buildFileTree(QString path, TreeItem *parent) {
 void TreeModel::setupModelData(TreeItem *parent) {
     auto workshopItem = new WorkshopItem(workshopPath(), parent);
     parent->appendChild(workshopItem);
+    auto watchingItem = new WatchingItem(parent);
+    auto watchingDirs = m_settings->value("watching_dirs").toStringList();
+    for(const QString& watchingDir: watchingDirs) {
+        buildFileTree(watchingDir, watchingItem);
+    }
+    parent->appendChild(watchingItem);
     parent->appendChild(new AttachmentItem(attachmentPath(), parent));
     parent->appendChild(new TrashItem(trashPath(), parent));
 //    buildFileTree(workshopPath(), workshopItem);

@@ -38,6 +38,10 @@ public:
 
     virtual bool isFile();
 
+    virtual bool isWatchingItem() { return false; }
+    virtual bool isWatchingFolderItem() { return false; }
+    virtual bool isWatchingFileItem() { return false; }
+
     virtual int pathId();
 
     int removeChild(TreeItem* item);
@@ -114,6 +118,33 @@ public:
     bool isWorkshopItem() override;
 
     bool isFile() override;
+};
+
+class WatchingItem : public TreeItem {
+public:
+    explicit WatchingItem(TreeItem *parentItem = nullptr);
+
+    QVariant data(int column, int role) const override;
+
+    bool isWatchingItem() override { return true; }
+};
+
+class WatchingFolderItem : public TreeItem {
+public:
+    explicit WatchingFolderItem(const QString& path, TreeItem *parentItem = nullptr);
+
+    QVariant data(int column, int role) const override;
+
+    bool isWatchingItem() override { return true; }
+};
+
+class WatchingFileItem : public TreeItem {
+public:
+    explicit WatchingFileItem(const QString& path, TreeItem *parentItem = nullptr);
+
+    QVariant data(int column, int role) const override;
+
+    bool isWatchingFileItem() override { return true; }
 };
 
 #endif

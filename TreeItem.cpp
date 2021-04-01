@@ -220,3 +220,44 @@ QVariant FolderItem::data(int column, int role) const {
     }
     return TreeItem::data(column, role);
 }
+
+
+WatchingItem::WatchingItem(TreeItem *parentItem): TreeItem({"Watching"}, parentItem) {
+
+}
+
+QVariant WatchingItem::data(int column, int role) const {
+    return TreeItem::data(column, role);
+}
+
+WatchingFolderItem::WatchingFolderItem(const QString& path, TreeItem *parentItem): TreeItem({path}, parentItem){
+
+}
+
+QVariant WatchingFolderItem::data(int column, int role) const {
+    if (role == Qt::DecorationRole && column == 0) {
+#ifdef Q_OS_WIN
+        return QIcon(QPixmap(":/icon/folder_16x16.png"));
+#else
+        QFileIconProvider provider;
+        return provider.icon(QFileIconProvider::Folder);
+#endif
+    }
+    return TreeItem::data(column, role);
+}
+
+WatchingFileItem::WatchingFileItem(const QString &path, TreeItem *parentItem): TreeItem({path}, parentItem) {
+
+}
+
+QVariant WatchingFileItem::data(int column, int role) const {
+    if (role == Qt::DecorationRole && column == 0) {
+#ifdef Q_OS_WIN
+        return QIcon(QPixmap(":/icon/note_16x16.png"));
+#else
+        QFileIconProvider provider;
+        return provider.icon(QFileIconProvider::File);
+#endif
+    }
+    return TreeItem::data(column, role);
+}

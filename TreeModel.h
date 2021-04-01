@@ -5,7 +5,7 @@
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
-
+#include "Settings.h"
 class TreeItem;
 class DbManager;
 class TreeModel : public QAbstractItemModel {
@@ -49,6 +49,7 @@ private:
     TreeItem *rootItem;
     QString m_dataPath;
     DbManager* m_dbManager;
+    Settings* m_settings;
 };
 
 #endif // TREEMODEL_H
