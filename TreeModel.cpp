@@ -124,12 +124,12 @@ void buildFileTree(QString path, TreeItem *parent) {
 void TreeModel::setupModelData(TreeItem *parent) {
     auto workshopItem = new WorkshopItem(workshopPath(), parent);
     parent->appendChild(workshopItem);
-    auto watchingItem = new WatchingItem(parent);
+    auto m_watchingItem = new WatchingItem(parent);
     auto watchingDirs = m_settings->value("watching_dirs").toStringList();
     for(const QString& watchingDir: watchingDirs) {
-        buildFileTree(watchingDir, watchingItem);
+        buildFileTree(watchingDir, m_watchingItem);
     }
-    parent->appendChild(watchingItem);
+    parent->appendChild(m_watchingItem);
     parent->appendChild(new AttachmentItem(attachmentPath(), parent));
     parent->appendChild(new TrashItem(trashPath(), parent));
 //    buildFileTree(workshopPath(), workshopItem);
@@ -190,6 +190,14 @@ void TreeModel::removeNode(const QModelIndex &index) {
     beginRemoveRows(index.parent(), rowToBeRemoved, rowToBeRemoved);
     item->parentItem()->removeChild(item);
     endRemoveRows();
+}
+
+void TreeModel::addWatchingDir(const QString &path)
+{
+    int insertRowNum = m_watchingItem->row();
+//    beginInsertRows(m_watchingItem->, insertRowNum, insertRowNum);
+    buildFileTree(path, m_watchingItem);
+//    endInsertRows();
 }
 
 void TreeModel::buildFileTreeFromDb(int parentPathId, TreeItem *parentItem) {

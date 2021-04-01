@@ -205,6 +205,26 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
             menu.addAction(a);
         } else if (item->isAttachmentItem()) {
 
+        } else if (item->isWatchingItem()) {
+            menu.addAction(tr("Add Watch Folder"), [this]() {
+                qDebug() << "watch folder";
+                auto dir = QFileDialog::getExistingDirectory(this, tr("Add Watch Folder"));
+                auto watchingDirs = m_settings->value("watching_dirs").toStringList();
+                bool watchSuccess = true;
+                for(auto watchingDir: watchingDirs) {
+                    if (dir.startsWith(watchingDir)) {
+                        watchSuccess = false;
+                        showErrorDialog(tr("Folder %1 has already in watching.").arg(dir));
+                        break;
+                    }
+                }
+                if (watchSuccess) {
+                    watchingDirs.append(dir);
+                    m_settings->setValue("watching_dirs", watchingDirs);
+                    qDebug() << "add " << dir << "to watching";
+                    m_treeModel->addWatchingDir(dir);
+                }
+            });
         } else if (item->isFile()) {
             auto a = new QAction("Open in Typora", &menu);
             menu.addAction(a);

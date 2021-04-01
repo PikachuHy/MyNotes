@@ -7,6 +7,7 @@
 #include <QVariant>
 #include "Settings.h"
 class TreeItem;
+class WatchingItem;
 class DbManager;
 class TreeModel : public QAbstractItemModel {
 Q_OBJECT
@@ -37,6 +38,8 @@ public:
     QModelIndex addNewFolder(const QModelIndex& parent, TreeItem* child);
 
     void removeNode(const QModelIndex& index);
+
+    void addWatchingDir(const QString& path);
 private:
     void setupModelData(TreeItem *parent);
     void buildFileTreeFromDb(int parentPathId, TreeItem* parentItem);
@@ -50,6 +53,7 @@ private:
     QString m_dataPath;
     DbManager* m_dbManager;
     Settings* m_settings;
+    WatchingItem* m_watchingItem;
 };
 
 #endif // TREEMODEL_H
