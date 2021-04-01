@@ -44,8 +44,13 @@ private:
 public:
     bool eventFilter(QObject *watched, QEvent *event) override;
 
+
+    // QWidget interface
 protected:
+    void closeEvent(QCloseEvent *event) override;
+    void hideEvent(QHideEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+
 private slots:
 
     void on_treeView_pressed(const QModelIndex &index);

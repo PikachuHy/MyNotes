@@ -335,6 +335,23 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
     return QObject::eventFilter(watched, e);
 }
 
+void Widget::closeEvent(QCloseEvent *event)
+{
+    if (m_systemTrayIcon->isVisible()) {
+        hide();
+        event->ignore();
+    }
+
+}
+
+void Widget::hideEvent(QHideEvent *event)
+{
+    if (m_systemTrayIcon->isVisible()) {
+        hide();
+        event->ignore();
+    }
+}
+
 void Widget::updatePreview() {
     updatePreview(currentNotePath());
 }
