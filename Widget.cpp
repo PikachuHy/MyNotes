@@ -346,10 +346,12 @@ void Widget::closeEvent(QCloseEvent *event)
 
 void Widget::hideEvent(QHideEvent *event)
 {
-    if (m_systemTrayIcon->isVisible()) {
-        hide();
-        event->ignore();
-    }
+    Q_UNUSED(event);
+    // FIXME: 这个地方写了会出问题，最小化窗口后，再点击托盘不显示窗口
+//    if (m_systemTrayIcon->isVisible()) {
+//        hide();
+//        event->ignore();
+//    }
 }
 
 void Widget::updatePreview() {
@@ -917,7 +919,7 @@ void Widget::initSystemTrayIcon()
     m_systemTrayIcon->setIcon(QIcon(QPixmap(":/icon/notebook_128x128.png")));
     auto menu = new QMenu();
     menu->addAction(tr("Show"), [this](){
-       this->show();
+       this->showNormal();
     });
 
     menu->addAction(tr("Settings"), [this](){
@@ -932,5 +934,16 @@ void Widget::initSystemTrayIcon()
     });
     m_systemTrayIcon->setContextMenu(menu);
     m_systemTrayIcon->show();
+    connect(m_systemTrayIcon, &QSystemTrayIcon::activated, [this](QSystemTrayIcon::ActivationReason reason){
+        qDebug() << reason;
+        switch (reason) {
+        case QSystemTrayIcon::Trigger:
+        case QSystemTrayIcon::DoubleClick:
+            this->showNormal();
+            break;
+        default:
+            break;
+        }
+    });
 }
 
