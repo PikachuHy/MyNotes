@@ -341,11 +341,15 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
 
 void Widget::closeEvent(QCloseEvent *event)
 {
+#ifdef _DEBUG
+    qDebug() << "close window in debug mode";
+#else
+    // 这个在Debug的时候很讨厌
     if (m_systemTrayIcon->isVisible()) {
         hide();
         event->ignore();
     }
-
+#endif
 }
 
 void Widget::hideEvent(QHideEvent *event)
