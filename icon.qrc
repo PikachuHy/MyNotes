@@ -7,5 +7,6 @@
         <file>icon/note_16x16.png</file>
         <file>icon/notebook_128x128.png</file>
         <file>icon/settings_16x16.png</file>
+        <file>icon/watching_16x16.png</file>
     </qresource>
 </RCC>

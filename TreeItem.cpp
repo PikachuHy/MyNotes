@@ -227,6 +227,14 @@ WatchingItem::WatchingItem(TreeItem *parentItem): TreeItem({"Watching"}, parentI
 }
 
 QVariant WatchingItem::data(int column, int role) const {
+    if (role == Qt::DecorationRole && column == 0) {
+#ifdef Q_OS_WIN
+        return QIcon(QPixmap(":/icon/watching_16x16.png"));
+#else
+        QFileIconProvider provider;
+        return provider.icon(QFileIconProvider::Folder);
+#endif
+    }
     return TreeItem::data(column, role);
 }
 
