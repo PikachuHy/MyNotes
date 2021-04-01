@@ -113,7 +113,9 @@ Widget::Widget(QWidget *parent)
     connect(openInBrowserShortcut, &QShortcut::activated, m_textPreview, [this]() {
         qDebug() << "open in browser";
         auto ip = m_settings->value("server.ip").toString();
-        QDesktopServices::openUrl(QUrl("http://"+ip));
+        auto owner = m_settings->value("server.owner").toString();
+        const QString &url = QString("http://%1/%2/%3/").arg(ip).arg(owner).arg(m_curNote.strId());
+        QDesktopServices::openUrl(QUrl(url));
     });
     auto mainLayout = new QHBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -834,22 +836,33 @@ QString Widget::generateHTML(const Note& note) {
     Document doc(mdFile.readAll());
     mdFile.close();
     auto html = doc.toHtml();
+    QFile cssFile(":css/css518.css");
+    cssFile.open(QIODevice::ReadOnly);
+    QString css = cssFile.readAll();
+    cssFile.close();
     QString mdCssPath = "github-markdown.css";
     html = R"(<!DOCTYPE html><html><head>
 <meta charset="utf-8">
-<title>Markdown</title>
-<link rel="stylesheet" href=")"
+<meta name='viewport' content='width=device-width initial-scale=1'>
+<title>)"
++
+note.title()
++
+R"(</title>
+<link href='https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext' rel='stylesheet' type='text/css' />
+
+<style type='text/css'>)"
            +
-           mdCssPath
+           css
            +
-           R"(">
+           R"("</style>
 </head>
-<body>
-<article class="markdown-body">)"
+<body class='typora-export'>
+<div id='write'  class=''>)"
            +
            html
            +
-           R"(</article></body></html>)";
+           R"(</div></body></html>)";
     return html;
 }
 
@@ -906,27 +919,7 @@ void Widget::uploadNoteAttachment(const Note &note) {
     for(const auto& info: infoList) {
         uploadFile(QFile(info.absoluteFilePath()));
     }
-    QFile mdFile(noteRealPath(note));
-    mdFile.open(QIODevice::ReadOnly);
-    Document doc(mdFile.readAll());
-    mdFile.close();
-    auto html = doc.toHtml();
-    QString mdCssPath = "/github.css";
-    html = R"(<!DOCTYPE html><html><head>
-<meta charset="utf-8">
-<title>Markdown</title>
-<link rel="stylesheet" href=")"
-           +
-           mdCssPath
-           +
-           R"(">
-</head>
-<body>
-<article class="markdown-body">)"
-           +
-           html
-           +
-           R"(</article></body></html>)";
+    auto html = generateHTML(note);
     QString uploadHtmlUrl = QString("http://%1:9201/upload?owner=%2&filename=index.html&note_id=%3").arg(serverIp).arg(owner).arg(noteId);
     http->uploadFile(uploadHtmlUrl, html.toUtf8());
 }
