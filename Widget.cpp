@@ -65,8 +65,10 @@ Widget::Widget(QWidget *parent)
         m_settings(Settings::instance())
         , m_esApi(new ElasticSearchRestApi(this))
         , m_fileSystemWatcher(new QFileSystemWatcher(this))
+        , m_systemTrayIcon(new QSystemTrayIcon(this))
 //        ,m_jieba(nullptr)
         {
+    initSystemTrayIcon();
     connect(m_fileSystemWatcher, &QFileSystemWatcher::fileChanged, [this](const QString &path){
         qDebug () << "file change:" << path;
         if (path.startsWith(workshopPath())) {
@@ -891,5 +893,27 @@ void Widget::uploadNoteAttachment(const Note &note) {
            R"(</article></body></html>)";
     QString uploadHtmlUrl = QString("http://%1:9201/upload?owner=%2&filename=index.html&note_id=%3").arg(serverIp).arg(owner).arg(noteId);
     http->uploadFile(uploadHtmlUrl, html.toUtf8());
+}
+
+void Widget::initSystemTrayIcon()
+{
+    m_systemTrayIcon->setIcon(QIcon(QPixmap(":/icon/notebook_128x128.png")));
+    auto menu = new QMenu();
+    menu->addAction(tr("Show"), [this](){
+       this->show();
+    });
+
+    menu->addAction(tr("Settings"), [this](){
+        SettingsDialog dialog;
+        dialog.exec();
+    });
+    menu->addAction(tr("About"), [this](){
+        qApp->aboutQt();
+    });
+    menu->addAction(tr("Quit"), [this](){
+        qApp->quit();
+    });
+    m_systemTrayIcon->setContextMenu(menu);
+    m_systemTrayIcon->show();
 }
 

@@ -18,6 +18,7 @@
 #include <QFile>
 #include <QFileSystemWatcher>
 #include "ElasticSearchRestApi.h"
+#include <QSystemTrayIcon>
 class TreeItem;
 class TreeModel;
 class DbManager;
@@ -108,6 +109,7 @@ private:
     void generateHTML(const Note& note, const QString& path);
     void addNoteTo();
     void uploadNoteAttachment(const Note& note);
+    void initSystemTrayIcon();
 private:
     // 左边到文档树
     QTreeView *m_treeView;
@@ -136,6 +138,7 @@ private:
     void loadLastOpenedNote();
     ElasticSearchRestApi* m_esApi;
     QFileSystemWatcher* m_fileSystemWatcher;
+    QSystemTrayIcon* m_systemTrayIcon;
 };
 
 #endif // WIDGET_H
