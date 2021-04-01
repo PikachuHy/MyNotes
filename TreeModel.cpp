@@ -127,7 +127,7 @@ void TreeModel::setupModelData(TreeItem *parent) {
     auto m_watchingItem = new WatchingItem(parent);
     auto watchingDirs = m_settings->value("watching_dirs").toStringList();
     for(const QString& watchingDir: watchingDirs) {
-        buildFileTree(watchingDir, m_watchingItem);
+        buildWatchingTree(watchingDir, m_watchingItem);
     }
     parent->appendChild(m_watchingItem);
     parent->appendChild(new AttachmentItem(attachmentPath(), parent));
@@ -144,6 +144,33 @@ void TreeModel::ensurePathExist(QString path) {
             exit(0);
         }
     }
+}
+
+void TreeModel::buildWatchingTree(QString path, TreeItem *parent)
+{
+    QDir dir(path);
+    if (!dir.exists()) {
+        qDebug() << dir << "not exist.";
+        return;
+    }
+    dir.setSorting(QDir::DirsFirst);
+    QFileInfoList info_list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+    for (int i = 0; i < info_list.count(); i++) {
+        auto info = info_list[i];
+        if (info.isFile() && !info.baseName().endsWith(".md")) continue;
+        QString data = info.fileName();
+        TreeItem* child;
+        if (info.isDir()) {
+            child = new WatchingFolderItem(data, parent);
+            child->setPath(info.absoluteFilePath());
+            buildWatchingTree(info.absoluteFilePath(), child);
+        } else {
+            child = new WatchingFileItem(data, parent);
+            child->setPath(info.absoluteFilePath());
+        }
+        parent->appendChild(child);
+    }
+
 }
 
 QString TreeModel::workshopPath() {

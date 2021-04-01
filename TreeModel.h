@@ -44,6 +44,7 @@ private:
     void setupModelData(TreeItem *parent);
     void buildFileTreeFromDb(int parentPathId, TreeItem* parentItem);
     void ensurePathExist(QString path);
+    void buildWatchingTree(QString path, TreeItem *parent);
 
     inline QString workshopPath();
     inline QString attachmentPath();
