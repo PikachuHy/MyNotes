@@ -186,11 +186,17 @@ void Widget::on_treeView_pressed(const QModelIndex &index) {
     if (item->isFile()) {
         auto noteItem = static_cast<NoteItem*>(item);
         QString notePath = workshopPath() + item->path();
+        qDebug() << "note path: " << notePath;
         // 右键选中笔记时，如果当前笔记就是选中的笔记，不重新载入笔记内容
         if (notePath == currentNotePath()) {
             return;
         }
-        loadNote(noteItem->note());
+        if (noteItem) {
+            loadNote(noteItem->note());
+        } else {
+            qDebug() << "note item is nullptr";
+            showErrorDialog(tr("note item is nullptr"));
+        }
     } else if (item->isWatchingFileItem()) {
         auto fileItem = static_cast<WatchingFileItem*>(item);
         auto filePath = fileItem->path();

@@ -115,6 +115,7 @@ bool TrashItem::isTrashItem() {
 
 TrashItem::TrashItem(const QString & path, TreeItem *parentItem) : TreeItem({"Trash"}, parentItem) {
     setPath(path);
+    m_isFolder = true;
 }
 
 bool TrashItem::isFile() {
@@ -163,6 +164,7 @@ bool WorkshopItem::isWorkshopItem() {
 
 WorkshopItem::WorkshopItem(const QString & path, TreeItem *parentItem) : TreeItem({"Workshop"}, parentItem) {
     setPath(path);
+    m_isFolder = true;
 }
 
 bool WorkshopItem::isFile() {
@@ -202,7 +204,7 @@ bool FolderItem::isFile() {
 }
 
 FolderItem::FolderItem(Path path, TreeItem *parentItem): TreeItem({path.name()}, parentItem), m_path(path) {
-
+    m_isFolder = true;
 }
 
 int FolderItem::pathId() {
@@ -223,7 +225,7 @@ QVariant FolderItem::data(int column, int role) const {
 
 
 WatchingItem::WatchingItem(TreeItem *parentItem): TreeItem({"Watching"}, parentItem) {
-
+    m_isFolder = true;
 }
 
 QVariant WatchingItem::data(int column, int role) const {
@@ -240,6 +242,7 @@ QVariant WatchingItem::data(int column, int role) const {
 
 WatchingFolderItem::WatchingFolderItem(const QString& path, const QString& displayName, TreeItem *parentItem): TreeItem({displayName}, parentItem){
     setPath(path);
+    m_isFolder = true;
 }
 
 QVariant WatchingFolderItem::data(int column, int role) const {

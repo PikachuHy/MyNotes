@@ -52,6 +52,7 @@ private:
     QList<QVariant> m_itemData;
     TreeItem *m_parentItem;
     QString m_path;
+protected:
     bool m_isFolder;
 };
 
