@@ -6,15 +6,26 @@
 #include <FileAppender.h>
 #include <QStandardPaths>
 #include <QDir>
-int showWindow() {
+#include "SingleApplication.h"
+int showWindow(SingleApplication* app) {
     Widget w;
+    QObject::connect(app, &SingleApplication::messageAvailable,
+        [&w](QString message) {
+        qDebug() << "show";
+        w.showNormal();
+    }
+    );
     w.show();
     auto ret = QApplication::exec();
     LOG_WARNING() << "Something went wrong." << "Result code is" << ret;
     return ret;
 }
 int main(int argc, char *argv[]) {
-    QApplication a(argc, argv);
+    SingleApplication a(argc, argv, "MyNotes");
+    if (a.isRunning()) {
+        a.sendMessage("app in running");
+        return 0;
+    }
 #ifdef _DEBUG
 #else
     auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
@@ -65,10 +76,10 @@ int main(int argc, char *argv[]) {
         auto settingsDialog = new SettingsDialog();
         auto ret = settingsDialog->exec();
         if (ret == QDialog::Accepted) {
-            return showWindow();
+            return showWindow(&a);
         }
     } else {
-        return showWindow();
+        return showWindow(&a);
     }
     return 0;
 }

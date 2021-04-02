@@ -63,6 +63,7 @@ set(PROJECT_SOURCES
         Http.cpp
         Settings.cpp
         SettingsDialog.cpp
+        SingleApplication.cpp SingleApplication.h
         FileSystemWatcher.cpp FileSystemWatcher.h
         ElasticSearchRestApi.cpp ElasticSearchRestApi.h)
 
