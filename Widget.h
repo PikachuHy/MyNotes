@@ -122,6 +122,9 @@ private:
     void initSystemTrayIcon();
     void initFileSystemWatcher();
     void syncAll();
+    void syncAllWatching();
+    void syncWatchingFile(const QString& path);
+    void syncWatchingFolder(const QString& path);
 private:
     // 左边到文档树
     QTreeView *m_treeView;

@@ -236,6 +236,10 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
                     m_treeModel->addWatchingDir(m_treeView->currentIndex(), dir);
                 }
             });
+            menu.addAction(tr("Sync All"), [this]() {
+                qDebug() << "sync all watching item";
+                this->syncAllWatching();
+            });
         } else if (item->isFile()) {
             auto a = new QAction("Open in Typora", &menu);
             menu.addAction(a);
@@ -990,20 +994,7 @@ void Widget::on_fileSystemWatcher_fileChanged(const QString &path) {
 
         }
     } else {
-        // TODO: 直接监听的文件处理
-        auto title = QFileInfo(path).baseName();
-        QFile mdFile(path);
-        mdFile.open(QIODevice::ReadOnly);
-        Document doc(mdFile.readAll());
-        mdFile.close();
-        auto html = doc.toHtml();
-        auto owner = m_settings->value("server.owner").toString();
-        ServerNoteInfo info;
-        info.title = title;
-        info.owner = owner;
-        info.noteHtml = html;
-        info.strId = md5(path);
-        m_esApi->putNote(info);
+        syncWatchingFile(path);
     }
 }
 
@@ -1039,5 +1030,54 @@ void Widget::initFileSystemWatcher() {
     connect(m_fileSystemWatcher, &FileSystemWatcher::deleteFile, [this](const QString& path){
         m_treeModel->removeWatchingNote(path);
     });
+}
+
+void Widget::syncAllWatching() {
+    auto watchingDirs = m_settings->value("watching_dirs").toStringList();
+    for(const auto& dir: watchingDirs) {
+        syncWatchingFolder(dir);
+    }
+    QMessageBox::information(this,
+                             tr("Sync Result"),
+                             tr("Sync All Watching Success")
+                             );
+}
+
+void Widget::syncWatchingFolder(const QString &path) {
+    QDir dir(path);
+    if (!dir.exists()) {
+        qWarning() << dir << "not exist.";
+        return;
+    }
+    dir.setSorting(QDir::DirsFirst);
+    QFileInfoList info_list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+    for (int i = 0; i < info_list.count(); i++) {
+        auto info = info_list[i];
+        if (info.isFile() && !info.fileName().endsWith(".md")) continue;
+        const QString &filePath = info.absoluteFilePath();
+        if (info.isDir()) {
+            syncWatchingFolder(filePath);
+        } else {
+            syncWatchingFile(filePath);
+        }
+    }
+
+}
+
+void Widget::syncWatchingFile(const QString& path) {
+    qInfo() << "sync watching file:" << path;
+    auto title = QFileInfo(path).baseName();
+    QFile mdFile(path);
+    mdFile.open(QIODevice::ReadOnly);
+    Document doc(mdFile.readAll());
+    mdFile.close();
+    auto html = doc.toHtml();
+    auto owner = m_settings->value("server.owner").toString();
+    ServerNoteInfo info;
+    info.title = title;
+    info.owner = owner;
+    info.noteHtml = html;
+    info.strId = md5(path);
+    m_esApi->putNote(info);
 }
 
