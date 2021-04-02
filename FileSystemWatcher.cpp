@@ -19,9 +19,9 @@ FileSystemWatcher::FileSystemWatcher() {
         QSet<QString> newChildrenSet(newChildren.begin(), newChildren.end());
         QSet<QString> childrenSet(children.begin(), children.end());
         auto newNameSet = newChildrenSet - childrenSet;
-        auto newNames = newNameSet.toList();
+        auto newNames = newNameSet.values();
         auto deletedNameSet = childrenSet - newChildrenSet;
-        auto deletedNames = deletedNameSet.toList();
+        auto deletedNames = deletedNameSet.values();
         m_path2childrenMap[changedPath] = newChildren;
         qDebug() << "new path:" << newNames;
         qDebug() << "deleted path:" << deletedNames;
