@@ -8,6 +8,7 @@
 #include <QDir>
 #include "SingleApplication.h"
 #include <QLoggingCategory>
+#include <QCommandLineParser>
 int showWindow(SingleApplication* app) {
     Widget w;
     QObject::connect(app, &SingleApplication::messageAvailable,
@@ -45,6 +46,21 @@ int main(int argc, char *argv[]) {
     QApplication::setOrganizationName("PikachuHy");
     QApplication::setOrganizationDomain("pikachu.net.cn");
     QApplication::setApplicationName("MyNotes");
+    // 解析工具
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Test helper");
+    parser.addHelpOption();
+    parser.addVersionOption();
+    QCommandLineOption debugOption(
+            "debug",
+            "output debug log");
+    parser.addOption(debugOption);
+    parser.process(a);
+    const QStringList args = parser.positionalArguments();
+    if (parser.isSet(debugOption)) {
+        QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, true);
+    }
+
     bool needSetConfig = false;
     auto m_settings = Settings::instance();
     auto baseUrl = m_settings->value("server.ip", QString()).toString();
