@@ -82,9 +82,20 @@ else()
             ${PROJECT_SOURCES}
         )
     else()
-        add_executable(MyNotes
-            ${PROJECT_SOURCES}
-        )
+        if (WIN32)
+            set(app_WINRC icon.rc)
+            set_property(SOURCE icon.rc APPEND PROPERTY
+                    OBJECT_DEPENDS ${PROJECT_SOURCE_DIR}/icon/icon.ico
+                    )
+            add_executable(MyNotes WIN32
+                    ${PROJECT_SOURCES}
+                    ${app_WINRC}
+                    )
+        else()
+            add_executable(MyNotes
+                    ${PROJECT_SOURCES}
+                    )
+        endif ()
     endif()
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
