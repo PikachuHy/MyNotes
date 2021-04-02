@@ -167,3 +167,30 @@ QByteArray ElasticSearchRestApi::buildSearchJson(const QString& q) {
     document.setObject(jsonObject);
     return document.toJson(QJsonDocument::Compact);
 }
+
+void ElasticSearchRestApi::putNote(const ServerNoteInfo& info) {
+
+    QNetworkAccessManager* manager = new QNetworkAccessManager;
+    QNetworkRequest request;
+    QByteArray line;
+    QEventLoop eventLoop;
+    QString url = baseUrl + QString("/note/_doc/") + info.strId;
+    request.setUrl(QUrl(url));
+    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/json");
+    QJsonObject jsonObject;
+    jsonObject.insert("owner", info.owner);
+    jsonObject.insert("note", info.noteHtml);
+    jsonObject.insert("title", info.title);
+    QJsonDocument document;
+    document.setObject(jsonObject);
+    QByteArray append = document.toJson(QJsonDocument::Compact);
+//    QByteArray append(R"({"user":"david","token":"e10adc3949ba59abbe56e057f20f883e"})");
+    qDebug() << url;
+    qDebug().noquote() << append;
+    QNetworkReply* reply = manager->put(request, append);
+    QObject::connect(manager, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
+    eventLoop.exec();
+    line=reply->readAll();
+    handleResult(line);
+
+}

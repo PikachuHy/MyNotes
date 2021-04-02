@@ -59,6 +59,10 @@ QByteArray fileChecksum(const QString &fileName,
     return QByteArray();
 }
 
+QString md5(const QString& path) {
+    return QCryptographicHash::hash(path.toUtf8(),QCryptographicHash::Md5).toHex();
+}
+
 
 Widget::Widget(QWidget *parent)
         : QWidget(parent),
@@ -821,8 +825,12 @@ QString Widget::noteRealPath(const Note& note) {
     return workshopPath() + note.strId() + "/index.md";
 }
 
+
 QString Widget::generateHTML(const Note& note) {
-    QFile mdFile(noteRealPath(note));
+    return generateHTML(noteRealPath(note), note.title());
+}
+QString Widget::generateHTML(const QString &path, const QString& title) {
+    QFile mdFile(path);
     mdFile.open(QIODevice::ReadOnly);
     Document doc(mdFile.readAll());
     mdFile.close();
@@ -837,7 +845,7 @@ QString Widget::generateHTML(const Note& note) {
 <meta name='viewport' content='width=device-width initial-scale=1'>
 <title>)"
 +
-note.title()
+title
 +
 R"(</title>
 <link href='https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext' rel='stylesheet' type='text/css' />
@@ -983,6 +991,19 @@ void Widget::on_fileSystemWatcher_fileChanged(const QString &path) {
         }
     } else {
         // TODO: 直接监听的文件处理
+        auto title = QFileInfo(path).baseName();
+        QFile mdFile(path);
+        mdFile.open(QIODevice::ReadOnly);
+        Document doc(mdFile.readAll());
+        mdFile.close();
+        auto html = doc.toHtml();
+        auto owner = m_settings->value("server.owner").toString();
+        ServerNoteInfo info;
+        info.title = title;
+        info.owner = owner;
+        info.noteHtml = html;
+        info.strId = md5(path);
+        m_esApi->putNote(info);
     }
 }
 

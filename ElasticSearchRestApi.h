@@ -14,11 +14,19 @@ struct SearchResult {
     QString note;
     QString highlight;
 };
+struct ServerNoteInfo {
+    QString strId;
+    QString title;
+    QString noteHtml;
+    QString owner;
+
+};
 class ElasticSearchRestApi: public QObject {
     Q_OBJECT
 public:
     explicit ElasticSearchRestApi(QObject* parent = nullptr);
     void putNote(const QString &owner, const QString &noteHtml, const Note& note);
+    void putNote(const ServerNoteInfo& info);
     void handleResult(const QByteArray& ret);
     QList<SearchResult> search(const QString& q);
     QByteArray buildSearchJson(const QString& q);

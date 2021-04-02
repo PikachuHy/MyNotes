@@ -115,6 +115,7 @@ private:
     QString currentNotePath();
     QString noteRealPath(const Note& note);
     QString generateHTML(const Note& note);
+    QString generateHTML(const QString& path, const QString& title);
     void generateHTML(const Note& note, const QString& path);
     void addNoteTo();
     void uploadNoteAttachment(const Note& note);
