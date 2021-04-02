@@ -925,7 +925,7 @@ void Widget::uploadNoteAttachment(const Note &note) {
     QString noteId = note.strId();
     QString serverIp = m_settings->value("server.ip").toString();
     auto uploadFile = [http, owner, noteId, serverIp](QFile file) {
-        auto checksum = fileChecksum(file.fileName(), QCryptographicHash::Sha512).toHex();
+        QString checksum = fileChecksum(file.fileName(), QCryptographicHash::Sha512).toHex();
         qDebug() << "checksum:" << checksum;
         QString _url = QString("http://%1:9201/upload").arg(serverIp);
         const QString &filename = QFileInfo(file).fileName();
@@ -942,7 +942,7 @@ void Widget::uploadNoteAttachment(const Note &note) {
             QString magic = "\nasldjlaskfdjlasdjfklsajdfkljasldflalsfdkajsf";
             for (int i=0;i<20;i++)
                 checksum += magic;
-            auto res = http->uploadFile(checksumUploadUrl, checksum);
+            auto res = http->uploadFile(checksumUploadUrl, checksum.toUtf8());
             qDebug() << "res:" << res;
         }
         QString uploadFileUrl = QString("%1?owner=%2&filename=%3&note_id=%4").arg(_url).arg(owner).arg(filename).arg(noteId);
