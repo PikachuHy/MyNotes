@@ -998,19 +998,6 @@ void Widget::on_fileSystemWatcher_fileChanged(const QString &path) {
     }
 }
 
-void Widget::on_fileSystemWatcher_directoryChanged(const QString &path) {
-    qDebug() << "dir change:" << path;
-    if (path.startsWith(workshopPath())) {
-        // 专门的笔记不要管
-    } else {
-        // 处理监控的文件夹
-
-
-        // 更新监控文件树
-
-    }
-}
-
 void Widget::initFileSystemWatcher() {
     connect(m_fileSystemWatcher, &FileSystemWatcher::fileChanged,
             this, &Widget::on_fileSystemWatcher_fileChanged);
