@@ -150,6 +150,8 @@ Widget::Widget(QWidget *parent)
             qInfo() << "reupload note done.";
         });
     }
+    // 设置开启自启动
+    setAutoStart();
 }
 
 void Widget::loadLastOpenedNote() {
@@ -1101,5 +1103,16 @@ void Widget::showSyncResult(const QString& msg) {
                              tr("Sync Result"),
                              msg
     );
+}
+
+// 设置开机自启动
+// http://blog.sina.com.cn/s/blog_a6fb6cc90101feia.html
+void Widget::setAutoStart() {
+#define REG_RUN "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+    QString applicationName = QApplication::applicationName();
+    auto settings = new QSettings(REG_RUN, QSettings::NativeFormat);
+    QString applicationPath = QApplication::applicationFilePath();
+    settings->setValue(applicationName, '"' + applicationPath.replace("/", "\\") + '"');
+    delete settings;
 }
 
