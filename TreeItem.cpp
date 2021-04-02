@@ -97,6 +97,10 @@ int TreeItem::pathId() {
     return 0;
 }
 
+void TreeItem::setDisplayName(const QString& name) {
+    m_itemData[0] = name;
+}
+
 QVariant TrashItem::data(int column, int role) const {
     if (role == Qt::DecorationRole && column == 0) {
 #ifdef Q_OS_WIN

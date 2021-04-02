@@ -73,6 +73,9 @@ private slots:
     void on_action_exportNoteToHTML();
 
     void on_searchDialog_searchTextChanged(const QString& text);
+
+    void on_fileSystemWatcher_fileChanged(const QString &path);
+    void on_fileSystemWatcher_directoryChanged(const QString &path);
 private:
     inline QString attachmentPath() {
         return m_notesPath + "/attachment/";
@@ -116,6 +119,7 @@ private:
     void addNoteTo();
     void uploadNoteAttachment(const Note& note);
     void initSystemTrayIcon();
+    void initFileSystemWatcher();
     void syncAll();
 private:
     // 左边到文档树

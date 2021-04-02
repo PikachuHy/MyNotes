@@ -70,28 +70,7 @@ Widget::Widget(QWidget *parent)
 //        ,m_jieba(nullptr)
         {
     initSystemTrayIcon();
-    connect(m_fileSystemWatcher, &FileSystemWatcher::fileChanged, [this](const QString &path){
-        qDebug () << "file change:" << path;
-        if (path.startsWith(workshopPath())) {
-            if (path.endsWith("index.md")) {
-                // 标准的笔记处理
-                QStringList segs = path.split('/');
-                QString noteStrId = segs[segs.size() - 2];
-                qDebug() << "note id:" << noteStrId;
-                auto note = m_dbManager->getNote(noteStrId);
-                if (note.id() == -1) {
-                    qWarning() << "invalid note from strId:" << noteStrId;
-                    showErrorDialog(tr("invalid note from strId: %1").arg(noteStrId));
-                } else {
-                    updatePreview();
-                }
-            } else {
-
-            }
-        } else {
-            // TODO: 直接监听的文件处理
-        }
-    });
+    initFileSystemWatcher();
     m_treeView = new TreeView();
     m_textEdit = new QTextEdit();
     m_textPreview = new QWebEngineView();
@@ -982,5 +961,62 @@ void Widget::syncAll() {
         m_esApi->putNote(owner, html, note);
         uploadNoteAttachment(note);
     }
+}
+
+void Widget::on_fileSystemWatcher_fileChanged(const QString &path) {
+    qDebug () << "file change:" << path;
+    if (path.startsWith(workshopPath())) {
+        if (path.endsWith("index.md")) {
+            // 标准的笔记处理
+            QStringList segs = path.split('/');
+            QString noteStrId = segs[segs.size() - 2];
+            qDebug() << "note id:" << noteStrId;
+            auto note = m_dbManager->getNote(noteStrId);
+            if (note.id() == -1) {
+                qWarning() << "invalid note from strId:" << noteStrId;
+                showErrorDialog(tr("invalid note from strId: %1").arg(noteStrId));
+            } else {
+                updatePreview();
+            }
+        } else {
+
+        }
+    } else {
+        // TODO: 直接监听的文件处理
+    }
+}
+
+void Widget::on_fileSystemWatcher_directoryChanged(const QString &path) {
+    qDebug() << "dir change:" << path;
+    if (path.startsWith(workshopPath())) {
+        // 专门的笔记不要管
+    } else {
+        // 处理监控的文件夹
+
+
+        // 更新监控文件树
+
+    }
+}
+
+void Widget::initFileSystemWatcher() {
+    connect(m_fileSystemWatcher, &FileSystemWatcher::fileChanged,
+            this, &Widget::on_fileSystemWatcher_fileChanged);
+    connect(m_fileSystemWatcher, &FileSystemWatcher::renameFolder, [this](const QString& oldFolderPath, const QString& newFolderPath){
+        qDebug() << "rename folder:" << oldFolderPath << newFolderPath;
+        m_treeModel->updateWatchingDir(oldFolderPath, newFolderPath);
+    });
+    connect(m_fileSystemWatcher, &FileSystemWatcher::newFolder, [this](const QString& newFolderPath){
+        m_treeModel->addWatchingNode(newFolderPath);
+    });
+    connect(m_fileSystemWatcher, &FileSystemWatcher::newFile, [this](const QString& newFilePath){
+        m_treeModel->addWatchingNode(newFilePath);
+    });
+    connect(m_fileSystemWatcher, &FileSystemWatcher::deleteFolder, [this](const QString& path){
+        m_treeModel->removeWatchingNote(path);
+    });
+    connect(m_fileSystemWatcher, &FileSystemWatcher::deleteFile, [this](const QString& path){
+        m_treeModel->removeWatchingNote(path);
+    });
 }
 

@@ -3,6 +3,7 @@
 #include "TreeItem.h"
 #include "Constant.h"
 #include "DbManager.h"
+#include "FileSystemWatcher.h"
 #include <QStringList>
 #include <QDir>
 #include <QDebug>
@@ -128,8 +129,10 @@ void TreeModel::setupModelData(TreeItem *parent) {
     m_watchingItem = new WatchingItem(parent);
     auto watchingDirs = m_settings->value("watching_dirs").toStringList();
     for(const QString& watchingDir: watchingDirs) {
+        FileSystemWatcher::instance()->addPath(watchingDir);
         auto dirName = QDir(watchingDir).dirName();
         auto watchingFolder = new WatchingFolderItem(watchingDir, dirName, m_watchingItem);
+        m_path2item[watchingDir] = watchingFolder;
         m_watchingItem->appendChild(watchingFolder);
         buildWatchingTree(watchingDir, watchingFolder);
     }
@@ -162,16 +165,19 @@ void TreeModel::buildWatchingTree(QString path, TreeItem *parent)
     for (int i = 0; i < info_list.count(); i++) {
         auto info = info_list[i];
         if (info.isFile() && !info.fileName().endsWith(".md")) continue;
+        const QString &filePath = info.absoluteFilePath();
+        FileSystemWatcher::instance()->addPath(filePath);
         QString data = info.fileName();
         TreeItem* child;
         if (info.isDir()) {
-            child = new WatchingFolderItem(info.absoluteFilePath(), data, parent);
-            child->setPath(info.absoluteFilePath());
-            buildWatchingTree(info.absoluteFilePath(), child);
+            child = new WatchingFolderItem(filePath, data, parent);
+            child->setPath(filePath);
+            buildWatchingTree(filePath, child);
         } else {
-            child = new WatchingFileItem(info.absoluteFilePath(), data, parent);
-            child->setPath(info.absoluteFilePath());
+            child = new WatchingFileItem(filePath, data, parent);
+            child->setPath(filePath);
         }
+        m_path2item[filePath] = child;
         parent->appendChild(child);
     }
 
@@ -231,6 +237,7 @@ void TreeModel::addWatchingDir(const QModelIndex& parent, const QString &watchin
      auto dirName = QDir(watchingDir).dirName();
      auto watchingFolder = new WatchingFolderItem(watchingDir, dirName, m_watchingItem);
      m_watchingItem->appendChild(watchingFolder);
+     m_path2item[watchingDir] = watchingFolder;
      buildWatchingTree(watchingDir, watchingFolder);
      endInsertRows();
 }
@@ -251,5 +258,71 @@ void TreeModel::buildFileTreeFromDb(int parentPathId, TreeItem *parentItem) {
         auto item = new NoteItem(note, parentItem);
         item->setPath(realPath);
         parentItem->appendChild(item);
+    }
+}
+
+void TreeModel::updateWatchingDir(const QString &oldPath, const QString &newPath) {
+    if (m_path2item.contains(oldPath)) {
+        auto item = m_path2item[oldPath];
+        if (item) {
+            qDebug() << "update watching dir." << "from" << oldPath << "to" << newPath;
+            item->setPath(newPath);
+            item->setDisplayName(QDir(newPath).dirName());
+            m_path2item.remove(oldPath);
+            m_path2item[newPath] = item;
+            auto row = item->indexInParent();
+            beginRemoveRows(createIndex(row, 0, item), row, row);
+            endRemoveRows();
+        } else {
+            qWarning() << "update watching dir error." << "item in nullptr";
+        }
+    } else {
+        qWarning() << "update watching dir error." << oldPath << "not in map.";
+    }
+}
+
+void TreeModel::addWatchingNode(const QString &path) {
+    if (m_path2item.contains(path)) {
+        qWarning() << "path already in watching tree." << path;
+    } else {
+        const QFileInfo fileInfo(path);
+        auto parentPath = fileInfo.absoluteDir().absolutePath();
+        if (m_path2item.contains(parentPath)) {
+            auto parentItem = m_path2item[parentPath];
+            auto row = parentItem->childCount();
+            auto parentIndex = createIndex(parentItem->indexInParent(), 0, parentItem);
+            TreeItem* child;
+            const QString &filename = fileInfo.fileName();
+            if (fileInfo.isDir()) {
+                child = new WatchingFolderItem(path, filename, parentItem);
+            } else {
+                child = new WatchingFileItem(path, filename, parentItem);
+            }
+            beginInsertRows(parentIndex, row, row);
+            parentItem->appendChild(child);
+            endInsertRows();
+            m_path2item[path] = child;
+            FileSystemWatcher::instance()->addPath(path);
+        } else {
+            qWarning() << "parent path not in map." << parentPath;
+        }
+    }
+}
+
+void TreeModel::removeWatchingNote(const QString &path) {
+    if (m_path2item.contains(path)) {
+        auto item = m_path2item[path];
+        auto row = item->indexInParent();
+        auto index = createIndex(row, 0, item);
+        beginRemoveRows(index, row, row);
+        auto parentItem = item->parentItem();
+        if (parentItem) {
+            parentItem->removeChild(item);
+        } else {
+            qWarning() << "parent item is nullptr." << path;
+        }
+        endRemoveRows();
+    } else {
+        qWarning() << "path not in watching tree." << path;
     }
 }

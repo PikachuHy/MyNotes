@@ -40,6 +40,12 @@ public:
     void removeNode(const QModelIndex& index);
 
     void addWatchingDir(const QModelIndex& parent, const QString& path);
+
+    void updateWatchingDir(const QString& oldPath, const QString& newPath);
+
+    void addWatchingNode(const QString& path);
+
+    void removeWatchingNote(const QString& path);
 private:
     void setupModelData(TreeItem *parent);
     void buildFileTreeFromDb(int parentPathId, TreeItem* parentItem);
@@ -55,6 +61,7 @@ private:
     DbManager* m_dbManager;
     Settings* m_settings;
     WatchingItem* m_watchingItem;
+    QMap<QString, TreeItem*> m_path2item;
 };
 
 #endif // TREEMODEL_H

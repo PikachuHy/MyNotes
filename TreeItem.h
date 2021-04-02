@@ -47,6 +47,8 @@ public:
     int removeChild(TreeItem* item);
 
     int indexInParent();
+
+    void setDisplayName(const QString& name);
 private:
     QList<TreeItem *> m_childItems;
     QList<QVariant> m_itemData;
