@@ -142,7 +142,7 @@ Widget::Widget(QWidget *parent)
     loadLastOpenedNote();
     const int syncVersion = 20210402;
     if (m_settings->value("sync.version", 0).toInt() < syncVersion) {
-        QTimer::singleShot(1000, [this]() {
+        QTimer::singleShot(1000, [this, syncVersion]() {
             qInfo() << "reupload note for new sync version";
             this->syncAll();
             this->syncAllWatching();
