@@ -16,8 +16,8 @@ FileSystemWatcher::FileSystemWatcher() {
         QStringList children = m_path2childrenMap[changedPath];
         const QDir dir(changedPath);
         auto newChildren = dir.entryList(QDir::NoDotAndDotDot  | QDir::AllDirs | QDir::Files, QDir::DirsFirst);
-        QSet<QString> newChildrenSet = QSet<QString>::fromList(newChildren);
-        QSet<QString> childrenSet = QSet<QString>::fromList(children);
+        QSet<QString> newChildrenSet(newChildren.begin(), newChildren.end());
+        QSet<QString> childrenSet(children.begin(), children.end());
         auto newNameSet = newChildrenSet - childrenSet;
         auto newNames = newNameSet.toList();
         auto deletedNameSet = childrenSet - newChildrenSet;
