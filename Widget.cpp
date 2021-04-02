@@ -140,6 +140,16 @@ Widget::Widget(QWidget *parent)
     m_listView = nullptr;
     // 读最后一次打开的笔记
     loadLastOpenedNote();
+    const int syncVersion = 20210402;
+    if (m_settings->value("sync.version", 0).toInt() < syncVersion) {
+        QTimer::singleShot(1000, [this]() {
+            qInfo() << "reupload note for new sync version";
+            this->syncAll();
+            this->syncAllWatching();
+            m_settings->setValue("sync.version", syncVersion);
+            qInfo() << "reupload note done.";
+        });
+    }
 }
 
 void Widget::loadLastOpenedNote() {
