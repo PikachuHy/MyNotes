@@ -204,6 +204,9 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
         } else if (item->isAttachmentItem()) {
 
         } else if (item->isWatchingFolderItem()) {
+            menu.addAction(tr("Sync Folder"), [this, item]() {
+                this->syncWatchingFolder(item->path());
+            });
             // 如果当前文件夹是监控文件夹的根目录
             if (item->parentItem()->isWatchingItem()) {
                 menu.addAction(tr("Remove Watching Folder"), [this, item](){
@@ -215,7 +218,9 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
                 });
             }
         } else if (item->isWatchingFileItem()) {
-
+            menu.addAction(tr("Sync Note"), [this, item]() {
+                this->syncWatchingFile(item->path());
+            });
         } else if (item->isWatchingItem()) {
             menu.addAction(tr("Add Watch Folder"), [this]() {
                 qDebug() << "watch folder";
