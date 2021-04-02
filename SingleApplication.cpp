@@ -7,7 +7,7 @@
 #include <QTimer>
 #include <QByteArray>
 
-SingleApplication::SingleApplication(int &argc, char *argv[], const QString uniqueKey) : QApplication(argc, argv)
+SingleApplication::SingleApplication(int &argc, char *argv[], const QString& uniqueKey) : QApplication(argc, argv)
 {
     sharedMemory.setKey(uniqueKey);
     if (sharedMemory.attach())
@@ -29,7 +29,7 @@ SingleApplication::SingleApplication(int &argc, char *argv[], const QString uniq
         sharedMemory.unlock();
 
         // start checking for messages of other instances.
-        QTimer *timer = new QTimer(this);
+        auto timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(checkForMessage()));
         timer->start(1000);
     }
@@ -57,7 +57,7 @@ void SingleApplication::checkForMessage()
 }
 
 // public functions.
-bool SingleApplication::isRunning()
+bool SingleApplication::isRunning() const
 {
     return _isRunning;
 }
@@ -69,7 +69,7 @@ bool SingleApplication::sendMessage(const QString &message)
 
     QByteArray byteArray("1");
     byteArray.append(message.toUtf8());
-    byteArray.append('/0'); // < should be as char here, not a string!
+    byteArray.append('0'); // < should be as char here, not a string!
     sharedMemory.lock();
     char *to = (char*)sharedMemory.data();
     const char *from = byteArray.data();
