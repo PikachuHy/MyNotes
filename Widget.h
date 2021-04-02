@@ -125,6 +125,7 @@ private:
     void syncAllWatching();
     void syncWatchingFile(const QString& path);
     void syncWatchingFolder(const QString& path);
+    void showSyncResult(const QString& msg);
 private:
     // 左边到文档树
     QTreeView *m_treeView;

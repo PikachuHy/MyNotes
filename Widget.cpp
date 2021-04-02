@@ -206,6 +206,7 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
         } else if (item->isWatchingFolderItem()) {
             menu.addAction(tr("Sync Folder"), [this, item]() {
                 this->syncWatchingFolder(item->path());
+                showSyncResult(tr("Sync Watching Folder Success"));
             });
             // 如果当前文件夹是监控文件夹的根目录
             if (item->parentItem()->isWatchingItem()) {
@@ -220,6 +221,7 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
         } else if (item->isWatchingFileItem()) {
             menu.addAction(tr("Sync Note"), [this, item]() {
                 this->syncWatchingFile(item->path());
+                showSyncResult(tr("Sync Watching Note Success"));
             });
         } else if (item->isWatchingItem()) {
             menu.addAction(tr("Add Watch Folder"), [this]() {
@@ -1043,10 +1045,7 @@ void Widget::syncAllWatching() {
     for(const auto& dir: watchingDirs) {
         syncWatchingFolder(dir);
     }
-    QMessageBox::information(this,
-                             tr("Sync Result"),
-                             tr("Sync All Watching Success")
-                             );
+    showSyncResult(tr("Sync All Watching Success"));
 }
 
 void Widget::syncWatchingFolder(const QString &path) {
@@ -1085,5 +1084,12 @@ void Widget::syncWatchingFile(const QString& path) {
     info.noteHtml = html;
     info.strId = md5(path);
     m_esApi->putNote(info);
+}
+
+void Widget::showSyncResult(const QString& msg) {
+    QMessageBox::information(this,
+                             tr("Sync Result"),
+                             msg
+    );
 }
 
