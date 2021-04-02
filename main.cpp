@@ -7,6 +7,7 @@
 #include <QStandardPaths>
 #include <QDir>
 #include "SingleApplication.h"
+#include <QLoggingCategory>
 int showWindow(SingleApplication* app) {
     Widget w;
     QObject::connect(app, &SingleApplication::messageAvailable,
@@ -28,6 +29,8 @@ int main(int argc, char *argv[]) {
     }
 #ifdef _DEBUG
 #else
+    // 发布版默认不输出debug日志
+    QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, false);
     auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
     auto logPath = docPath + "/MyNotes/logs";
     QDir logDir(logPath);
