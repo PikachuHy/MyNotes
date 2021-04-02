@@ -277,6 +277,20 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
                 });
             }
         }
+        // 除了假的监控结点外，其他的结点都可以在文件浏览器中打开
+        if (!item->isWatchingItem()) {
+            menu.addAction(
+#ifdef Q_OS_MAC
+                    tr("Open in Finder"),
+#else
+                        tr("Open in Explore"),
+#endif
+                    [this, item]() {
+                        QString url = "file://" + item->path();
+                        QDesktopServices::openUrl(QUrl(url));
+                    }
+            );
+        }
     }
     menu.exec(m_treeView->mapToGlobal(pos));
 }
