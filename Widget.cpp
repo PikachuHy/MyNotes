@@ -146,13 +146,13 @@ Widget::Widget(QWidget *parent)
     // 读最后一次打开的笔记
     loadLastOpenedNote();
     const int syncVersion = 20210402;
-    int curSyncVersion = Settings::instance()->synVersion;
+    int curSyncVersion = Settings::instance()->syncVersion;
     if (curSyncVersion < syncVersion) {
         QTimer::singleShot(1000, [this, syncVersion]() {
             qInfo() << "reupload note for new sync version";
             this->syncAll();
             this->syncAllWatching();
-            Settings::instance()->synVersion = syncVersion;
+            Settings::instance()->syncVersion = syncVersion;
             qInfo() << "reupload note done.";
         });
     }

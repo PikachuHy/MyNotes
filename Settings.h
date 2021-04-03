@@ -91,8 +91,8 @@ public:
     QStringRef<KEY_USER_NAME_ZH> usernameZh;
     QStringRef<KEY_USER_NAME_EN> usernameEn;
     QRectRef<KEY_MAIN_WINDOW_GEOMETRY> mainWindowGeometry;
-    IntRef<KEY_SYNC_VERSION> synVersion;
-    BoolRef<KEY_SYNC_AUTO> synAuto;
+    IntRef<KEY_SYNC_VERSION> syncVersion;
+    BoolRef<KEY_SYNC_AUTO> syncAuto;
     QStringListRef<KEY_WATCHING_FOLDERS> watchingFolders;
 
 // Singleton, to be used by any part of the app

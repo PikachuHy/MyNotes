@@ -31,7 +31,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
     auto formLayout = new QFormLayout();
     auto autoSyncCheckBox = new QCheckBox(tr("Auto sync"));
     formLayout->addRow(autoSyncCheckBox);
-    autoSyncCheckBox->setChecked(Settings::instance()->synAuto);
+    autoSyncCheckBox->setChecked(Settings::instance()->syncAuto);
 #ifdef Q_OS_WIN
     m_typoraPathLineEdit = new QLineEdit();
     m_typoraPathChooseBtn = new QPushButton(tr("..."));
