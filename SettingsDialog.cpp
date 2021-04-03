@@ -73,6 +73,23 @@ SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
                              showWarning(tr("SettingsDialog"), tr("Typora path can't be empty"));
                              return;
                          }
+                         QFileInfo info(typoraPath);
+                         QString typoraPathErrorMsgTemplate = tr(R"(Typora is not %1.
+Please check your typora path.
+Current path is "%2"
+)");
+                         if (!info.exists()) {
+                             qDebug() << typoraPath << "is not exist.";
+                             QString msg = typoraPathErrorMsgTemplate.arg("exist").arg(typoraPath);
+                             showWarning(tr("SettingDialog"), msg);
+                             return;
+                         }
+                         if (!info.isExecutable()) {
+                             qDebug() << typoraPath << "is not executable";
+                             QString msg = typoraPathErrorMsgTemplate.arg("executable").arg(typoraPath);
+                             showWarning(tr("SettingDialog"), msg);
+                             return;
+                         }
                          Settings::instance()->typoraPath = typoraPath;
 #endif
                          this->accept();
