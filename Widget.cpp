@@ -781,7 +781,7 @@ Jieba *Widget::jieba() {
 void Widget::openInTypora(const QString& notePath) {
 #ifdef Q_OS_WIN
     QStringList pathList;
-    auto typoraPath = m_settings->value("path.typora", "").toString();
+    QString typoraPath = Settings::instance()->typoraPath;
     pathList << typoraPath;
     pathList << "C:\\Program Files\\Typora\\Typora.exe";
     pathList << "C:\\Program Files (x86)\\Typora\\Typora.exe";
