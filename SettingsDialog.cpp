@@ -35,7 +35,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
     {
         QString serverIp = Settings::instance()->serverIp;
         if (serverIp.isEmpty()) {
-            Settings::instance()->serverIp = "http://in.css518.cn";
+            Settings::instance()->serverIp = "in.css518.cn";
         }
     }
     m_serverLineEdit->setText(Settings::instance()->serverIp);
@@ -82,6 +82,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
             showWarning(tr("SettingDialog"), tr("ServerIp can't be empty."));
             return;
         }
+        Settings::instance()->serverIp = serverIp;
 #ifdef Q_OS_WIN
                          auto typoraPath = m_typoraPathLineEdit->text();
                          if (typoraPath.isEmpty()) {

@@ -86,16 +86,17 @@ Widget::Widget(QWidget *parent)
     });
     auto searchShortcut = new QShortcut((Qt::Key_F), m_textPreview);
     connect(searchShortcut, &QShortcut::activated, m_textPreview, [this]() {
-        qDebug() << "search";
         QString ip = Settings::instance()->serverIp;
-        m_textPreview->setUrl(QUrl("http://"+ip));
+        QString url = "http://"+ip;
+        qDebug() << "search" << url;
+        m_textPreview->setUrl(QUrl(url));
     });
     auto openInBrowserShortcut = new QShortcut((Qt::Key_B), m_textPreview);
     connect(openInBrowserShortcut, &QShortcut::activated, m_textPreview, [this]() {
-        qDebug() << "open in browser";
         QString ip = Settings::instance()->serverIp;
         QString owner = Settings::instance()->usernameEn;
         const QString &url = QString("http://%1/%2/%3/").arg(ip).arg(owner).arg(m_curNote.strId());
+        qDebug() << "open in browser" << url;
         QDesktopServices::openUrl(QUrl(url));
     });
     auto mainLayout = new QHBoxLayout();
