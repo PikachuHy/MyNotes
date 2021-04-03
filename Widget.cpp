@@ -1113,11 +1113,34 @@ void Widget::showSyncResult(const QString& msg) {
 // 设置开机自启动
 // http://blog.sina.com.cn/s/blog_a6fb6cc90101feia.html
 void Widget::setAutoStart() {
+#ifdef Q_OS_WIN
 #define REG_RUN "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
     QString applicationName = QApplication::applicationName();
     auto settings = new QSettings(REG_RUN, QSettings::NativeFormat);
     QString applicationPath = QApplication::applicationFilePath();
     settings->setValue(applicationName, '"' + applicationPath.replace("/", "\\") + '"');
     delete settings;
+#endif
+#ifdef Q_OS_MAC
+    // mac开机自启动
+    // https://gist.github.com/andreybutov/33783bca1af9db8f9f36c463c77d7a86
+    auto macOSXAppBundlePath = []() {
+        QDir dir = QDir (QCoreApplication::applicationDirPath() );
+        dir.cdUp();
+        dir.cdUp();
+        QString absolutePath = dir.absolutePath();
+        // absolutePath will contain a "/" at the end,
+        // but we want the clean path to the .app bundle
+        if ( absolutePath.length() > 0 && absolutePath.right(1) == "/" ) {
+            absolutePath.chop(1);
+        }
+        return absolutePath;
+    };
+    QStringList args;
+    args << QString("-e tell application \"System Events\" to make login item at end ") +
+            "with properties {path:\"" + macOSXAppBundlePath() + "\", hidden:false}";
+
+    QProcess::execute("osascript", args);
+#endif
 }
 
