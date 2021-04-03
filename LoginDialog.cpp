@@ -60,6 +60,7 @@ LoginDialog::LoginDialog() {
         if (ret.success) {
             Settings::instance()->usernameEn = ret.usernameEn;
             Settings::instance()->usernameZh = ret.usernameZh;
+            this->accept();
         } else {
             showError(tr("Login fail"), ret.msg);
         }
