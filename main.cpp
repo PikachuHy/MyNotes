@@ -94,6 +94,11 @@ int main(int argc, char *argv[]) {
         }
     }
     bool needSetConfig = false;
+    QString serverIp = Settings::instance()->serverIp;
+    if (serverIp.isEmpty()) {
+        needSetConfig = true;
+    }
+    qDebug() << "serverIp:" << serverIp;
 #ifdef Q_OS_WIN
     QString typoraPath = Settings::instance()->typoraPath;
     if (typoraPath.isEmpty()) {

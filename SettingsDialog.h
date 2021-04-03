@@ -17,6 +17,7 @@ public:
     explicit SettingsDialog(QWidget* parent = nullptr);
 
 private:
+    QLineEdit *m_serverLineEdit;
     QLineEdit *m_typoraPathLineEdit;
     QPushButton *m_typoraPathChooseBtn;
 };

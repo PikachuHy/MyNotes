@@ -30,6 +30,15 @@ SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
     setFont(_font);
     auto layout = new QVBoxLayout();
     auto formLayout = new QFormLayout();
+    m_serverLineEdit = new QLineEdit();
+    formLayout->addRow(tr("ServerIP:"), m_serverLineEdit);
+    {
+        QString serverIp = Settings::instance()->serverIp;
+        if (serverIp.isEmpty()) {
+            Settings::instance()->serverIp = "http://in.css518.cn";
+        }
+    }
+    m_serverLineEdit->setText(Settings::instance()->serverIp);
     auto autoSyncCheckBox = new QCheckBox(tr("Auto sync"));
     formLayout->addRow(autoSyncCheckBox);
     autoSyncCheckBox->setChecked(Settings::instance()->syncAuto);
@@ -67,6 +76,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
     buttonBox->setStandardButtons(QDialogButtonBox::Ok);
 
     QObject::connect(buttonBox, &QDialogButtonBox::accepted, [this]() {
+        auto serverIp = m_serverLineEdit->text();
+        if (serverIp.isEmpty()) {
+            qWarning() << "serverIp is empty.";
+            showWarning(tr("SettingDialog"), tr("ServerIp can't be empty."));
+            return;
+        }
 #ifdef Q_OS_WIN
                          auto typoraPath = m_typoraPathLineEdit->text();
                          if (typoraPath.isEmpty()) {
