@@ -309,7 +309,7 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
             }
         }
         // 除了假的监控结点外，其他的结点都可以在文件浏览器中打开
-        if (!item->isWatchingItem()) {
+        if (!(item->isWatchingItem() || item->isFolderItem())) {
             menu.addAction(
 #ifdef Q_OS_MAC
                     tr("Open in Finder"),
@@ -969,6 +969,7 @@ void Widget::uploadNoteAttachment(const Note &note) {
     auto dir = QFileInfo(notePath).dir();
     auto infoList = dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
     for(const auto& info: infoList) {
+        if (info.fileName() == "index.md") continue;
         uploadFile(QFile(info.absoluteFilePath()));
     }
     auto html = generateHTML(note);
@@ -1114,7 +1115,7 @@ void Widget::syncWatchingFile(const QString& path) {
     info.title = title;
     info.owner = owner;
     info.noteHtml = html;
-    info.strId = md5(path);
+    info.strId = Utils::md5(path);
     m_esApi->putNote(info);
 }
 

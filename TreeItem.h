@@ -36,6 +36,8 @@ public:
 
     virtual bool isWorkshopItem();
 
+    virtual bool isFolderItem() { return false; }
+
     virtual bool isFile();
 
     virtual bool isWatchingItem() { return false; }
@@ -80,6 +82,8 @@ public:
     explicit FolderItem(Path path, TreeItem* parentItem = nullptr);
 
     QVariant data(int column, int role) const override;
+
+    virtual bool isFolderItem() { return true; }
 
     bool isFile() override;
 
