@@ -91,14 +91,14 @@ Widget::Widget(QWidget *parent)
     auto searchShortcut = new QShortcut((Qt::Key_F), m_textPreview);
     connect(searchShortcut, &QShortcut::activated, m_textPreview, [this]() {
         qDebug() << "search";
-        auto ip = m_settings->value("server.ip").toString();
+        QString ip = Settings::instance()->serverIp;
         m_textPreview->setUrl(QUrl("http://"+ip));
     });
     auto openInBrowserShortcut = new QShortcut((Qt::Key_B), m_textPreview);
     connect(openInBrowserShortcut, &QShortcut::activated, m_textPreview, [this]() {
         qDebug() << "open in browser";
-        auto ip = m_settings->value("server.ip").toString();
-        auto owner = m_settings->value("server.owner").toString();
+        QString ip = Settings::instance()->serverIp;
+        QString owner = Settings::instance()->usernameEn;
         const QString &url = QString("http://%1/%2/%3/").arg(ip).arg(owner).arg(m_curNote.strId());
         QDesktopServices::openUrl(QUrl(url));
     });
@@ -119,11 +119,15 @@ Widget::Widget(QWidget *parent)
     m_treeView->setModel(m_treeModel);
     initSlots();
     auto screenSize = QApplication::primaryScreen()->size();
-    auto winGeometry = m_settings->value("win_geometry", QRect(
-            (screenSize.width()-1500) / 2,
-            (screenSize.height()-800) / 2,
-            1500, 800
-            )).toRect();
+    QRect winGeometry = Settings::instance()->mainWindowGeometry;
+    if (!winGeometry.isValid()) {
+        winGeometry = QRect(
+                (screenSize.width()-1500) / 2,
+                (screenSize.height()-800) / 2,
+                1500, 800
+        );
+        Settings::instance()->mainWindowGeometry = winGeometry;
+    }
     qDebug() << "load window geometry" << winGeometry;
     setGeometry(winGeometry);
     auto _font = font();
@@ -142,12 +146,13 @@ Widget::Widget(QWidget *parent)
     // 读最后一次打开的笔记
     loadLastOpenedNote();
     const int syncVersion = 20210402;
-    if (m_settings->value("sync.version", 0).toInt() < syncVersion) {
+    int curSyncVersion = Settings::instance()->synVersion;
+    if (curSyncVersion < syncVersion) {
         QTimer::singleShot(1000, [this, syncVersion]() {
             qInfo() << "reupload note for new sync version";
             this->syncAll();
             this->syncAllWatching();
-            m_settings->setValue("sync.version", syncVersion);
+            Settings::instance()->synVersion = syncVersion;
             qInfo() << "reupload note done.";
         });
     }
@@ -157,18 +162,29 @@ Widget::Widget(QWidget *parent)
 
 void Widget::loadLastOpenedNote() {
     QTimer::singleShot(50, [this](){
-        auto lastNoteId = m_settings->value("last_note", -1).toInt();
-        if (lastNoteId != -1) {
-            auto lastNote = m_dbManager->getNote(lastNoteId);
-            if (lastNote.id() != -1) {
-                qDebug() << "load last note";
-                loadNote(lastNote);
-            } else {
-                qWarning() << "no last note id error:" << lastNoteId;
-            }
-        } else {
+        QString lastOpenNotePath = m_settings->lastOpenNotePath;
+        if (lastOpenNotePath.isEmpty()) {
             qDebug() << "no last note";
+            return ;
         }
+        if (lastOpenNotePath.startsWith(workshopPath())) {
+            // 
+        } else {
+            // 监控文件夹的情况
+            loadNote(lastOpenNotePath);
+        }
+//        auto lastNoteId = m_settings->value("last_note", -1).toInt();
+//        if (lastNoteId != -1) {
+//            auto lastNote = m_dbManager->getNote(lastNoteId);
+//            if (lastNote.id() != -1) {
+//                qDebug() << "load last note";
+//                loadNote(lastNote);
+//            } else {
+//                qWarning() << "no last note id error:" << lastNoteId;
+//            }
+//        } else {
+//            qDebug() << "no last note";
+//        }
     });
 }
 
@@ -226,9 +242,9 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
                 menu.addAction(tr("Remove Watching Folder"), [this, item](){
                     qDebug() << "remove watching folder: " << item->path();
                     m_treeModel->removeNode(m_treeView->currentIndex());
-                    auto watchingDirs = m_settings->value("watching_dirs").toStringList();
+                    QStringList watchingDirs = Settings::instance()->watchingFolders;
                     watchingDirs.removeOne(item->path());
-                    m_settings->setValue("watching_dirs", watchingDirs);
+                    Settings::instance()->watchingFolders = watchingDirs;
                 });
             }
         } else if (item->isWatchingFileItem()) {
@@ -240,7 +256,7 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
             menu.addAction(tr("Add Watch Folder"), [this]() {
                 qDebug() << "watch folder";
                 auto dir = QFileDialog::getExistingDirectory(this, tr("Add Watch Folder"));
-                auto watchingDirs = m_settings->value("watching_dirs").toStringList();
+                QStringList watchingDirs = Settings::instance()->watchingFolders;
                 bool watchSuccess = true;
                 for (auto watchingDir: watchingDirs) {
                     if (dir.startsWith(watchingDir)) {
@@ -251,7 +267,7 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
                 }
                 if (watchSuccess) {
                     watchingDirs.append(dir);
-                    m_settings->setValue("watching_dirs", watchingDirs);
+                    Settings::instance()->watchingFolders = watchingDirs;
                     qDebug() << "add " << dir << "to watching";
                     m_treeModel->addWatchingDir(m_treeView->currentIndex(), dir);
                 }
@@ -440,7 +456,7 @@ R"(">
     htmlFile.close();
     // auto url = QString("file://%1/%2/").arg(workshopPath()).arg(m_curNote.strId());
     // m_textPreview->setHtml(html, QUrl(url));
-    QString owner = m_settings->value("server.owner").toString();
+    QString owner = Settings::instance()->usernameEn;
     m_esApi->putNote(owner, html, m_curNote);
     uploadNoteAttachment(m_curNote);
 }
@@ -721,15 +737,13 @@ void Widget::on_listView_pressed(const QModelIndex &index) {
 void Widget::loadNote(const Note &note) {
     qDebug() << "load" << note.strId() << note.title();
     m_curNote = note;
-    m_fileSystemWatcher->addPath(noteRealPath(note));
-    qDebug() << m_fileSystemWatcher->files();
-    loadMdText();
-    updatePreview();
+    const QString &path = noteRealPath(note);
+    m_fileSystemWatcher->addPath(path);
+    loadNote(path);
     if (m_showOpenInTyporaTip) {
         Toast::showTip("Press E Open in Typora", this);
         m_showOpenInTyporaTip = false;
     }
-    m_settings->setValue("last_note", note.id());
 }
 
 void Widget::loadNote(const QString &path)
@@ -737,6 +751,7 @@ void Widget::loadNote(const QString &path)
     qDebug() << "load" << path;
     loadMdText(path);
     updatePreview(path);
+    Settings::instance()->lastOpenNotePath = path;
 }
 
 
@@ -906,7 +921,7 @@ R"(</title>
 void Widget::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
     qDebug() << "resize" << this->geometry();
-    m_settings->setValue("win_geometry", this->geometry());
+    Settings::instance()->mainWindowGeometry = this->geometry();
 }
 
 void Widget::addNoteTo() {
@@ -922,9 +937,9 @@ void Widget::addNoteTo() {
 
 void Widget::uploadNoteAttachment(const Note &note) {
     auto http = Http::instance();
-    QString owner = m_settings->value("server.owner").toString();
+    QString owner = Settings::instance()->usernameEn;
     QString noteId = note.strId();
-    QString serverIp = m_settings->value("server.ip").toString();
+    QString serverIp = Settings::instance()->serverIp;
     auto uploadFile = [http, owner, noteId, serverIp](QFile file) {
         QString checksum = fileChecksum(file.fileName(), QCryptographicHash::Sha512).toHex();
         qDebug() << "checksum:" << checksum;
@@ -1006,7 +1021,7 @@ void Widget::syncAll() {
     auto notes = m_dbManager->getAllNotes();
     for(const auto& note: notes) {
         if (note.trashed()) continue;
-        QString owner = m_settings->value("server.owner").toString();
+        QString owner = Settings::instance()->usernameEn;
         auto html = generateHTML(note);
         m_esApi->putNote(owner, html, note);
         uploadNoteAttachment(note);
@@ -1058,7 +1073,7 @@ void Widget::initFileSystemWatcher() {
 }
 
 void Widget::syncAllWatching() {
-    auto watchingDirs = m_settings->value("watching_dirs").toStringList();
+    QStringList watchingDirs = Settings::instance()->watchingFolders;
     for(const auto& dir: watchingDirs) {
         syncWatchingFolder(dir);
     }
@@ -1094,7 +1109,7 @@ void Widget::syncWatchingFile(const QString& path) {
     Document doc(mdFile.readAll());
     mdFile.close();
     auto html = doc.toHtml();
-    auto owner = m_settings->value("server.owner").toString();
+    QString owner = Settings::instance()->usernameEn;
     ServerNoteInfo info;
     info.title = title;
     info.owner = owner;

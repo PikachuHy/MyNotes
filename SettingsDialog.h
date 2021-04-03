@@ -17,7 +17,7 @@ public:
 
 private:
     QLineEdit *m_baseUrlLineEdit;
-    QLineEdit *m_ownerLineEdit;
+    QLineEdit *m_accountLineEdit;
     QLineEdit *m_passwordLineEdit;
     QSpinBox *m_portSpinBox;
     QLineEdit *m_typoraPathLineEdit;

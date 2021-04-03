@@ -24,34 +24,28 @@ SettingsDialog::SettingsDialog(QWidget *parent): QDialog(parent), m_settings(Set
 #endif
     setFont(_font);
     auto layout = new QGridLayout();
-    layout->addWidget(new QLabel(tr("server.ip")), 0, 0);
-    layout->addWidget(new QLabel(tr("server.port")), 1, 0);
-    layout->addWidget(new QLabel(tr("server.owner")), 2, 0);
-    layout->addWidget(new QLabel(tr("server.password")), 3, 0);
+    layout->addWidget(new QLabel(tr("Server")), 0, 0);
+    layout->addWidget(new QLabel(tr("Account")), 1, 0);
+    layout->addWidget(new QLabel(tr("Password")), 2, 0);
 #ifdef Q_OS_WIN
     layout->addWidget(new QLabel(tr("Typora path")), 4, 0);
 #endif
     m_baseUrlLineEdit = new QLineEdit();
-    m_ownerLineEdit = new QLineEdit();
+    m_accountLineEdit = new QLineEdit();
     m_passwordLineEdit = new QLineEdit();
     m_passwordLineEdit->setEchoMode(QLineEdit::Password);
-    m_portSpinBox = new QSpinBox();
-    m_portSpinBox->setMinimum(0);
-    m_portSpinBox->setMaximum(65535);
     m_typoraPathLineEdit = new QLineEdit();
     m_typoraPathChooseBtn = new QPushButton(tr("..."));
     layout->addWidget(m_baseUrlLineEdit, 0, 1, 1, 2);
-    layout->addWidget(m_portSpinBox, 1, 1, 1, 2);
-    layout->addWidget(m_ownerLineEdit, 2, 1, 1, 2);
-    layout->addWidget(m_passwordLineEdit, 3, 1, 1, 2);
+    layout->addWidget(m_accountLineEdit, 1, 1, 1, 2);
+    layout->addWidget(m_passwordLineEdit, 2, 1, 1, 2);
 #ifdef Q_OS_WIN
     layout->addWidget(m_typoraPathLineEdit, 4, 1, 1, 1);
     layout->addWidget(m_typoraPathChooseBtn, 4, 2);
 #endif
-    m_baseUrlLineEdit->setText(m_settings->value("server.ip").toString());
-    m_portSpinBox->setValue(m_settings->value("server.port").toInt());
-    m_ownerLineEdit->setText(m_settings->value("server.owner").toString());
-    m_passwordLineEdit->setText(m_settings->value("server.password").toString());
+    m_baseUrlLineEdit->setText(Settings::instance()->serverIp);
+    m_accountLineEdit->setText(Settings::instance()->userAccount);
+    m_passwordLineEdit->setText(Settings::instance()->userPassword);
 #ifdef Q_OS_WIN
     m_typoraPathLineEdit->setText(m_settings->value("path.typora").toString());
 #endif
@@ -88,21 +82,20 @@ SettingsDialog::SettingsDialog(QWidget *parent): QDialog(parent), m_settings(Set
         auto warning = [this](const QString& msg) {
             QMessageBox::warning(this, tr("SettingsDialog"), msg);
         };
-        auto baseUrl = this->m_baseUrlLineEdit->text();
-        auto port = this->m_portSpinBox->value();
-        auto owner = this->m_ownerLineEdit->text();
+        auto server = this->m_baseUrlLineEdit->text();
+        auto account = this->m_accountLineEdit->text();
         auto password = this->m_passwordLineEdit->text();
         auto typoraPath = this->m_typoraPathLineEdit->text();
-        if (baseUrl.isEmpty()) {
-            warning(tr("server.ip can't be empty"));
+        if (server.isEmpty()) {
+            warning(tr("Server can't be empty"));
             return ;
         }
-        if (owner.isEmpty()) {
-            warning(tr("server.owner can't be empty"));
+        if (account.isEmpty()) {
+            warning(tr("Account can't be empty"));
             return ;
         }
         if (password.isEmpty()) {
-            warning(tr("server.password can't be empty"));
+            warning(tr("Password can't be empty"));
             return ;
         }
 #ifdef Q_OS_WIN
@@ -111,12 +104,11 @@ SettingsDialog::SettingsDialog(QWidget *parent): QDialog(parent), m_settings(Set
             return ;
         }
 #endif
-        this->m_settings->setValue("server.ip", baseUrl);
-        this->m_settings->setValue("server.port", port);
-        this->m_settings->setValue("server.owner", owner);
-        this->m_settings->setValue("server.password", password);
+        Settings::instance()->serverIp = server;
+        Settings::instance()->userAccount = account;
+        Settings::instance()->userPassword = password;
 #ifdef Q_OS_WIN
-        this->m_settings->setValue("path.typora", typoraPath);
+        Settings::instance()->typoraPath = typoraPath;
 #endif
         this->accept();
     });

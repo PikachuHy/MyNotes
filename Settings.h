@@ -6,20 +6,104 @@
 #define MYNOTES_SETTINGS_H
 
 #include <QSettings>
-class Settings
-{
+#include <QRect>
+
+class Settings {
 public:
     static Settings *instance();
-    void setValue(const QString &key, const QVariant &value);
-    QVariant value(const QString &key, const QVariant &defaultValue = QVariant());
-    void apply(QVariant setting, std::function<void(QVariant)> handler);
+
+    static const char KEY_LAST_OPEN_NOTE_PATH[];
+    static const char KEY_TYPORA_PATH[];
+    static const char KEY_SERVER_IP[];
+    static const char KEY_USER_ACCOUNT[];
+    static const char KEY_USER_PASSWORD[];
+    static const char KEY_USER_NAME_ZH[];
+    static const char KEY_USER_NAME_EN[];
+    static const char KEY_MAIN_WINDOW_GEOMETRY[];
+    static const char KEY_SYNC_VERSION[];
+    static const char KEY_SYNC_AUTO[];
+    static const char KEY_WATCHING_FOLDERS[];
+
+    template<const char *key>
+    struct QStringRef {
+        operator QString() const {
+            return settings()->value(key).toString();
+        }
+
+        QStringRef &operator=(const QString &newValue) {
+            settings()->setValue(key, newValue);
+            return *this;
+        }
+    };
+
+    template<const char *key>
+    struct IntRef {
+        operator int() const {
+            return settings()->value(key).toInt();
+        }
+
+        IntRef &operator=(const int &newValue) {
+            settings()->setValue(key, newValue);
+            return *this;
+        }
+    };
+
+    template<const char *key>
+    struct BoolRef {
+        operator bool() const {
+            return settings()->value(key).toBool();
+        }
+
+        BoolRef &operator=(const bool &newValue) {
+            settings()->setValue(key, newValue);
+            return *this;
+        }
+    };
+
+    template<const char *key>
+    struct QRectRef {
+        operator QRect() const {
+            return settings()->value(key).toRect();
+        }
+
+        QRectRef &operator=(const QRect &newValue) {
+            settings()->setValue(key, newValue);
+            return *this;
+        }
+    };
+    template<const char *key>
+    struct QStringListRef {
+        operator QStringList() const {
+            return settings()->value(key).toStringList();
+        }
+
+        QStringListRef &operator=(const QStringList &newValue) {
+            settings()->setValue(key, newValue);
+            return *this;
+        }
+    };
+
+    QStringRef<KEY_LAST_OPEN_NOTE_PATH> lastOpenNotePath;
+    QStringRef<KEY_TYPORA_PATH> typoraPath;
+    QStringRef<KEY_SERVER_IP> serverIp;
+    QStringRef<KEY_USER_ACCOUNT> userAccount;
+    QStringRef<KEY_USER_PASSWORD> userPassword;
+    QStringRef<KEY_USER_NAME_ZH> usernameZh;
+    QStringRef<KEY_USER_NAME_EN> usernameEn;
+    QRectRef<KEY_MAIN_WINDOW_GEOMETRY> mainWindowGeometry;
+    IntRef<KEY_SYNC_VERSION> synVersion;
+    BoolRef<KEY_SYNC_AUTO> synAuto;
+    QStringListRef<KEY_WATCHING_FOLDERS> watchingFolders;
 
 // Singleton, to be used by any part of the app
 private:
+    static QSettings *settings();
+
     Settings();
-    Settings(const Settings& other);
-    Settings &operator=(const Settings& other);
-    QSettings settings;
+
+    Settings(const Settings &other);
+
+    Settings &operator=(const Settings &other);
 };
 
 

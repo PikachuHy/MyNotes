@@ -127,7 +127,7 @@ void TreeModel::setupModelData(TreeItem *parent) {
     auto workshopItem = new WorkshopItem(workshopPath(), parent);
     parent->appendChild(workshopItem);
     m_watchingItem = new WatchingItem(parent);
-    auto watchingDirs = m_settings->value("watching_dirs").toStringList();
+    QStringList watchingDirs = Settings::instance()->watchingFolders;
     for(const QString& watchingDir: watchingDirs) {
         FileSystemWatcher::instance()->addPath(watchingDir);
         auto dirName = QDir(watchingDir).dirName();

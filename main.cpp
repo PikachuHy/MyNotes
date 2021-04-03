@@ -65,29 +65,30 @@ int main(int argc, char *argv[]) {
 
     bool needSetConfig = false;
     auto m_settings = Settings::instance();
-    auto baseUrl = m_settings->value("server.ip", QString()).toString();
+    QString baseUrl = Settings::instance()->serverIp;
     if (baseUrl.isEmpty()) {
         needSetConfig = true;
     }
     qDebug() << "serverIp:" << baseUrl;
 
-    auto owner = m_settings->value("server.owner", QString()).toString();
+    QString owner = Settings::instance()->usernameEn;
     if (owner.isEmpty()) {
         needSetConfig = true;
     }
     qDebug() << "owner:" << owner;
-    auto port = m_settings->value("server.port", 0).toInt();
-    if (port == 0) {
+    QString account = Settings::instance()->userAccount;
+    if (account.isEmpty()) {
         needSetConfig = true;
     }
-    qDebug() << "port:" << port;
-    auto password = m_settings->value("server.password", 0).toInt();
-    if (password == 0) {
+    qDebug() << "account:" << account;
+    QString password = Settings::instance()->userPassword;
+    if (password.isEmpty()) {
         needSetConfig = true;
     }
     qDebug() << "password:" << password;
+
 #ifdef Q_OS_WIN
-    auto typoraPath = m_settings->value("path.typora", "").toString();
+    QString typoraPath = Settings::instance()->typoraPath;
     if (typoraPath.isEmpty()) {
         needSetConfig = true;
     }

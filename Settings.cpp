@@ -4,47 +4,30 @@
 
 #include "Settings.h"
 #include <QApplication>
-
-/* Returns the singleton Settings, to which all parts of the
- * app have access.
- */
+const char Settings::KEY_LAST_OPEN_NOTE_PATH[] = "path/last_open_note";
+const char Settings::KEY_TYPORA_PATH[] = "path/typora";
+const char Settings::KEY_SERVER_IP[] = "server/ip";
+const char Settings::KEY_USER_ACCOUNT[] = "user/account";
+const char Settings::KEY_USER_PASSWORD[] = "user/password";
+const char Settings::KEY_USER_NAME_ZH[] = "user/name_zh";
+const char Settings::KEY_USER_NAME_EN[] = "user/name_en";
+const char Settings::KEY_MAIN_WINDOW_GEOMETRY[] = "main_window/geometry";
+const char Settings::KEY_SYNC_VERSION[] = "sync/version";
+const char Settings::KEY_SYNC_AUTO[] = "sync/auto";
+const char Settings::KEY_WATCHING_FOLDERS[] = "watching/folders";
 Settings *Settings::instance()
 {
     static Settings singleton;
     return &singleton;
 }
 
+Settings::Settings(){}
 
-/* Simple wrapper for QSettings's setValue.
- */
-void Settings::setValue(const QString &key, const QVariant &value)
-{
-    settings.setValue(key, value);
+QSettings *Settings::settings() {
+    static QSettings ret(QSettings::IniFormat,
+              QSettings::UserScope,
+              QApplication::organizationName(),
+              QApplication::applicationName()
+    );
+    return &ret;
 }
-
-
-/* Wrapper for QSettings's value.
- */
-QVariant Settings::value(const QString &key, const QVariant &defaultValue)
-{
-    return settings.value(key, defaultValue);
-}
-
-
-/* Applies the given setting using the provided handler function. Assumes
- * that the handler captures the caller's context (the this pointer).
- */
-void Settings::apply(QVariant setting, std::function<void(QVariant)> handler)
-{
-    if (!setting.isNull())
-    {
-        handler(setting);
-    }
-}
-
-Settings::Settings() : settings(
-        QSettings(QSettings::IniFormat,
-                  QSettings::UserScope,
-                  QApplication::organizationName(),
-                  QApplication::applicationName()
-                  )){}
