@@ -60,10 +60,6 @@ QByteArray fileChecksum(const QString &fileName,
     return QByteArray();
 }
 
-QString md5(const QString& path) {
-    return QCryptographicHash::hash(path.toUtf8(),QCryptographicHash::Md5).toHex();
-}
-
 
 Widget::Widget(QWidget *parent)
         : QWidget(parent),

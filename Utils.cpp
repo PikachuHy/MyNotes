@@ -8,6 +8,8 @@
 #include <chrono>
 #include <QThread>
 #include <QTimer>
+#include <QCryptographicHash>
+
 using namespace std;
 
 
@@ -36,5 +38,8 @@ namespace Utils {
 
     QString currentThreadId() {
         return QString::number((long long)QThread::currentThread(), 16);
+    }
+    QString md5(const QString& str) {
+        return QCryptographicHash::hash(str.toUtf8(),QCryptographicHash::Md5).toHex();
     }
 }
