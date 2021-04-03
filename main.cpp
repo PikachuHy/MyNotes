@@ -9,6 +9,7 @@
 #include "SingleApplication.h"
 #include <QLoggingCategory>
 #include <QCommandLineParser>
+#include "config.h"
 int showWindow(SingleApplication* app) {
     Widget w;
     QObject::connect(app, &SingleApplication::messageAvailable,
@@ -46,6 +47,7 @@ int main(int argc, char *argv[]) {
     QApplication::setOrganizationName("PikachuHy");
     QApplication::setOrganizationDomain("pikachu.net.cn");
     QApplication::setApplicationName("MyNotes");
+    QApplication::setApplicationVersion(PROJECT_VERSION);
     // 解析工具
     QCommandLineParser parser;
     parser.setApplicationDescription("Test helper");

@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(MyNotes LANGUAGES CXX)
-
+project(MyNotes LANGUAGES CXX
+                VERSION "0.3.0"
+        )
+configure_file(config.h.in ${PROJECT_BINARY_DIR}/config.h)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC ON)
@@ -65,6 +67,7 @@ set(PROJECT_SOURCES
         Http.cpp
         Settings.cpp
         SettingsDialog.cpp
+        AboutDialog.cpp AboutDialog.h
         SingleApplication.cpp SingleApplication.h
         FileSystemWatcher.cpp FileSystemWatcher.h
         ElasticSearchRestApi.cpp ElasticSearchRestApi.h)
