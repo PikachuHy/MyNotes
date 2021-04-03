@@ -60,3 +60,16 @@ QByteArray Http::uploadFile(const QString &url, const QByteArray &dataArray) {
     eventLoop.exec();
     return reply->readAll();
 }
+
+QByteArray Http::post(const QString &url, const QByteArray& body) {
+    qDebug() << "POST:" << url;
+    QNetworkRequest request;
+    QEventLoop eventLoop;
+    QNetworkAccessManager manager;
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setUrl(url);
+    auto reply = manager.post(request, body);
+    QObject::connect(&manager, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
+    eventLoop.exec();
+    return reply->readAll();
+}
