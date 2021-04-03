@@ -67,11 +67,12 @@ set(PROJECT_SOURCES
         Http.cpp
         Settings.cpp
         SettingsDialog.cpp
+        PiWidget.cpp PiWidget.h
         LoginDialog.cpp LoginDialog.h
         AboutDialog.cpp AboutDialog.h
         SingleApplication.cpp SingleApplication.h
         FileSystemWatcher.cpp FileSystemWatcher.h
-        ElasticSearchRestApi.cpp ElasticSearchRestApi.h)
+        ElasticSearchRestApi.cpp ElasticSearchRestApi.h PiDialog.cpp PiDialog.h)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(MyNotes
