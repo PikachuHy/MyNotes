@@ -9,5 +9,7 @@
         <file>icon/tray_128x128.png</file>
         <file>icon/settings_16x16.png</file>
         <file>icon/watching_16x16.png</file>
+        <file>icon/github_128x128.png</file>
+        <file>icon/avatar_300x300.png</file>
     </qresource>
 </RCC>

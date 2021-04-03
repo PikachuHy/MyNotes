@@ -45,6 +45,7 @@
 #include <QDesktopServices>
 #include <QStringList>
 #include "FileSystemWatcher.h"
+#include "AboutDialog.h"
 // Returns empty QByteArray() on failure.
 QByteArray fileChecksum(const QString &fileName,
                         QCryptographicHash::Algorithm hashAlgorithm)
@@ -977,6 +978,10 @@ void Widget::initSystemTrayIcon()
         dialog.exec();
     });
     menu->addAction(tr("About"), [this](){
+        AboutDialog dialog(this);
+        dialog.exec();
+    });
+    menu->addAction(tr("About Qt"), [this](){
         qApp->aboutQt();
     });
     menu->addAction(tr("Quit"), [this](){
