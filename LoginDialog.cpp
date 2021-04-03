@@ -10,7 +10,9 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QCheckBox>
+#include <QMessageBox>
 #include "Settings.h"
+#include "LoginApi.h"
 LoginDialog::LoginDialog() {
     setWindowIcon(QIcon(":/icon/notebook_128x128.png"));
     auto layout = new QVBoxLayout();
@@ -38,11 +40,32 @@ LoginDialog::LoginDialog() {
     layout->addWidget(loginBtn);
     auto justTryBtn = new QPushButton(tr("Just try"));
     layout->addWidget(justTryBtn);
-    connect(loginBtn, &QPushButton::clicked, [this](){
-
+    connect(loginBtn, &QPushButton::clicked,
+            [this, accountLineEdit, passwordLineEdit](){
+        auto account = accountLineEdit->text();
+        auto password = passwordLineEdit->text();
+        if (account.isEmpty()) {
+            showWarning(tr("Login"), tr("Account can't be empty."));
+            return;
+        }
+        if (password.isEmpty()) {
+            showWarning(tr("Login"), tr("Password can't be empty."));
+            return;
+        }
+        LoginParam param;
+        param.baseUrl = "http://in.css518.cn:9201/login";
+        param.account = account;
+        param.password = password;
+        auto ret = LoginApi::instance()->login(param);
+        if (ret.success) {
+            Settings::instance()->usernameEn = ret.usernameEn;
+            Settings::instance()->usernameZh = ret.usernameZh;
+        } else {
+            showError(tr("Login fail"), ret.msg);
+        }
     });
     connect(justTryBtn, &QPushButton::clicked, [this]() {
-
+        showWarning(tr("Just try"), tr("This feature is still under development."));
     });
     setLayout(layout);
 }

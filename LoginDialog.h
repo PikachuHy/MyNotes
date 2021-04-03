@@ -6,8 +6,8 @@
 #define MYNOTES_LOGINDIALOG_H
 
 #include <QDialog>
-
-class LoginDialog: public QDialog {
+#include "PiDialog.h"
+class LoginDialog: public PiDialog {
 Q_OBJECT
 public:
     LoginDialog();
