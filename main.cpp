@@ -83,19 +83,6 @@ int main(int argc, char *argv[]) {
         }
     }
     bool needSetConfig = false;
-    QString baseUrl = Settings::instance()->serverIp;
-    if (baseUrl.isEmpty()) {
-        needSetConfig = true;
-    }
-    qDebug() << "serverIp:" << baseUrl;
-
-    QString owner = Settings::instance()->usernameEn;
-    if (owner.isEmpty()) {
-        needSetConfig = true;
-    }
-    qDebug() << "owner:" << owner;
-    qDebug() << "password:" << password;
-
 #ifdef Q_OS_WIN
     QString typoraPath = Settings::instance()->typoraPath;
     if (typoraPath.isEmpty()) {

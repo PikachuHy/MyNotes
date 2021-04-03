@@ -10,21 +10,15 @@
 #include <QSpinBox>
 #include <QPushButton>
 #include "Settings.h"
-class SettingsDialog: public QDialog {
+#include "PiDialog.h"
+class SettingsDialog: public PiDialog {
     Q_OBJECT
 public:
     explicit SettingsDialog(QWidget* parent = nullptr);
 
 private:
-    QLineEdit *m_baseUrlLineEdit;
-    QLineEdit *m_accountLineEdit;
-    QLineEdit *m_passwordLineEdit;
-    QSpinBox *m_portSpinBox;
     QLineEdit *m_typoraPathLineEdit;
     QPushButton *m_typoraPathChooseBtn;
-    Settings *m_settings;
-    QPushButton *m_confirmBtn;
-    QPushButton *m_cancelBtn;
 };
 
 
