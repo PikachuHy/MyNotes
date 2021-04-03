@@ -64,6 +64,11 @@ int main(int argc, char *argv[]) {
         QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, true);
     }
     bool needLogin = false;
+    bool autoLogin = Settings::instance()->userAutoLogin;
+    if (!autoLogin) {
+        needLogin = true;
+    }
+    qDebug() << "auto login: " << autoLogin;
     QString account = Settings::instance()->userAccount;
     if (account.isEmpty()) {
         needLogin = true;
@@ -74,6 +79,12 @@ int main(int argc, char *argv[]) {
         needLogin = true;
     }
     qDebug() << "password:" << password;
+    QString usernameZh = Settings::instance()->usernameZh;
+    QString usernameEn = Settings::instance()->usernameEn;
+    if (usernameZh.isEmpty() || usernameEn.isEmpty()) {
+        needLogin = true;
+    }
+    qDebug() << usernameZh << usernameEn;
     if (needLogin) {
         LoginDialog dialog;
         auto ret = dialog.exec();

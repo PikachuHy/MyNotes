@@ -19,6 +19,8 @@ public:
     static const char KEY_USER_PASSWORD[];
     static const char KEY_USER_NAME_ZH[];
     static const char KEY_USER_NAME_EN[];
+    static const char KEY_USER_REMEMBER_PASSWORD[];
+    static const char KEY_USER_AUTO_LOGIN[];
     static const char KEY_MAIN_WINDOW_GEOMETRY[];
     static const char KEY_SYNC_VERSION[];
     static const char KEY_SYNC_AUTO[];
@@ -90,6 +92,8 @@ public:
     QStringRef<KEY_USER_PASSWORD> userPassword;
     QStringRef<KEY_USER_NAME_ZH> usernameZh;
     QStringRef<KEY_USER_NAME_EN> usernameEn;
+    BoolRef<KEY_USER_REMEMBER_PASSWORD> userRememberPassword;
+    BoolRef<KEY_USER_AUTO_LOGIN> userAutoLogin;
     QRectRef<KEY_MAIN_WINDOW_GEOMETRY> mainWindowGeometry;
     IntRef<KEY_SYNC_VERSION> syncVersion;
     BoolRef<KEY_SYNC_AUTO> syncAuto;
