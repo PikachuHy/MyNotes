@@ -67,6 +67,7 @@ set(PROJECT_SOURCES
         Http.cpp
         Settings.cpp
         SettingsDialog.cpp
+        LoginDialog.cpp LoginDialog.h
         AboutDialog.cpp AboutDialog.h
         SingleApplication.cpp SingleApplication.h
         FileSystemWatcher.cpp FileSystemWatcher.h

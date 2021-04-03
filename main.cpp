@@ -10,6 +10,7 @@
 #include <QLoggingCategory>
 #include <QCommandLineParser>
 #include "config.h"
+#include "LoginDialog.h"
 int showWindow(SingleApplication* app) {
     Widget w;
     QObject::connect(app, &SingleApplication::messageAvailable,
@@ -62,9 +63,26 @@ int main(int argc, char *argv[]) {
     if (parser.isSet(debugOption)) {
         QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, true);
     }
-
+    bool needLogin = false;
+    QString account = Settings::instance()->userAccount;
+    if (account.isEmpty()) {
+        needLogin = true;
+    }
+    qDebug() << "account:" << account;
+    QString password = Settings::instance()->userPassword;
+    if (password.isEmpty()) {
+        needLogin = true;
+    }
+    qDebug() << "password:" << password;
+    if (needLogin) {
+        LoginDialog dialog;
+        auto ret = dialog.exec();
+        if (ret == QDialog::Rejected) {
+            qInfo() << "login fail";
+            return 0;
+        }
+    }
     bool needSetConfig = false;
-    auto m_settings = Settings::instance();
     QString baseUrl = Settings::instance()->serverIp;
     if (baseUrl.isEmpty()) {
         needSetConfig = true;
@@ -76,15 +94,6 @@ int main(int argc, char *argv[]) {
         needSetConfig = true;
     }
     qDebug() << "owner:" << owner;
-    QString account = Settings::instance()->userAccount;
-    if (account.isEmpty()) {
-        needSetConfig = true;
-    }
-    qDebug() << "account:" << account;
-    QString password = Settings::instance()->userPassword;
-    if (password.isEmpty()) {
-        needSetConfig = true;
-    }
     qDebug() << "password:" << password;
 
 #ifdef Q_OS_WIN
