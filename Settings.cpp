@@ -13,6 +13,7 @@ const char Settings::KEY_USER_NAME_ZH[] = "user/name_zh";
 const char Settings::KEY_USER_NAME_EN[] = "user/name_en";
 const char Settings::KEY_USER_REMEMBER_PASSWORD[] = "user/remember_password";
 const char Settings::KEY_USER_AUTO_LOGIN[] = "user/auto_login";
+const char Settings::KEY_USER_SIGNATURE[] = "user/signature";
 const char Settings::KEY_MAIN_WINDOW_GEOMETRY[] = "main_window/geometry";
 const char Settings::KEY_SYNC_VERSION[] = "sync/version";
 const char Settings::KEY_SYNC_AUTO[] = "sync/auto";

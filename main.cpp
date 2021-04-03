@@ -11,6 +11,7 @@
 #include <QCommandLineParser>
 #include "config.h"
 #include "LoginDialog.h"
+#include "Utils.h"
 int showWindow(SingleApplication* app) {
     Widget w;
     QObject::connect(app, &SingleApplication::messageAvailable,
@@ -85,6 +86,18 @@ int main(int argc, char *argv[]) {
         needLogin = true;
     }
     qDebug() << usernameZh << usernameEn;
+    QString signature = Settings::instance()->userSignature;
+    if (signature.isEmpty()) {
+        needLogin = true;
+    } else {
+        QString infoStr = account + '.' + password + '.'
+                + usernameZh + '.' + usernameEn + ".MyNotes";
+        QString md5 = Utils::md5(infoStr);
+        if (signature != md5) {
+            needLogin = true;
+        }
+    }
+    qDebug() << "signature:" << signature;
     if (needLogin) {
         LoginDialog dialog;
         auto ret = dialog.exec();

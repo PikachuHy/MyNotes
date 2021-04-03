@@ -15,6 +15,8 @@
 #include <QDebug>
 #include "Settings.h"
 #include "LoginApi.h"
+#include "Utils.h"
+
 LoginDialog::LoginDialog() {
     setWindowIcon(QIcon(":/icon/notebook_128x128.png"));
     auto layout = new QVBoxLayout();
@@ -99,6 +101,9 @@ void LoginDialog::login(const QString &account, const QString &password) {
     if (ret.success) {
         Settings::instance()->usernameEn = ret.usernameEn;
         Settings::instance()->usernameZh = ret.usernameZh;
+        QString infoStr = account + '.' + password + '.'
+                          + ret.usernameZh + '.' + ret.usernameEn + ".MyNotes";
+        Settings::instance()->userSignature = Utils::md5(infoStr);
         this->accept();
     } else {
         showError(tr("Login fail"), ret.msg);
