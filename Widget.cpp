@@ -597,7 +597,7 @@ void Widget::on_action_trashNote() {
     const QString noteOldPath = workshopPath() + item->note().strId();
     QString noteTrashPath = trashPath() + item->note().strId();
     qDebug() << "trash" << noteOldPath << "to" << noteTrashPath;
-    ret = QFile::rename(noteOldPath, noteTrashPath);
+    ret = QDir().rename(noteOldPath, noteTrashPath);
     if (!ret) {
         qDebug() << "trash" << noteOldPath << "fail";
         showErrorDialog(tr("trash note fail"));
