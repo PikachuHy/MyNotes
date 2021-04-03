@@ -14,6 +14,7 @@
 #include <QDialogButtonBox>
 #include <QFormLayout>
 #include <QCheckBox>
+#include <QFileInfo>
 
 SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
     setWindowTitle(tr("MyNotes Settings"));
@@ -40,6 +41,21 @@ SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
         hbox->addWidget(m_typoraPathLineEdit, 1);
         hbox->addWidget(m_typoraPathChooseBtn);
         formLayout->addRow(tr("Typora path:"), hbox);
+    }
+    {
+        QString typoraPath = Settings::instance()->typoraPath;
+        if (typoraPath.isEmpty()) {
+            // 尝试几个通用的位置
+            QStringList pathList;
+            pathList << "C:\\Program Files\\Typora\\Typora.exe";
+            pathList << "C:\\Program Files (x86)\\Typora\\Typora.exe";
+            for(const auto& path: pathList) {
+                QFileInfo info(path);
+                if (info.exists() && info.isExecutable()) {
+                    Settings::instance()->typoraPath = path;
+                }
+            }
+        }
     }
     m_typoraPathLineEdit->setText(Settings::instance()->typoraPath);
 #endif
