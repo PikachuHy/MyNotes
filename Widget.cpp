@@ -267,6 +267,8 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
                     Settings::instance()->watchingFolders = watchingDirs;
                     qDebug() << "add " << dir << "to watching";
                     m_treeModel->addWatchingDir(m_treeView->currentIndex(), dir);
+                    // 添加的监控文件夹要自动同步
+                    this->syncWatchingFolder(dir);
                 }
             });
             menu.addAction(tr("Sync All"), [this]() {
