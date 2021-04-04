@@ -114,6 +114,16 @@ Widget::Widget(QWidget *parent)
         );
         Settings::instance()->mainWindowGeometry = winGeometry;
     }
+    // 兼容分辨率比较小的电脑
+    int finalWidth = screenSize.width() < winGeometry.width() ? screenSize.width() : winGeometry.width();
+    int finalHeight = screenSize.height() < winGeometry.height() ? screenSize.height() : winGeometry.height();
+
+    winGeometry = QRect(
+            (screenSize.width()-finalWidth) / 2,
+            (screenSize.height()-finalHeight) / 2,
+            finalWidth, finalHeight
+    );
+    Settings::instance()->mainWindowGeometry = winGeometry;
     qDebug() << "load window geometry" << winGeometry;
     setGeometry(winGeometry);
     auto _font = font();
