@@ -1078,8 +1078,11 @@ void Widget::initFileSystemWatcher() {
         this->updateProfile();
     });
     connect(m_fileSystemWatcher, &FileSystemWatcher::newFile, [this](const QString& newFilePath){
-        m_treeModel->addWatchingNode(newFilePath);
-        this->updateProfile();
+        if (newFilePath.endsWith(".md")) {
+            m_treeModel->addWatchingNode(newFilePath);
+            this->syncWatchingFile(newFilePath);
+            this->updateProfile();
+        }
     });
     connect(m_fileSystemWatcher, &FileSystemWatcher::deleteFolder, [this](const QString& path){
         m_treeModel->removeWatchingNote(path);
