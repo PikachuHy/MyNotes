@@ -68,10 +68,19 @@ Widget::Widget(QWidget *parent)
         , m_esApi(new ElasticSearchRestApi(this))
         , m_fileSystemWatcher(FileSystemWatcher::instance())
         , m_systemTrayIcon(new QSystemTrayIcon(this))
+        , m_timer(new QTimer(this))
 //        ,m_jieba(nullptr)
         {
     initSystemTrayIcon();
     initFileSystemWatcher();
+    // 一天
+    m_timer->setInterval(1000 * 60 * 60 * 24);
+    m_timer->start();
+    connect(m_timer, &QTimer::timeout, [this]() {
+        qInfo() << "24h sync";
+        this->syncAllWatching();
+        this->updateProfile();
+    });
     m_treeView = new TreeView();
     m_textEdit = new QTextEdit();
     m_textPreview = new QWebEngineView();
@@ -1055,6 +1064,7 @@ void Widget::initFileSystemWatcher() {
     });
     connect(m_fileSystemWatcher, &FileSystemWatcher::newFile, [this](const QString& newFilePath){
         m_treeModel->addWatchingNode(newFilePath);
+        this->updateProfile();
     });
     connect(m_fileSystemWatcher, &FileSystemWatcher::deleteFolder, [this](const QString& path){
         m_treeModel->removeWatchingNote(path);
@@ -1452,5 +1462,64 @@ QString Widget::getWorkshopNoteStrIdFromPath(const QString& path) {
     QStringList segs = path.split('/');
     QString noteStrId = segs[segs.size() - 2];
     return noteStrId;
+}
+
+void Widget::updateProfile() {
+    qDebug() << "update profile";
+    QStringList watchingFolders = Settings::instance()->watchingFolders;
+    QStringList pathList;
+    for(const QString& folderPath: watchingFolders) {
+        traversalFileTree(folderPath, pathList);
+    }
+    QString owner = Settings::instance()->usernameEn;
+    QString html = R"(
+<!DOCTYPE html><html><head>
+<meta charset="utf-8">
+<meta name='viewport' content='width=device-width initial-scale=1'>
+<title>)"+
+owner +
+R"( Home</title>
+<body>
+)";
+    html.append(QString("<h1>%1的主页</h1>").arg(Settings::instance()->usernameZh));
+    html.append(QString("共%1个笔记").arg(pathList.size()));
+    html.append("<ul>");
+    for(const QString& path: pathList) {
+        QFileInfo fileInfo(path);
+        QString raw = R"(<li><a href="/%1" target="_blank">%2</a></li>)";
+        QString url = QString("%1/%2/index.html")
+                .arg(owner).arg(Utils::md5(path));
+        html.append(raw.arg(url).arg(fileInfo.baseName()));
+    }
+    html.append("</ul>");
+html += R"(
+</body>
+</html>
+)";
+    QString serverIp = Settings::instance()->serverIp;
+    QString url = QString("http://%1:9201/upload_profile?owner=%2&filename=index.html")
+            .arg(serverIp).arg(owner);
+    Http::instance()->uploadFile(url, html.toUtf8());
+}
+
+void Widget::traversalFileTree(const QString& path, QStringList& pathList) {
+    QDir dir(path);
+    if (!dir.exists()) {
+        qDebug() << dir << "not exist.";
+        return;
+    }
+    dir.setSorting(QDir::DirsFirst);
+    QFileInfoList info_list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+    for (int i = 0; i < info_list.count(); i++) {
+        auto info = info_list[i];
+        if (info.isFile() && !info.fileName().endsWith(".md")) continue;
+        const QString &filePath = info.absoluteFilePath();
+        if (info.isDir()) {
+            traversalFileTree(filePath, pathList);
+        } else {
+            pathList.append(filePath);
+        }
+    }
+
 }
 

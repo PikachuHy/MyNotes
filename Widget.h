@@ -30,6 +30,7 @@ class ListModel;
 class ElasticSearchRestApi;
 class Settings;
 class FileSystemWatcher;
+#include <QTimer>
 #include "PiWidget.h"
 class Widget : public PiWidget {
 Q_OBJECT
@@ -134,6 +135,8 @@ private:
     void syncWorkshopFile(const Note& note);
     void initShortcut();
     QString getWorkshopNoteStrIdFromPath(const QString& path);
+    void updateProfile();
+    void traversalFileTree(const QString& path, QStringList& pathList);
 private:
     // 左边到文档树
     QTreeView *m_treeView;
@@ -164,6 +167,7 @@ private:
     FileSystemWatcher* m_fileSystemWatcher;
     QSystemTrayIcon* m_systemTrayIcon;
     QString m_curNotePath;
+    QTimer* m_timer;
 };
 
 #endif // WIDGET_H
