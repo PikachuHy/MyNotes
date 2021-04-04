@@ -1258,7 +1258,10 @@ void Widget::syncWatchingFile(const QString& path) {
     info.noteHtml = html;
     info.strId = Utils::md5(path);
     m_esApi->putNote(info);
-
+    for(const auto& attachmentFilePath: pathList) {
+        qDebug() << "upload attachment:" << attachmentFilePath;
+        this->uploadFile(info.strId, attachmentFilePath);
+    }
 }
 
 void Widget::showSyncResult(const QString& msg) {
@@ -1300,5 +1303,43 @@ void Widget::setAutoStart() {
 
     QProcess::execute("osascript", args);
 #endif
+}
+
+void Widget::uploadFile(const QString& noteStrId, const QString& path) {
+    QFileInfo fileInfo(path);
+    if (!fileInfo.exists()) {
+        qWarning() << "file not exist." << path;
+    }
+    auto http = Http::instance();
+    QString serverIp = Settings::instance()->serverIp;
+    QString owner = Settings::instance()->usernameEn;
+    QString checksum = fileChecksum(path, QCryptographicHash::Sha512).toHex();
+    qDebug() << "checksum:" << checksum;
+    QString _url = QString("http://%1:9201/upload").arg(serverIp);
+    const QString &filename = fileInfo.fileName();
+    QString staticFileServerBaseUrl = QString("http://%1").arg(serverIp);
+    QString serverFilePath = QString("/%1/%2/%3.checksum.txt")
+            .arg(owner).arg(noteStrId).arg(filename);
+    auto serverFileChecksum = http->get(QString("%1%2")
+            .arg(staticFileServerBaseUrl).arg(serverFilePath));
+    auto realServerFileChecksum = serverFileChecksum.left(checksum.size());
+    qDebug() << "serverFileChecksum:" << realServerFileChecksum;
+    if (realServerFileChecksum == checksum) {
+        qDebug () << "ignore file: " << filename;
+        return ;
+    } else {
+        QString checksumUploadUrl = QString("%1?owner=%2&filename=%3.checksum.txt&note_id=%4")
+                .arg(_url).arg(owner).arg(filename).arg(noteStrId);
+        QString magic = "\nasldjlaskfdjlasdjfklsajdfkljasldflalsfdkajsf";
+        for (int i=0;i<20;i++)
+            checksum += magic;
+        auto res = http->uploadFile(checksumUploadUrl, checksum.toUtf8());
+        qDebug() << "res:" << res;
+    }
+    QString uploadFileUrl = QString("%1?owner=%2&filename=%3&note_id=%4")
+            .arg(_url).arg(owner).arg(filename).arg(noteStrId);
+    QFile _file(path);
+    auto res = http->uploadFile(uploadFileUrl, _file);
+    qDebug() << "res:" << res;
 }
 

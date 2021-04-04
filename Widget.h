@@ -128,6 +128,7 @@ private:
     void syncWatchingFolder(const QString& path);
     void showSyncResult(const QString& msg);
     void setAutoStart();
+    void uploadFile(const QString& noteStrId, const QString& path);
 private:
     // 左边到文档树
     QTreeView *m_treeView;
