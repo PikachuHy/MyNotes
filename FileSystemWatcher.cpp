@@ -31,6 +31,22 @@ FileSystemWatcher::FileSystemWatcher() {
         qDebug() << "new path:" << newNames;
         qDebug() << "deleted path:" << deletedNames;
         if (!newNames.isEmpty() && !deletedNames.isEmpty()) {
+            for(auto name: deletedNames) {
+                QString path = changedPath + '/' + name;
+                if (QFileInfo(path).isDir()) {
+                    emit deleteFolder(path);
+                } else {
+                    emit deleteFile(path);
+                }
+            }
+            for(auto name: newNames) {
+                QString path = changedPath + '/' + name;
+                if (QFileInfo(path).isDir()) {
+                    emit newFolder(path);
+                } else {
+                    emit newFile(path);
+                }
+            }
             // 重命名的情况
             if (newNames.size() == 1 && deletedNames.size() == 1) {
                 auto oldPath = changedPath + "/" + deletedNames.first();
