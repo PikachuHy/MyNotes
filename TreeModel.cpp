@@ -174,7 +174,7 @@ void TreeModel::buildWatchingTree(QString path, TreeItem *parent)
             child->setPath(filePath);
             buildWatchingTree(filePath, child);
         } else {
-            child = new WatchingFileItem(filePath, data, parent);
+            child = new WatchingFileItem(filePath, info.baseName(), parent);
             child->setPath(filePath);
         }
         m_path2item[filePath] = child;
@@ -296,7 +296,7 @@ void TreeModel::addWatchingNode(const QString &path) {
             if (fileInfo.isDir()) {
                 child = new WatchingFolderItem(path, filename, parentItem);
             } else {
-                child = new WatchingFileItem(path, filename, parentItem);
+                child = new WatchingFileItem(path, fileInfo.baseName(), parentItem);
             }
             beginInsertRows(parentIndex, row, row);
             parentItem->appendChild(child);
