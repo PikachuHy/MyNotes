@@ -160,6 +160,7 @@ private:
     ElasticSearchRestApi* m_esApi;
     FileSystemWatcher* m_fileSystemWatcher;
     QSystemTrayIcon* m_systemTrayIcon;
+    QString m_curNotePath;
 };
 
 #endif // WIDGET_H

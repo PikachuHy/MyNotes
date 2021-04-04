@@ -82,7 +82,7 @@ Widget::Widget(QWidget *parent)
     QShortcut* shortcut = new QShortcut((Qt::Key_E), m_textPreview);
     QObject::connect(shortcut, &QShortcut::activated, m_textPreview, [this]() {
         qDebug() << "from web engine";
-        openNoteInTypora(m_curNote);
+        openInTypora(currentNotePath());
     });
     auto searchShortcut = new QShortcut((Qt::Key_F), m_textPreview);
     connect(searchShortcut, &QShortcut::activated, m_textPreview, [this]() {
@@ -369,7 +369,7 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
         */
         // 按e进入编辑
         if (event->key() == Qt::Key_E) {
-            openNoteInTypora(m_curNote);
+            openInTypora(currentNotePath());
         }
         if (watched == m_treeView) {
             if (event->key() == Qt::Key_Backspace) {
@@ -751,6 +751,7 @@ void Widget::loadNote(const Note &note) {
 
 void Widget::loadNote(const QString &path)
 {
+    m_curNotePath = path;
     qDebug() << "load" << path;
     loadMdText(path);
     updatePreview(path);
@@ -782,6 +783,7 @@ Jieba *Widget::jieba() {
 }
 */
 void Widget::openInTypora(const QString& notePath) {
+    qDebug() << "open in typora:" << notePath;
 #ifdef Q_OS_WIN
     QStringList pathList;
     QString typoraPath = Settings::instance()->typoraPath;
@@ -830,7 +832,7 @@ void Widget::on_action_openInTypora() {
 }
 
 QString Widget::currentNotePath() {
-    return noteRealPath(m_curNote);
+    return m_curNotePath;
 }
 
 void Widget::on_action_exportNoteToHTML() {
