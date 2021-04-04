@@ -24,44 +24,6 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
     </message>
 </context>
 <context>
-    <name>Editor</name>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="183"/>
-        <source>Character formats</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="188"/>
-        <source>Text can be displayed in a variety of different character formats. </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="190"/>
-        <source>We can emphasize text by </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="191"/>
-        <source>making it italic</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="208"/>
-        <source>Team %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="214"/>
-        <source>%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="220"/>
-        <source>On duty</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>ListView</name>
     <message>
         <location filename="ListView.cpp" line="28"/>
