@@ -193,24 +193,27 @@ Widget::~Widget() {
 void Widget::on_treeView_pressed(const QModelIndex &index) {
     if (!index.isValid()) return;
     auto item = static_cast<TreeItem *>(index.internalPointer());
-    if (item->isFile()) {
+    // 如果是目录的话，不用考虑
+    if (!item->isFile()) return;
+    QString notePath;
+    if (item->isWatchingFileItem()) {
+        notePath = item->path();
+    } else {
+        // 如果是workshop的note
         auto noteItem = static_cast<NoteItem*>(item);
-        QString notePath = item->path();
-        qDebug() << "note path: " << notePath;
-        // 右键选中笔记时，如果当前笔记就是选中的笔记，不重新载入笔记内容
-        if (notePath == currentNotePath()) {
-            return;
-        }
-        if (noteItem) {
-            loadNote(noteItem->path());
-        } else {
-            qDebug() << "note item is nullptr";
-            showErrorDialog(tr("note item is nullptr"));
-        }
-    } else if (item->isWatchingFileItem()) {
-        auto fileItem = static_cast<WatchingFileItem*>(item);
-        auto filePath = fileItem->path();
-        loadNote(filePath);
+        auto note = noteItem->note();
+        notePath = noteRealPath(note);
+    }
+    qDebug() << "note path: " << notePath;
+    // 右键选中笔记时，如果当前笔记就是选中的笔记，不重新载入笔记内容
+    if (notePath == currentNotePath()) {
+        return;
+    }
+    if (!notePath.isEmpty()) {
+        loadNote(notePath);
+    } else {
+        qDebug() << "note path is empty.";
+        showErrorDialog(tr("note path is empty."));
     }
 }
 
