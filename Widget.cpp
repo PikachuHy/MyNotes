@@ -749,6 +749,9 @@ void Widget::loadNote(const Note &note) {
 
 void Widget::loadNote(const QString &path)
 {
+    if (!QFile(path).exists()) {
+        qWarning() << "note not exist." << path;
+    }
     m_curNotePath = path;
     qDebug() << "load" << path;
     loadMdText(path);
@@ -887,7 +890,10 @@ QString Widget::generateHTML(const Note& note) {
 }
 QString Widget::generateHTML(const QString &path, const QString& title) {
     QFile mdFile(path);
-    mdFile.open(QIODevice::ReadOnly);
+    bool ok = mdFile.open(QIODevice::ReadOnly);
+    if (!ok) {
+        qWarning() << "open fail:" << path;
+    }
     Document doc(mdFile.readAll());
     mdFile.close();
     auto html = doc.toHtml();
@@ -1272,7 +1278,10 @@ void Widget::syncWatchingFile(const QString& path) {
     qInfo() << "sync watching file:" << path;
     auto title = QFileInfo(path).baseName();
     QFile mdFile(path);
-    mdFile.open(QIODevice::ReadOnly);
+    bool ok = mdFile.open(QIODevice::ReadOnly);
+    if (!ok) {
+        qWarning() << "open fail:" << path;
+    }
     Document doc(mdFile.readAll());
     mdFile.close();
     WatchingFileHtmlVisitor visitor(path);
