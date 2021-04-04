@@ -144,6 +144,9 @@ Widget::Widget(QWidget *parent)
     }
     // 设置开启自启动
     setAutoStart();
+    QTimer::singleShot(1000, [this]() {
+        this->updateProfile();
+    });
 }
 
 void Widget::loadLastOpenedNote() {
