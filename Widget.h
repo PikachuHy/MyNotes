@@ -129,6 +129,7 @@ private:
     void showSyncResult(const QString& msg);
     void setAutoStart();
     void uploadFile(const QString& noteStrId, const QString& path);
+    void uploadNote(const ServerNoteInfo& info);
 private:
     // 左边到文档树
     QTreeView *m_treeView;

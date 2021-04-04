@@ -1257,7 +1257,7 @@ void Widget::syncWatchingFile(const QString& path) {
     info.owner = owner;
     info.noteHtml = html;
     info.strId = Utils::md5(path);
-    m_esApi->putNote(info);
+    this->uploadNote(info);
     for(const auto& attachmentFilePath: pathList) {
         qDebug() << "upload attachment:" << attachmentFilePath;
         this->uploadFile(info.strId, attachmentFilePath);
@@ -1340,6 +1340,45 @@ void Widget::uploadFile(const QString& noteStrId, const QString& path) {
             .arg(_url).arg(owner).arg(filename).arg(noteStrId);
     QFile _file(path);
     auto res = http->uploadFile(uploadFileUrl, _file);
+    qDebug() << "res:" << res;
+}
+
+void Widget::uploadNote(const ServerNoteInfo& info) {
+    m_esApi->putNote(info);
+    QFile cssFile(":css/css518.css");
+    cssFile.open(QIODevice::ReadOnly);
+    QString css = cssFile.readAll();
+    cssFile.close();
+    QString mdCssPath = "github-markdown.css";
+    auto html = R"(<!DOCTYPE html><html><head>
+<meta charset="utf-8">
+<meta name='viewport' content='width=device-width initial-scale=1'>
+<title>)"
+           +
+           info.title
+           +
+           R"(</title>
+<link href='https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext' rel='stylesheet' type='text/css' />
+
+<style type='text/css'>)"
+           +
+           css
+           +
+           R"("</style>
+</head>
+<body class='typora-export'>
+<div id='write'  class=''>)"
+           +
+           info.noteHtml
+           +
+           R"(</div></body></html>)";
+    auto http = Http::instance();
+    QString serverIp = Settings::instance()->serverIp;
+    QString owner = Settings::instance()->usernameEn;
+    QString baseUrl = QString("http://%1:9201/upload").arg(serverIp);
+    QString uploadFileUrl = QString("%1?owner=%2&filename=index.html&note_id=%4")
+            .arg(baseUrl).arg(owner).arg(info.strId);
+    auto res = http->uploadFile(uploadFileUrl, html.toUtf8());
     qDebug() << "res:" << res;
 }
 
