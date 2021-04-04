@@ -121,6 +121,7 @@ Current path is "%2"
         auto y = (screenSize.height() - this->height()) / 2;
         this->move(x, y);
     });
+#ifdef Q_OS_WIN
     connect(m_typoraPathChooseBtn, &QPushButton::clicked, [this]() {
         auto path = QFileDialog::getOpenFileName(this,
                                                  tr("Choose Typora Path"),
@@ -130,4 +131,5 @@ Current path is "%2"
         qDebug() << "choose path:" << path;
         this->m_typoraPathLineEdit->setText(path);
     });
+#endif
 }
