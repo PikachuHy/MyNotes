@@ -63,6 +63,7 @@ int main(int argc, char *argv[]) {
     const QStringList args = parser.positionalArguments();
     if (parser.isSet(debugOption)) {
         QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, true);
+        qDebug() << "run with debug mode";
     }
     bool needLogin = false;
     bool autoLogin = Settings::instance()->userAutoLogin;
