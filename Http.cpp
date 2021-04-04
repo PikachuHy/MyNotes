@@ -73,3 +73,16 @@ QByteArray Http::post(const QString &url, const QByteArray& body) {
     eventLoop.exec();
     return reply->readAll();
 }
+
+QByteArray Http::postJSON(const QString &url, const QByteArray& body) {
+    qDebug() << "POST JSON:" << url;
+    QNetworkRequest request;
+    QEventLoop eventLoop;
+    QNetworkAccessManager manager;
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setUrl(url);
+    auto reply = manager.post(request, body);
+    QObject::connect(&manager, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
+    eventLoop.exec();
+    return reply->readAll();
+}

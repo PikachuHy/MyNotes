@@ -22,6 +22,7 @@ public:
     static Http *instance();
     QByteArray get(const QString& url);
     QByteArray post(const QString& url, const QByteArray& body);
+    QByteArray postJSON(const QString& url, const QByteArray& body);
     QByteArray uploadFile(const QString& url, QFile &file);
     QByteArray uploadFile(const QString& url, const QByteArray& dataArray);
 private:

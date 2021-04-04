@@ -25,19 +25,26 @@ LoginResult LoginApi::login(LoginParam &param) {
         ret.msg = msg;
         return ret;
     }
-    QUrlQuery urlQuery;
-    QString url = param.baseUrl;
-    urlQuery.addQueryItem("account", param.account);
-    urlQuery.addQueryItem("password", param.password);
-    auto res = Http::instance()->post(url, urlQuery.query().toUtf8());
+    QJsonDocument paramDoc;
+    QJsonObject paramObject;
+    paramObject.insert("account", param.account);
+    paramObject.insert("password", param.password);
+    paramDoc.setObject(paramObject);
+    auto res = Http::instance()->postJSON(param.baseUrl, paramDoc.toJson());
     auto doc = QJsonDocument::fromJson(res);
     if (doc.isNull()) {
         ret.msg = res;
     } else {
-        ret.success = true;
         auto o = doc.object();
-        ret.usernameEn = o.value("name_en").toString();
-        ret.usernameZh = o.value("name_zh").toString();
+        bool success = o.value("success").toBool(false);
+        if (success) {
+            QJsonObject dataObject = o.value("data").toObject();
+            ret.usernameEn = dataObject.value("name_en").toString();
+            ret.usernameZh = dataObject.value("name_zh").toString();
+        } else {
+            ret.msg = o.value("data").toString();
+        }
+        ret.success = success;
     }
     return ret;
 }
