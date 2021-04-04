@@ -173,27 +173,29 @@ Widget::~Widget() {
 void Widget::on_treeView_pressed(const QModelIndex &index) {
     if (!index.isValid()) return;
     auto item = static_cast<TreeItem *>(index.internalPointer());
-    // 如果是目录的话，不用考虑
-    if (!item->isFile()) return;
+    auto tryLoadNote = [this](const QString& notePath) {
+        qDebug() << "note path: " << notePath;
+        // 右键选中笔记时，如果当前笔记就是选中的笔记，不重新载入笔记内容
+        if (notePath == currentNotePath()) {
+            return;
+        }
+        if (!notePath.isEmpty()) {
+            loadNote(notePath);
+        } else {
+            qDebug() << "note path is empty.";
+            showErrorDialog(tr("note path is empty."));
+        }
+    };
     QString notePath;
     if (item->isWatchingFileItem()) {
         notePath = item->path();
-    } else {
+        tryLoadNote(notePath);
+    } else if (item->isNoteItem()) {
         // 如果是workshop的note
         auto noteItem = static_cast<NoteItem*>(item);
-        auto note = noteItem->note();
+        const auto& note = noteItem->note();
         notePath = noteRealPath(note);
-    }
-    qDebug() << "note path: " << notePath;
-    // 右键选中笔记时，如果当前笔记就是选中的笔记，不重新载入笔记内容
-    if (notePath == currentNotePath()) {
-        return;
-    }
-    if (!notePath.isEmpty()) {
-        loadNote(notePath);
-    } else {
-        qDebug() << "note path is empty.";
-        showErrorDialog(tr("note path is empty."));
+        tryLoadNote(notePath);
     }
 }
 
@@ -1019,8 +1021,7 @@ void Widget::on_fileSystemWatcher_fileChanged(const QString &path) {
     if (path.startsWith(workshopPath())) {
         if (path.endsWith("index.md")) {
             // 标准的笔记处理
-            QStringList segs = path.split('/');
-            QString noteStrId = segs[segs.size() - 2];
+            QString noteStrId = getWorkshopNoteStrIdFromPath(path);
             qDebug() << "note id:" << noteStrId;
             auto note = m_dbManager->getNote(noteStrId);
             if (note.id() == -1) {

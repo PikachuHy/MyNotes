@@ -36,7 +36,8 @@ public:
 
     virtual bool isWorkshopItem();
 
-    virtual bool isFolderItem() { return false; }
+    virtual bool isFolderItem() const { return false; }
+    virtual bool isNoteItem() const { return false; }
 
     virtual bool isFile();
 
@@ -73,6 +74,8 @@ public:
     QString path() override;
 
     inline const Note& note() const { return m_note; }
+
+    virtual bool isNoteItem() const override { return true; }
 private:
     Note m_note;
 };
@@ -83,7 +86,7 @@ public:
 
     QVariant data(int column, int role) const override;
 
-    virtual bool isFolderItem() { return true; }
+    virtual bool isFolderItem() const override { return true; }
 
     bool isFile() override;
 
