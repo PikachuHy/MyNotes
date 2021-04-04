@@ -1106,6 +1106,10 @@ struct WatchingFileHtmlVisitor: MultipleVisitor<Header,
         Image, Link, CodeBlock, InlineCode, Paragraph,
         UnorderedList, OrderedList,
         Hr, QuoteBlock, Table> {
+    WatchingFileHtmlVisitor(const QString& path): m_notePath(path) {
+        m_noteDir = QFileInfo(path).absolutePath();
+        qDebug() << "note dir:" << m_noteDir;
+    }
     void visit(Header *node) override {
         auto hn = "h" + String::number(node->level());
         m_html += "<" + hn + ">";
@@ -1136,6 +1140,16 @@ struct WatchingFileHtmlVisitor: MultipleVisitor<Header,
         m_html += R"(" src=")";
         if(node->src()) {
             QString path = node->src()->str();
+#ifdef Q_OS_WIN
+#else
+            // 如果是绝对路径
+            if (path.startsWith("/")) {
+
+            } else {
+                // 相对路径则改写成绝对路径
+                path = m_noteDir + '/' + path;
+            }
+#endif
             QFileInfo info(path);
             if (info.exists() && info.isFile()) {
                 m_html += info.fileName();
@@ -1239,6 +1253,8 @@ struct WatchingFileHtmlVisitor: MultipleVisitor<Header,
 private:
     String m_html;
     QStringList m_pathList;
+    QString m_notePath;
+    QString m_noteDir;
 };
 void Widget::syncWatchingFile(const QString& path) {
     qInfo() << "sync watching file:" << path;
@@ -1247,7 +1263,7 @@ void Widget::syncWatchingFile(const QString& path) {
     mdFile.open(QIODevice::ReadOnly);
     Document doc(mdFile.readAll());
     mdFile.close();
-    WatchingFileHtmlVisitor visitor;
+    WatchingFileHtmlVisitor visitor(path);
     doc.accept(&visitor);
     auto html = visitor.html();
     auto pathList = visitor.pathList();
