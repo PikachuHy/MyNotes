@@ -1046,6 +1046,7 @@ void Widget::on_fileSystemWatcher_fileChanged(const QString &path) {
                 showErrorDialog(tr("invalid note from strId: %1").arg(noteStrId));
             } else {
                 updatePreview();
+                this->syncWorkshopFile(note);
             }
         } else {
 
@@ -1399,5 +1400,29 @@ void Widget::uploadNote(const ServerNoteInfo& info) {
             .arg(baseUrl).arg(owner).arg(info.strId);
     auto res = http->uploadFile(uploadFileUrl, html.toUtf8());
     qDebug() << "res:" << res;
+}
+
+void Widget::syncWorkshopFile(const Note& note) {
+    qInfo() << "sync workshop file:" << note.strId();
+    auto path = noteRealPath(note);
+    QFile mdFile(path);
+    mdFile.open(QIODevice::ReadOnly);
+    Document doc(mdFile.readAll());
+    mdFile.close();
+    WatchingFileHtmlVisitor visitor(path);
+    doc.accept(&visitor);
+    auto html = visitor.html();
+    auto pathList = visitor.pathList();
+    QString owner = Settings::instance()->usernameEn;
+    ServerNoteInfo info;
+    info.title = note.title();
+    info.owner = owner;
+    info.noteHtml = html;
+    info.strId = note.strId();
+    this->uploadNote(info);
+    for(const auto& attachmentFilePath: pathList) {
+        qDebug() << "upload attachment:" << attachmentFilePath;
+        this->uploadFile(info.strId, attachmentFilePath);
+    }
 }
 
