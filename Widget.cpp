@@ -1046,13 +1046,17 @@ void Widget::on_fileSystemWatcher_fileChanged(const QString &path) {
                 showErrorDialog(tr("invalid note from strId: %1").arg(noteStrId));
             } else {
                 updatePreview();
-                this->syncWorkshopFile(note);
+                if (Settings::instance()->syncWorkshopAuto) {
+                    this->syncWorkshopFile(note);
+                }
             }
         } else {
 
         }
     } else {
-        syncWatchingFile(path);
+        if (Settings::instance()->syncWatchingAuto) {
+            syncWatchingFile(path);
+        }
     }
 }
 
