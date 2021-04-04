@@ -1058,9 +1058,11 @@ void Widget::initFileSystemWatcher() {
     connect(m_fileSystemWatcher, &FileSystemWatcher::renameFolder, [this](const QString& oldFolderPath, const QString& newFolderPath){
         qDebug() << "rename folder:" << oldFolderPath << newFolderPath;
         m_treeModel->updateWatchingDir(oldFolderPath, newFolderPath);
+        this->updateProfile();
     });
     connect(m_fileSystemWatcher, &FileSystemWatcher::newFolder, [this](const QString& newFolderPath){
         m_treeModel->addWatchingNode(newFolderPath);
+        this->updateProfile();
     });
     connect(m_fileSystemWatcher, &FileSystemWatcher::newFile, [this](const QString& newFilePath){
         m_treeModel->addWatchingNode(newFilePath);
@@ -1068,9 +1070,11 @@ void Widget::initFileSystemWatcher() {
     });
     connect(m_fileSystemWatcher, &FileSystemWatcher::deleteFolder, [this](const QString& path){
         m_treeModel->removeWatchingNote(path);
+        this->updateProfile();
     });
     connect(m_fileSystemWatcher, &FileSystemWatcher::deleteFile, [this](const QString& path){
         m_treeModel->removeWatchingNote(path);
+        this->updateProfile();
     });
 }
 
