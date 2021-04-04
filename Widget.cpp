@@ -456,9 +456,9 @@ R"(">
     htmlFile.close();
     // auto url = QString("file://%1/%2/").arg(workshopPath()).arg(m_curNote.strId());
     // m_textPreview->setHtml(html, QUrl(url));
-    QString owner = Settings::instance()->usernameEn;
-    m_esApi->putNote(owner, html, m_curNote);
-    uploadNoteAttachment(m_curNote);
+//    QString owner = Settings::instance()->usernameEn;
+//    m_esApi->putNote(owner, html, m_curNote);
+//    uploadNoteAttachment(m_curNote);
 }
 
 
