@@ -24,7 +24,8 @@ public:
     static const char KEY_USER_SIGNATURE[];
     static const char KEY_MAIN_WINDOW_GEOMETRY[];
     static const char KEY_SYNC_VERSION[];
-    static const char KEY_SYNC_AUTO[];
+    static const char KEY_SYNC_WORKSHOP_AUTO[];
+    static const char KEY_SYNC_WATCHING_AUTO[];
     static const char KEY_WATCHING_FOLDERS[];
 
     template<const char *key>
@@ -98,7 +99,8 @@ public:
     QStringRef<KEY_USER_SIGNATURE> userSignature;
     QRectRef<KEY_MAIN_WINDOW_GEOMETRY> mainWindowGeometry;
     IntRef<KEY_SYNC_VERSION> syncVersion;
-    BoolRef<KEY_SYNC_AUTO> syncAuto;
+    BoolRef<KEY_SYNC_WORKSHOP_AUTO> syncWorkshopAuto;
+    BoolRef<KEY_SYNC_WATCHING_AUTO> syncWatchingAuto;
     QStringListRef<KEY_WATCHING_FOLDERS> watchingFolders;
 
 // Singleton, to be used by any part of the app

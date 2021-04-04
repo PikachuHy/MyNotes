@@ -39,9 +39,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
         }
     }
     m_serverLineEdit->setText(Settings::instance()->serverIp);
-    auto autoSyncCheckBox = new QCheckBox(tr("Auto sync"));
-    formLayout->addRow(autoSyncCheckBox);
-    autoSyncCheckBox->setChecked(Settings::instance()->syncAuto);
+    m_autoSyncWorkshopCheckBox = new QCheckBox(tr("Auto sync workshop"));
+    formLayout->addRow(m_autoSyncWorkshopCheckBox);
+    m_autoSyncWorkshopCheckBox->setChecked(Settings::instance()->syncWorkshopAuto);
+    m_autoSyncWatchingCheckBox = new QCheckBox(tr("Auto sync watching"));
+    formLayout->addRow(m_autoSyncWatchingCheckBox);
+    m_autoSyncWatchingCheckBox->setChecked(Settings::instance()->syncWatchingAuto);
 #ifdef Q_OS_WIN
     m_typoraPathLineEdit = new QLineEdit();
     m_typoraPathChooseBtn = new QPushButton(tr("..."));
@@ -76,6 +79,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
     buttonBox->setStandardButtons(QDialogButtonBox::Ok);
 
     QObject::connect(buttonBox, &QDialogButtonBox::accepted, [this]() {
+        Settings::instance()->syncWorkshopAuto = m_autoSyncWorkshopCheckBox->isChecked();
+        Settings::instance()->syncWatchingAuto = m_autoSyncWatchingCheckBox->isChecked();
         auto serverIp = m_serverLineEdit->text();
         if (serverIp.isEmpty()) {
             qWarning() << "serverIp is empty.";

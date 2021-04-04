@@ -16,7 +16,8 @@ const char Settings::KEY_USER_AUTO_LOGIN[] = "user/auto_login";
 const char Settings::KEY_USER_SIGNATURE[] = "user/signature";
 const char Settings::KEY_MAIN_WINDOW_GEOMETRY[] = "main_window/geometry";
 const char Settings::KEY_SYNC_VERSION[] = "sync/version";
-const char Settings::KEY_SYNC_AUTO[] = "sync/auto";
+const char Settings::KEY_SYNC_WORKSHOP_AUTO[] = "sync/workshop_auto";
+const char Settings::KEY_SYNC_WATCHING_AUTO[] = "sync/watching_auto";
 const char Settings::KEY_WATCHING_FOLDERS[] = "watching/folders";
 Settings *Settings::instance()
 {
