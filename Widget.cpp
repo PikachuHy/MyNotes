@@ -78,27 +78,7 @@ Widget::Widget(QWidget *parent)
     // 处理Ctrl+S保存
     m_treeView->installEventFilter(this);
     m_treeView->setFixedWidth(300);
-    // 用一种比较奇怪的方式，兼容焦点在webengine时没法按E进入Typora编辑的问题
-    QShortcut* shortcut = new QShortcut((Qt::Key_E), m_textPreview);
-    QObject::connect(shortcut, &QShortcut::activated, m_textPreview, [this]() {
-        qDebug() << "from web engine";
-        openInTypora(currentNotePath());
-    });
-    auto searchShortcut = new QShortcut((Qt::Key_F), m_textPreview);
-    connect(searchShortcut, &QShortcut::activated, m_textPreview, [this]() {
-        QString ip = Settings::instance()->serverIp;
-        QString url = "http://"+ip;
-        qDebug() << "search" << url;
-        m_textPreview->setUrl(QUrl(url));
-    });
-    auto openInBrowserShortcut = new QShortcut((Qt::Key_B), m_textPreview);
-    connect(openInBrowserShortcut, &QShortcut::activated, m_textPreview, [this]() {
-        QString ip = Settings::instance()->serverIp;
-        QString owner = Settings::instance()->usernameEn;
-        const QString &url = QString("http://%1/%2/%3/").arg(ip).arg(owner).arg(m_curNote.strId());
-        qDebug() << "open in browser" << url;
-        QDesktopServices::openUrl(QUrl(url));
-    });
+    initShortcut();
     auto mainLayout = new QHBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(m_treeView);
@@ -1430,5 +1410,46 @@ void Widget::syncWorkshopFile(const Note& note) {
         qDebug() << "upload attachment:" << attachmentFilePath;
         this->uploadFile(info.strId, attachmentFilePath);
     }
+}
+
+void Widget::initShortcut() {
+    // 用一种比较奇怪的方式，兼容焦点在webengine时没法按E进入Typora编辑的问题
+    auto editShortcut = new QShortcut((Qt::Key_E), m_textPreview);
+    QObject::connect(editShortcut, &QShortcut::activated, m_textPreview, [this]() {
+        qDebug() << "from web engine";
+        openInTypora(currentNotePath());
+    });
+    auto searchShortcut = new QShortcut((Qt::Key_F), m_textPreview);
+    connect(searchShortcut, &QShortcut::activated, m_textPreview, [this]() {
+        QString ip = Settings::instance()->serverIp;
+        QString url = "http://"+ip;
+        qDebug() << "search" << url;
+        m_textPreview->setUrl(QUrl(url));
+    });
+    auto openInBrowserShortcut = new QShortcut((Qt::Key_B), m_textPreview);
+    connect(openInBrowserShortcut, &QShortcut::activated, m_textPreview, [this]() {
+        QString ip = Settings::instance()->serverIp;
+        QString owner = Settings::instance()->usernameEn;
+        const QString &url = QString("http://%1/%2/%3/")
+                .arg(ip).arg(owner).arg(currentNoteStrId());
+        qDebug() << "open in browser" << url;
+        QDesktopServices::openUrl(QUrl(url));
+    });
+}
+
+QString Widget::currentNoteStrId() {
+    QString ret;
+    auto path = currentNotePath();
+    if (path.startsWith(workshopPath())) {
+        return getWorkshopNoteStrIdFromPath(path);
+    } else {
+        return Utils::md5(path);
+    }
+}
+
+QString Widget::getWorkshopNoteStrIdFromPath(const QString& path) {
+    QStringList segs = path.split('/');
+    QString noteStrId = segs[segs.size() - 2];
+    return noteStrId;
 }
 

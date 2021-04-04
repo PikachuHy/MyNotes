@@ -114,6 +114,7 @@ private:
     QListView* searchResultView();
 //    Jieba* jieba();
     QString currentNotePath();
+    QString currentNoteStrId();
     QString noteRealPath(const Note& note);
     QString generateHTML(const Note& note);
     QString generateHTML(const QString& path, const QString& title);
@@ -131,6 +132,8 @@ private:
     void uploadFile(const QString& noteStrId, const QString& path);
     void uploadNote(const ServerNoteInfo& info);
     void syncWorkshopFile(const Note& note);
+    void initShortcut();
+    QString getWorkshopNoteStrIdFromPath(const QString& path);
 private:
     // 左边到文档树
     QTreeView *m_treeView;
