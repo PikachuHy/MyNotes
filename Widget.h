@@ -30,7 +30,8 @@ class ListModel;
 class ElasticSearchRestApi;
 class Settings;
 class FileSystemWatcher;
-class Widget : public QWidget {
+#include "PiWidget.h"
+class Widget : public PiWidget {
 Q_OBJECT
 
 public:

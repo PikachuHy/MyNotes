@@ -62,7 +62,7 @@ QByteArray fileChecksum(const QString &fileName,
 
 
 Widget::Widget(QWidget *parent)
-        : QWidget(parent),
+        : PiWidget(parent),
         m_showOpenInTyporaTip(true),
         m_settings(Settings::instance())
         , m_esApi(new ElasticSearchRestApi(this))
@@ -269,6 +269,7 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
                     m_treeModel->addWatchingDir(m_treeView->currentIndex(), dir);
                     // 添加的监控文件夹要自动同步
                     this->syncWatchingFolder(dir);
+                    this->showInfo(tr("Sync Folder"), tr("Sync Folder Done."));
                 }
             });
             menu.addAction(tr("Sync All"), [this]() {
