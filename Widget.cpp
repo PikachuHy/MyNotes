@@ -202,7 +202,7 @@ void Widget::on_treeView_pressed(const QModelIndex &index) {
             return;
         }
         if (noteItem) {
-            loadNote(noteItem->note());
+            loadNote(noteItem->path());
         } else {
             qDebug() << "note item is nullptr";
             showErrorDialog(tr("note item is nullptr"));
