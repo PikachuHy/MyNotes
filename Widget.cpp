@@ -153,6 +153,10 @@ void Widget::loadLastOpenedNote() {
             qDebug() << "no last note";
             return ;
         }
+        if (!QFile(lastOpenNotePath).exists()) {
+            qInfo() << "last open note not exist." << lastOpenNotePath;
+            return;
+        }
         if (lastOpenNotePath.startsWith(workshopPath())) {
             // 
         } else {
