@@ -13,9 +13,11 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QDebug>
+#include <QMovie>
 #include "Settings.h"
 #include "LoginApi.h"
 #include "Utils.h"
+
 
 LoginDialog::LoginDialog() {
     setWindowIcon(QIcon(":/icon/notebook_128x128.png"));
@@ -48,6 +50,14 @@ LoginDialog::LoginDialog() {
     loginForm->addRow(m_autoLoginCheckBox);
     auto loginBtn = new QPushButton(tr("Login"));
     layout->addWidget(loginBtn);
+    // 登录中的加载动画
+    auto movie = new QMovie(":/icon/loading.gif");
+    auto ok = movie->isValid();
+    qDebug() << "movie ok?"<<ok;
+    movie->start();
+    auto loadingLabel = new QLabel(loginBtn);
+    loadingLabel->setMovie(movie);
+    loadingLabel->hide();
     auto justTryBtn = new QPushButton(tr("Just try"));
     layout->addWidget(justTryBtn);
     connect(m_rememberPasswordCheckBox, &QCheckBox::stateChanged, [this]() {
@@ -57,7 +67,8 @@ LoginDialog::LoginDialog() {
     connect(m_autoLoginCheckBox, &QCheckBox::stateChanged, [this]() {
         updateSettings();
     });
-    connect(loginBtn, &QPushButton::clicked,[this](){
+
+    connect(loginBtn, &QPushButton::clicked,[this, loginBtn, loadingLabel, movie](){
         updateSettings();
         auto account = m_accountLineEdit->text();
         auto password = m_passwordLineEdit->text();
@@ -73,7 +84,19 @@ LoginDialog::LoginDialog() {
         if (Settings::instance()->userRememberPassword) {
             Settings::instance()->userPassword = password;
         }
-        this->login(account, password);
+        loadingLabel->show();
+        auto loadingGeometry = loadingLabel->geometry();
+        auto loginBtnGemetry = loginBtn->geometry();
+        int centerX = (loginBtnGemetry.width() - loadingGeometry.width()) / 2;
+        loadingLabel->move(centerX, loadingGeometry.y());
+        loginBtn->setEnabled(false);
+        // 强行让用户看看加载动画，哈哈哈
+        QTimer::singleShot(1000, [this, loginBtn, loadingLabel, account, password]() {
+            this->login(account, password);
+            loadingLabel->hide();
+            loginBtn->setEnabled(true);
+        });
+
     });
     connect(justTryBtn, &QPushButton::clicked, [this]() {
         showWarning(tr("Just try"), tr("This feature is still under development."));

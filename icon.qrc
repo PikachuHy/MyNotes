@@ -11,5 +11,6 @@
         <file>icon/watching_16x16.png</file>
         <file>icon/github_128x128.png</file>
         <file>icon/avatar_300x300.png</file>
+        <file>icon/loading.gif</file>
     </qresource>
 </RCC>
