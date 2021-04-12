@@ -462,7 +462,7 @@ R"(">
            html
            +
            R"(</article></body></html>)";
-    m_textPreview->setHtml(allHtml);
+    m_textPreview->setHtml(allHtml, QUrl("file://" + QFileInfo(path).absolutePath() + '/'));
     htmlFile.write(allHtml.toUtf8());
     htmlFile.close();
     // auto url = QString("file://%1/%2/").arg(workshopPath()).arg(m_curNote.strId());
