@@ -1,4 +1,5 @@
 #include "Widget.h"
+#include "WebEngineView.h"
 #include "TreeItem.h"
 #include "TreeModel.h"
 #include "TreeView.h"
@@ -83,7 +84,14 @@ Widget::Widget(QWidget *parent)
     });
     m_treeView = new TreeView();
     m_textEdit = new QTextEdit();
-    m_textPreview = new QWebEngineView();
+    m_textPreview = new WebEngineView();
+    connect(m_textPreview, &WebEngineView::urlChanged, [this](const QUrl &url){
+        if (url.toString().startsWith("http://in.css518.cn/")) {
+            m_textPreview->setUrl(url);
+        } else {
+            qWarning() << "not allow:" << url;
+        }
+    });
     // 处理Ctrl+S保存
     m_treeView->installEventFilter(this);
     m_treeView->setFixedWidth(300);

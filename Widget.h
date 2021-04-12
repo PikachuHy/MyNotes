@@ -30,6 +30,7 @@ class ListModel;
 class ElasticSearchRestApi;
 class Settings;
 class FileSystemWatcher;
+class WebEngineView;
 #include <QTimer>
 #include "PiWidget.h"
 class Widget : public PiWidget {
@@ -142,7 +143,7 @@ private:
     QTreeView *m_treeView;
     QTextEdit *m_textEdit;
     // markdown转html后预览，用GitHub到样式
-    QWebEngineView *m_textPreview;
+    WebEngineView *m_textPreview;
     QLabel *m_wordCountLabel;
     TreeModel *m_treeModel;
     // 笔记所在路径

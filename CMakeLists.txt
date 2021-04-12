@@ -76,7 +76,7 @@ set(PROJECT_SOURCES
         ElasticSearchRestApi.cpp ElasticSearchRestApi.h
         PiDialog.cpp PiDialog.h
         LoginApi.cpp LoginApi.h
-
+        WebEngineView.cpp WebEngineView.h
 
         )
 
