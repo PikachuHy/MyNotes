@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 #ifdef _DEBUG
+     qputenv("QTWEBENGINE_REMOTE_DEBUGGING", "9223");
 #else
     // 发布版默认不输出debug日志
     QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, false);
