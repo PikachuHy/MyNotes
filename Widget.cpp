@@ -47,6 +47,7 @@
 #include <QStringList>
 #include "FileSystemWatcher.h"
 #include "AboutDialog.h"
+#include <QtWorderReader>
 // Returns empty QByteArray() on failure.
 QByteArray fileChecksum(const QString &fileName,
                         QCryptographicHash::Algorithm hashAlgorithm)
@@ -1096,10 +1097,14 @@ void Widget::initFileSystemWatcher() {
         this->updateProfile();
     });
     connect(m_fileSystemWatcher, &FileSystemWatcher::newFile, [this](const QString& newFilePath){
-        if (newFilePath.endsWith(".md")) {
-            m_treeModel->addWatchingNode(newFilePath);
-            this->syncWatchingFile(newFilePath);
-            this->updateProfile();
+        QStringList syncSuffix = Utils::syncSuffix();
+        for(const auto& suffic: syncSuffix) {
+            if (newFilePath.endsWith(suffic)) {
+                m_treeModel->addWatchingNode(newFilePath);
+                this->syncWatchingFile(newFilePath);
+                this->updateProfile();
+                break;
+            }
         }
     });
     connect(m_fileSystemWatcher, &FileSystemWatcher::deleteFolder, [this](const QString& path){
@@ -1297,28 +1302,55 @@ private:
 };
 void Widget::syncWatchingFile(const QString& path) {
     qInfo() << "sync watching file:" << path;
-    auto title = QFileInfo(path).baseName();
-    QFile mdFile(path);
-    bool ok = mdFile.open(QIODevice::ReadOnly);
-    if (!ok) {
-        qWarning() << "open fail:" << path;
+    auto syncNote = [this](const QString& path) {
+        auto title = QFileInfo(path).baseName();
+        QFile mdFile(path);
+        bool ok = mdFile.open(QIODevice::ReadOnly);
+        if (!ok) {
+            qWarning() << "open fail:" << path;
+        }
+        Document doc(mdFile.readAll());
+        mdFile.close();
+        WatchingFileHtmlVisitor visitor(path);
+        doc.accept(&visitor);
+        auto html = visitor.html();
+        auto pathList = visitor.pathList();
+        QString owner = Settings::instance()->usernameEn;
+        ServerNoteInfo info;
+        info.title = title;
+        info.owner = owner;
+        info.noteHtml = html;
+        info.strId = Utils::md5(path);
+        this->uploadNote(info);
+        for(const auto& attachmentFilePath: pathList) {
+            qDebug() << "upload attachment:" << attachmentFilePath;
+            this->uploadFile(info.strId, attachmentFilePath);
+        }
+    };
+    if (path.endsWith(".md")) {
+        syncNote(path);
     }
-    Document doc(mdFile.readAll());
-    mdFile.close();
-    WatchingFileHtmlVisitor visitor(path);
-    doc.accept(&visitor);
-    auto html = visitor.html();
-    auto pathList = visitor.pathList();
-    QString owner = Settings::instance()->usernameEn;
-    ServerNoteInfo info;
-    info.title = title;
-    info.owner = owner;
-    info.noteHtml = html;
-    info.strId = Utils::md5(path);
-    this->uploadNote(info);
-    for(const auto& attachmentFilePath: pathList) {
-        qDebug() << "upload attachment:" << attachmentFilePath;
-        this->uploadFile(info.strId, attachmentFilePath);
+    else if (path.endsWith(".txt")) {
+
+    }
+    else if (path.endsWith(".docx")) {
+        WordReader reader(path);
+        auto wordContent = reader.readAll();
+        QString html;
+        html += QString(R"(<a href="%1">点击下载原文件</a>)").arg(QFileInfo(path).fileName());
+        for(auto p: wordContent.split("\n")) {
+            html += "<p>" + p + "</p>";
+        }
+        QString owner = Settings::instance()->usernameEn;
+        auto title = QFileInfo(path).baseName();
+        ServerNoteInfo info;
+        info.title = title;
+        info.owner = owner;
+        info.noteHtml = html;
+        info.strId = Utils::md5(path);
+        this->uploadNote(info);
+        qDebug() << "upload word(.doxc):" << path;
+        this->uploadFile(info.strId, path);
     }
 }
 
@@ -1553,12 +1585,15 @@ void Widget::traversalFileTree(const QString& path, QStringList& pathList) {
     QFileInfoList info_list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
     for (int i = 0; i < info_list.count(); i++) {
         auto info = info_list[i];
-        if (info.isFile() && !info.fileName().endsWith(".md")) continue;
         const QString &filePath = info.absoluteFilePath();
         if (info.isDir()) {
             traversalFileTree(filePath, pathList);
         } else {
-            pathList.append(filePath);
+            for(const auto& suffix: Utils::syncSuffix()) {
+                if (filePath.endsWith(suffix)) {
+                    pathList.append(filePath);
+                }
+            }
         }
     }
 

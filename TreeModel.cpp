@@ -4,6 +4,7 @@
 #include "Constant.h"
 #include "DbManager.h"
 #include "FileSystemWatcher.h"
+#include "Utils.h"
 #include <QStringList>
 #include <QDir>
 #include <QDebug>
@@ -164,7 +165,7 @@ void TreeModel::buildWatchingTree(QString path, TreeItem *parent)
     QFileInfoList info_list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
     for (int i = 0; i < info_list.count(); i++) {
         auto info = info_list[i];
-        if (info.isFile() && !info.fileName().endsWith(".md")) continue;
+        Utils::syncSuffix();
         const QString &filePath = info.absoluteFilePath();
         FileSystemWatcher::instance()->addPath(filePath);
         QString data = info.fileName();
@@ -174,8 +175,16 @@ void TreeModel::buildWatchingTree(QString path, TreeItem *parent)
             child->setPath(filePath);
             buildWatchingTree(filePath, child);
         } else {
-            child = new WatchingFileItem(filePath, info.baseName(), parent);
-            child->setPath(filePath);
+            bool ok = false;
+            for(const auto& suffix: Utils::syncSuffix()) {
+                if (filePath.endsWith(suffix)) {
+                    child = new WatchingFileItem(filePath, info.baseName(), parent);
+                    child->setPath(filePath);
+                    ok = true;
+                    break;
+                }
+            }
+            if (!ok) continue;
         }
         m_path2item[filePath] = child;
         parent->appendChild(child);
