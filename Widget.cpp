@@ -1334,15 +1334,16 @@ void Widget::syncWatchingFile(const QString& path) {
 
     }
     else if (path.endsWith(".docx")) {
+        auto title = QFileInfo(path).baseName();
         WordReader reader(path);
         auto wordContent = reader.readAll();
         QString html;
         html += QString(R"(<a href="%1">点击下载原文件</a>)").arg(QFileInfo(path).fileName());
+        html += "<h1>" + title + "</h1>\n";
         for(auto p: wordContent.split("\n")) {
             html += "<p>" + p + "</p>";
         }
         QString owner = Settings::instance()->usernameEn;
-        auto title = QFileInfo(path).baseName();
         ServerNoteInfo info;
         info.title = title;
         info.owner = owner;
