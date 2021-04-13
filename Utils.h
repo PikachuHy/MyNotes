@@ -44,6 +44,8 @@ namespace Utils {
      * 计算一个字符串的md5，并转成十六进制
      */
     QString md5(const QString& str);
+
+    QStringList syncSuffix();
 };
 
 

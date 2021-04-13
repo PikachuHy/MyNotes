@@ -42,4 +42,13 @@ namespace Utils {
     QString md5(const QString& str) {
         return QCryptographicHash::hash(str.toUtf8(),QCryptographicHash::Md5).toHex();
     }
+
+    QStringList syncSuffix() {
+        QStringList suffix;
+        suffix << ".md";
+        suffix << ".docx";
+        suffix << ".txt";
+        return suffix;
+    }
+
 }
