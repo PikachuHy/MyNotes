@@ -81,4 +81,5 @@ cppjieba
 limonp
 maddy
 QtMarkdownParser
+QtWordReader
 CuteLogger

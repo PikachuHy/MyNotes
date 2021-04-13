@@ -115,11 +115,13 @@ endif()
 endif()
 add_subdirectory(CuteLogger)
 add_subdirectory(QtMarkdownParser)
+add_subdirectory(QtWordReader)
 target_link_libraries(MyNotes PRIVATE
         Qt${QT_VERSION_MAJOR}::Widgets
         Qt${QT_VERSION_MAJOR}::Sql
         Qt${QT_VERSION_MAJOR}::Concurrent
         Qt${QT_VERSION_MAJOR}::WebEngineWidgets
         QtMarkdownParser
+        QtWordReader
         CuteLogger
         )
