@@ -37,10 +37,13 @@ endif()
 #    endif()
 #endif()
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets LinguistTools Sql Concurrent REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets LinguistTools Sql Concurrent Quick WebChannel Positioning REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS
         Widgets LinguistTools Sql Concurrent
         WebEngineWidgets
+        Quick
+        WebChannel
+        Positioning
         REQUIRED)
 
 set(TS_FILES MyNotes_zh_CN.ts)
@@ -121,6 +124,9 @@ target_link_libraries(MyNotes PRIVATE
         Qt${QT_VERSION_MAJOR}::Sql
         Qt${QT_VERSION_MAJOR}::Concurrent
         Qt${QT_VERSION_MAJOR}::WebEngineWidgets
+        Qt${QT_VERSION_MAJOR}::Quick
+        Qt${QT_VERSION_MAJOR}::WebChannel
+        Qt${QT_VERSION_MAJOR}::Positioning
         QtMarkdownParser
         QtWordReader
         CuteLogger
