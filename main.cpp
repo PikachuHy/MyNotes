@@ -1,13 +1,16 @@
 #include "Widget.h"
 #include "SettingsDialog.h"
 #include <QApplication>
-#include <Logger.h>
-#include <ConsoleAppender.h>
-#include <FileAppender.h>
 #include <QStandardPaths>
 #include <QDir>
 #include "SingleApplication.h"
+#include <QDebug>
+#ifndef _DEBUG
 #include <QLoggingCategory>
+#include <Logger.h>
+#include <ConsoleAppender.h>
+#include <FileAppender.h>
+#endif
 #include <QCommandLineParser>
 #include "config.h"
 #include "LoginDialog.h"
@@ -22,7 +25,7 @@ int showWindow(SingleApplication* app) {
     );
     w.show();
     auto ret = QApplication::exec();
-    LOG_WARNING() << "Something went wrong." << "Result code is" << ret;
+    qWarning() << "Something went wrong." << "Result code is" << ret;
     return ret;
 }
 int main(int argc, char *argv[]) {
@@ -62,10 +65,12 @@ int main(int argc, char *argv[]) {
     parser.addOption(debugOption);
     parser.process(a);
     const QStringList args = parser.positionalArguments();
+#ifndef _DEBUG
     if (parser.isSet(debugOption)) {
         QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, true);
         qDebug() << "run with debug mode";
     }
+#endif
     bool needLogin = false;
     bool autoLogin = Settings::instance()->userAutoLogin;
     if (!autoLogin) {
