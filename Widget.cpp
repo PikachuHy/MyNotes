@@ -48,6 +48,8 @@
 #include "FileSystemWatcher.h"
 #include "AboutDialog.h"
 #include <QtWorderReader>
+#include <QSplitter>
+
 // Returns empty QByteArray() on failure.
 QByteArray fileChecksum(const QString &fileName,
                         QCryptographicHash::Algorithm hashAlgorithm)
@@ -95,12 +97,15 @@ Widget::Widget(QWidget *parent)
     });
     // 处理Ctrl+S保存
     m_treeView->installEventFilter(this);
-    m_treeView->setFixedWidth(300);
+    m_treeView->setMinimumWidth(300);
     initShortcut();
     auto mainLayout = new QHBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
-    mainLayout->addWidget(m_treeView);
-    mainLayout->addWidget(m_textPreview);
+    QSplitter* splitter = new QSplitter(Qt::Horizontal);
+    splitter->addWidget(m_treeView);
+    splitter->addWidget(m_textPreview);
+    splitter->setStretchFactor(1, 3);
+    mainLayout->addWidget(splitter);
     setLayout(mainLayout);
     setWindowIcon(QIcon(QPixmap(":/icon/notebook_128x128.png")));
     auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
