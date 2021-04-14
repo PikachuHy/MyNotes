@@ -3,6 +3,15 @@ work_path=$(cd `dirname $0`;pwd)
 
 echo "work_path is $work_path"
 
+
+if [ -d "MyNotes.app" ];then
+  echo "MyNotes.app exist. delete it."
+  rm -rf MyNotes.app
+fi
+
+mkdir -p MyNotes.app/Contents/MacOS
+cp MyNotes MyNotes.app/Contents/MacOS
+
 if [ -d "icons.iconset" ];then
   echo "icons.iconset exist. delete it."
   rm -rf icons.iconset
@@ -28,4 +37,4 @@ fi
 cp Icon.icns MyNotes.app/Contents/Resources/
 cp ../Info.plist MyNotes.app/Contents/
 echo "build dmg"
-/Users/pikachu/Qt/5.15.2/clang_64/bin/macdeployqt ./MyNotes.app -dmg
+/Users/pikachu/Qt/5.15.2/clang_64/bin/macdeployqt ./MyNotes.app
