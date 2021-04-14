@@ -178,7 +178,7 @@ void TreeModel::buildWatchingTree(QString path, TreeItem *parent)
             bool ok = false;
             for(const auto& suffix: Utils::syncSuffix()) {
                 if (filePath.endsWith(suffix)) {
-                    child = new WatchingFileItem(filePath, info.baseName(), parent);
+                    child = new WatchingFileItem(filePath, info.fileName(), parent);
                     child->setPath(filePath);
                     ok = true;
                     break;
