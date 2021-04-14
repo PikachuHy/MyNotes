@@ -196,203 +196,203 @@ Current path is &quot;%2&quot;
 <context>
     <name>Widget</name>
     <message>
-        <location filename="Widget.cpp" line="220"/>
+        <location filename="Widget.cpp" line="221"/>
         <source>note path is empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="252"/>
-        <location filename="Widget.cpp" line="291"/>
+        <location filename="Widget.cpp" line="253"/>
+        <location filename="Widget.cpp" line="292"/>
         <source>Sync Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="254"/>
+        <location filename="Widget.cpp" line="255"/>
         <source>Sync Watching Folder Success</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="258"/>
+        <location filename="Widget.cpp" line="259"/>
         <source>Remove Watching Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="267"/>
+        <location filename="Widget.cpp" line="268"/>
         <source>Sync Note</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="269"/>
+        <location filename="Widget.cpp" line="270"/>
         <source>Sync Watching Note Success</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="272"/>
-        <location filename="Widget.cpp" line="274"/>
+        <location filename="Widget.cpp" line="273"/>
+        <location filename="Widget.cpp" line="275"/>
         <source>Add Watch Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="280"/>
+        <location filename="Widget.cpp" line="281"/>
         <source>Folder %1 has already in watching.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="291"/>
+        <location filename="Widget.cpp" line="292"/>
         <source>Sync Folder Done.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="294"/>
-        <location filename="Widget.cpp" line="325"/>
+        <location filename="Widget.cpp" line="295"/>
+        <location filename="Widget.cpp" line="326"/>
         <source>Sync All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="308"/>
+        <location filename="Widget.cpp" line="309"/>
         <source>Add to ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="334"/>
+        <location filename="Widget.cpp" line="335"/>
         <source>Open in Finder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="336"/>
+        <location filename="Widget.cpp" line="337"/>
         <source>Open in Explore</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="394"/>
+        <location filename="Widget.cpp" line="395"/>
         <source>Trash Note</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="395"/>
+        <location filename="Widget.cpp" line="396"/>
         <source>Trash Note?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="500"/>
+        <location filename="Widget.cpp" line="501"/>
         <source>New Note</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="500"/>
+        <location filename="Widget.cpp" line="501"/>
         <source>Note name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="513"/>
-        <location filename="Widget.cpp" line="560"/>
+        <location filename="Widget.cpp" line="514"/>
+        <location filename="Widget.cpp" line="561"/>
         <source>current item is null</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="546"/>
+        <location filename="Widget.cpp" line="547"/>
         <source>New Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="546"/>
+        <location filename="Widget.cpp" line="547"/>
         <source>Folder name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="566"/>
+        <location filename="Widget.cpp" line="567"/>
         <source>folder exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="573"/>
+        <location filename="Widget.cpp" line="574"/>
         <source>new folder: save to db fail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="589"/>
-        <location filename="Widget.cpp" line="595"/>
+        <location filename="Widget.cpp" line="590"/>
+        <location filename="Widget.cpp" line="596"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="589"/>
+        <location filename="Widget.cpp" line="590"/>
         <source>File not exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="595"/>
+        <location filename="Widget.cpp" line="596"/>
         <source>File open fail.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="613"/>
-        <location filename="Widget.cpp" line="622"/>
+        <location filename="Widget.cpp" line="614"/>
+        <location filename="Widget.cpp" line="623"/>
         <source>trash note fail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="638"/>
+        <location filename="Widget.cpp" line="639"/>
         <source>trash folder fail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="652"/>
+        <location filename="Widget.cpp" line="653"/>
         <source>ERROR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="846"/>
+        <location filename="Widget.cpp" line="847"/>
         <source>open in typora fail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="865"/>
+        <location filename="Widget.cpp" line="866"/>
         <source>export to HTML fail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="870"/>
+        <location filename="Widget.cpp" line="871"/>
         <source>Export Note to HTML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1015"/>
+        <location filename="Widget.cpp" line="1016"/>
         <source>Show</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1019"/>
+        <location filename="Widget.cpp" line="1020"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1023"/>
+        <location filename="Widget.cpp" line="1024"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1027"/>
+        <location filename="Widget.cpp" line="1028"/>
         <source>About Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1030"/>
+        <location filename="Widget.cpp" line="1031"/>
         <source>Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1069"/>
+        <location filename="Widget.cpp" line="1070"/>
         <source>invalid note from strId: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1120"/>
+        <location filename="Widget.cpp" line="1125"/>
         <source>Sync All Watching Success</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1327"/>
+        <location filename="Widget.cpp" line="1360"/>
         <source>Sync Result</source>
         <translation type="unfinished"></translation>
     </message>
