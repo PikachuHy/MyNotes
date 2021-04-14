@@ -288,7 +288,7 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
                 QStringList watchingDirs = Settings::instance()->watchingFolders;
                 bool watchSuccess = true;
                 for (auto watchingDir: watchingDirs) {
-                    if (dir.startsWith(watchingDir)) {
+                    if (dir.startsWith(watchingDir + '/')) {
                         watchSuccess = false;
                         showErrorDialog(tr("Folder %1 has already in watching.").arg(dir));
                         break;
