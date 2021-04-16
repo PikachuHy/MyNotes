@@ -71,6 +71,15 @@ SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
     }
     m_typoraPathLineEdit->setText(Settings::instance()->typoraPath);
 #endif
+
+    m_trojanConfigPathLineEdit = new QLineEdit();
+    m_trojanConfigPathChooseBtn = new QPushButton(tr("..."));
+    {
+        auto hbox = new QHBoxLayout();
+        hbox->addWidget(m_trojanConfigPathLineEdit, 1);
+        hbox->addWidget(m_trojanConfigPathChooseBtn);
+        formLayout->addRow(tr("Trojan config path:"), hbox);
+    }
     layout->addLayout(formLayout);
     auto buttonBox = new QDialogButtonBox(this);
     buttonBox->setObjectName(QString::fromUtf8("buttonBox"));
@@ -113,6 +122,7 @@ Current path is "%2"
                          }
                          Settings::instance()->typoraPath = typoraPath;
 #endif
+                         Settings::instance()->trojanConfigPath = m_trojanConfigPathLineEdit->text();
                          this->accept();
                      }
     );
@@ -127,6 +137,7 @@ Current path is "%2"
         this->move(x, y);
     });
 #ifdef Q_OS_WIN
+
     connect(m_typoraPathChooseBtn, &QPushButton::clicked, [this]() {
         auto path = QFileDialog::getOpenFileName(this,
                                                  tr("Choose Typora Path"),
@@ -137,4 +148,13 @@ Current path is "%2"
         this->m_typoraPathLineEdit->setText(path);
     });
 #endif
+    connect(m_trojanConfigPathChooseBtn, &QPushButton::clicked, [this]() {
+        auto path = QFileDialog::getOpenFileName(this,
+                                                 tr("Choose Trojan Config Path"),
+                                                 QDir::homePath()
+
+        );
+        qDebug() << "choose path:" << path;
+        this->m_trojanConfigPathLineEdit->setText(path);
+    });
 }

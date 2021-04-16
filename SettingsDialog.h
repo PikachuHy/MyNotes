@@ -23,6 +23,8 @@ private:
     QLineEdit *m_serverLineEdit;
     QLineEdit *m_typoraPathLineEdit;
     QPushButton *m_typoraPathChooseBtn;
+    QLineEdit *m_trojanConfigPathLineEdit;
+    QPushButton *m_trojanConfigPathChooseBtn;
 };
 
 

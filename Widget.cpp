@@ -49,6 +49,7 @@
 #include "AboutDialog.h"
 #include <QtWorderReader>
 #include <QSplitter>
+#include "TrojanThread.h"
 
 // Returns empty QByteArray() on failure.
 QByteArray fileChecksum(const QString &fileName,
@@ -73,6 +74,7 @@ Widget::Widget(QWidget *parent)
         , m_fileSystemWatcher(FileSystemWatcher::instance())
         , m_systemTrayIcon(new QSystemTrayIcon(this))
         , m_timer(new QTimer(this))
+        , m_trojanThread(nullptr)
 //        ,m_jieba(nullptr)
         {
     initSystemTrayIcon();
@@ -1025,6 +1027,38 @@ void Widget::initSystemTrayIcon()
     menu->addAction(tr("Settings"), [this](){
         SettingsDialog dialog;
         dialog.exec();
+    });
+    auto a = new QAction("Trojan");
+    a->setCheckable(true);
+    menu->addAction(a);
+    connect(a, &QAction::triggered, [this, a](){
+        qDebug() << "trojan triggered" << a->isChecked();
+        if (!m_trojanThread) {
+            m_trojanThread = new TrojanThread();
+            connect(m_trojanThread, &TrojanThread::started, [this, a]() {
+                int localPort = m_trojanThread->localPort();
+                a->setText(tr("Trojan: %1").arg(localPort));
+            });
+            connect(m_trojanThread, &TrojanThread::stopped, [this, a]() {
+                a->setText(tr("Trojan"));
+            });
+        }
+        if (a->isChecked()) {
+            QString configPath = Settings::instance()->trojanConfigPath;
+            bool ok = m_trojanThread->loadConfig(configPath);
+            if (ok) {
+                m_trojanThread->start();
+            } else {
+                showWarning(tr("Start Trojan"),
+                            tr(R"(Trojan config is error.
+Please check your config file.
+Current config: %1)").arg(configPath));
+                a->setChecked(false);
+            }
+
+        } else {
+            m_trojanThread->stop();
+        }
     });
     menu->addAction(tr("About"), [this](){
         AboutDialog dialog(this);

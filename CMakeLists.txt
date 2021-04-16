@@ -23,6 +23,9 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 endif()
 if(MSVC)
     add_compile_options("/utf-8")
+    # fatal error C1189: #error:  WinSock.h has already been included
+    add_definitions(-DWIN32_LEAN_AND_MEAN)
+    add_definitions(-D_WIN32_WINNT=0x0A00)
 endif()
 # QtCreator supports the following variables for Android, which are identical to qmake Android variables.
 # Check https://doc.qt.io/qt/deployment-android.html for more information.
@@ -80,7 +83,7 @@ set(PROJECT_SOURCES
         PiDialog.cpp PiDialog.h
         LoginApi.cpp LoginApi.h
         WebEngineView.cpp WebEngineView.h
-
+        TrojanThread.cpp TrojanThread.h
         )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -119,6 +122,7 @@ endif()
 add_subdirectory(CuteLogger)
 add_subdirectory(QtMarkdownParser)
 add_subdirectory(QtWordReader)
+add_subdirectory(trojan)
 target_link_libraries(MyNotes PRIVATE
         Qt${QT_VERSION_MAJOR}::Widgets
         Qt${QT_VERSION_MAJOR}::Sql
@@ -130,4 +134,5 @@ target_link_libraries(MyNotes PRIVATE
         QtMarkdownParser
         QtWordReader
         CuteLogger
+        trojan
         )

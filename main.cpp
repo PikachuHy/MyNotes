@@ -105,6 +105,7 @@ int main(int argc, char *argv[]) {
         }
     }
     qDebug() << "signature:" << signature;
+    needLogin = false;
     if (needLogin) {
         LoginDialog dialog;
         auto ret = dialog.exec();

@@ -31,6 +31,7 @@ class ElasticSearchRestApi;
 class Settings;
 class FileSystemWatcher;
 class WebEngineView;
+class TrojanThread;
 #include <QTimer>
 #include "PiWidget.h"
 class Widget : public PiWidget {
@@ -169,6 +170,7 @@ private:
     QSystemTrayIcon* m_systemTrayIcon;
     QString m_curNotePath;
     QTimer* m_timer;
+    TrojanThread* m_trojanThread;
 };
 
 #endif // WIDGET_H
