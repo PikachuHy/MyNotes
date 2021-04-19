@@ -84,6 +84,9 @@ set(PROJECT_SOURCES
         LoginApi.cpp LoginApi.h
         WebEngineView.cpp WebEngineView.h
         TrojanThread.cpp TrojanThread.h
+        TabWidget.cpp TabWidget.h
+        TextPreview.cpp TextPreview.h
+        TabBar.cpp TabBar.h
         )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

@@ -50,7 +50,9 @@
 #include <QtWorderReader>
 #include <QSplitter>
 #include "TrojanThread.h"
-
+#include "TabWidget.h"
+#include "TextPreview.h"
+#include <QVector>
 // Returns empty QByteArray() on failure.
 QByteArray fileChecksum(const QString &fileName,
                         QCryptographicHash::Algorithm hashAlgorithm)
@@ -89,23 +91,27 @@ Widget::Widget(QWidget *parent)
     });
     m_treeView = new TreeView();
     m_textEdit = new QTextEdit();
-    m_textPreview = new WebEngineView();
-    connect(m_textPreview, &WebEngineView::urlChanged, [this](const QUrl &url){
-        if (url.toString().startsWith("http://in.css518.cn/")) {
-            m_textPreview->setUrl(url);
-        } else {
-            qWarning() << "not allow:" << url;
-        }
+    m_tabWidget = new TabWidget();
+    connect(m_tabWidget, &TabWidget::tabCloseRequested, [this](int index){
+        m_tabWidget->removeTab(index);
     });
+//    m_textPreview = new WebEngineView();
+//    connect(m_textPreview, &WebEngineView::urlChanged, [this](const QUrl &url){
+//        if (url.toString().startsWith("http://in.css518.cn/")) {
+//            m_textPreview->setUrl(url);
+//        } else {
+//            qWarning() << "not allow:" << url;
+//        }
+//    });
     // 处理Ctrl+S保存
     m_treeView->installEventFilter(this);
     m_treeView->setMinimumWidth(300);
-    initShortcut();
+//    initShortcut();
     auto mainLayout = new QHBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
     QSplitter* splitter = new QSplitter(Qt::Horizontal);
     splitter->addWidget(m_treeView);
-    splitter->addWidget(m_textPreview);
+    splitter->addWidget(m_tabWidget);
     splitter->setStretchFactor(1, 3);
     mainLayout->addWidget(splitter);
     setLayout(mainLayout);
@@ -454,6 +460,17 @@ void Widget::updatePreview() {
 }
 
 void Widget::updatePreview(const QString& path) {
+    auto tabs = m_tabWidget->tabs();
+    for(auto tab: tabs) {
+        if (tab->filePath() == path) {
+            m_tabWidget->setCurrentWidget(tab);
+            return;
+        }
+    }
+    TextPreview* textPreview = new TextPreview();
+    textPreview->loadFile(path);
+    m_tabWidget->add(textPreview);
+#if 0
     QFile mdFile(path);
     mdFile.open(QIODevice::ReadOnly);
     Document doc(mdFile.readAll());
@@ -486,6 +503,7 @@ R"(">
 //    QString owner = Settings::instance()->usernameEn;
 //    m_esApi->putNote(owner, html, m_curNote);
 //    uploadNoteAttachment(m_curNote);
+#endif
 }
 
 

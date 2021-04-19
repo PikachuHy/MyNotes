@@ -32,6 +32,7 @@ class Settings;
 class FileSystemWatcher;
 class WebEngineView;
 class TrojanThread;
+class TabWidget;
 #include <QTimer>
 #include "PiWidget.h"
 class Widget : public PiWidget {
@@ -145,6 +146,7 @@ private:
     QTextEdit *m_textEdit;
     // markdown转html后预览，用GitHub到样式
     WebEngineView *m_textPreview;
+    TabWidget *m_tabWidget;
     QLabel *m_wordCountLabel;
     TreeModel *m_treeModel;
     // 笔记所在路径
