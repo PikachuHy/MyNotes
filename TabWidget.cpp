@@ -7,12 +7,44 @@
 #include <QEvent>
 #include <QKeyEvent>
 #include "TabBar.h"
+#include <QMenu>
 TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent) {
-    setTabBar(new TabBar());
+    auto tabBar = new TabBar();
+    setTabBar(tabBar);
     installEventFilter(this);
     setMovable(true);
     setTabsClosable(true);
 //    setTabShape(Triangular);
+
+    connect(tabBar, &QTabBar::customContextMenuRequested, [this, tabBar](const QPoint &pos){
+        qDebug() << pos;
+        QMenu menu;
+        // https://www.qtcentre.org/threads/16703-QTabBar-Context-menu-on-tab
+        bool posInTab = false;
+        int i;
+        for (i = 0; i < tabBar->count(); ++i) {
+            if (tabBar->tabRect(i).contains(pos)) {
+                posInTab = true;
+                break;
+            }
+        }
+        if (posInTab) {
+            menu.addAction(tr("Close"), [this, i]() {
+                this->removeTab(i);
+            });
+            menu.addAction(tr("Close Other Tabs"), [this, i]() {
+                auto tab = this->tabs()[i];
+                this->clear();
+                this->add(tab);
+            });
+            menu.addAction(tr("Close All Tabs"), [this]() {
+                this->clear();
+            });
+        } else {
+
+        }
+        menu.exec(this->mapToGlobal(pos));
+    });
 }
 
 void TabWidget::add(TextPreview *tab) {

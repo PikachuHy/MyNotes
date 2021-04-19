@@ -9,10 +9,4 @@
 TabBar::TabBar(QWidget *parent) : QTabBar(parent) {
     setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(this, &QTabBar::customContextMenuRequested, [this](const QPoint &pos){
-        qDebug() << pos;
-        QMenu menu;
-        // TODO: chrome-like menu
-        menu.exec(this->mapToGlobal(pos));
-    });
 }
