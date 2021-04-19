@@ -10,6 +10,7 @@
 #include <QtMarkdownParser/QtMarkdownParser>
 #include <QStandardPaths>
 #include <QVBoxLayout>
+#include <WordReader.h>
 TextPreview::TextPreview(QWidget *parent) : QWidget(parent) {
     auto layout = new QVBoxLayout();
 #ifdef USE_WEB_ENGINE_VIEW
@@ -24,42 +25,52 @@ TextPreview::TextPreview(QWidget *parent) : QWidget(parent) {
 
 void TextPreview::loadFile(const QString &path) {
     m_filePath = path;
-    QFile mdFile(path);
-    if (!mdFile.exists()) {
-        qWarning() << "file not exist." << path;
-        return;
-    }
-    bool ok = mdFile.open(QIODevice::ReadOnly);
-    if (!ok) {
-        qDebug() << "file open fail." << path;
-        return;
-    }
-    Document doc(mdFile.readAll());
-    auto html = doc.toHtml();
+    if (path.endsWith(".md")) {
+        QFile mdFile(path);
+        if (!mdFile.exists()) {
+            qWarning() << "file not exist." << path;
+            return;
+        }
+        bool ok = mdFile.open(QIODevice::ReadOnly);
+        if (!ok) {
+            qDebug() << "file open fail." << path;
+            return;
+        }
+        Document doc(mdFile.readAll());
+        auto html = doc.toHtml();
 //    QString mdCssPath = tmpPath() + "github-markdown.css";
-    QString mdCssPath = "qrc:///css/github-markdown.css";
+        QString mdCssPath = "qrc:///css/github-markdown.css";
 //    QString mdCssPath = "qrc:///css/github.css";
-    auto allHtml = R"(<!DOCTYPE html><html><head>
+        auto allHtml = R"(<!DOCTYPE html><html><head>
 <meta charset="utf-8">
 <title>Markdown</title>
 <link rel="stylesheet" href=")"
-                   +
-                   mdCssPath
-                   +
-                   R"(">
+                       +
+                       mdCssPath
+                       +
+                       R"(">
 </head>
 <body>
 <article class="markdown-body">)"
-                   +
-                   html
-                   +
-                   R"(</article></body></html>)";
+                       +
+                       html
+                       +
+                       R"(</article></body></html>)";
 
-#ifdef USE_WEB_ENGINE_VIEW
-    m_webEngineView->setHtml(allHtml, QUrl("file://" + QFileInfo(path).absolutePath() + '/'));
-#else
-    m_textBrowser->setHtml(allHtml);
-#endif
+        setHtml(allHtml);
+    } else if (path.endsWith(".docx")) {
+        auto title = QFileInfo(path).baseName();
+        WordReader reader(path);
+        auto wordContent = reader.readAll();
+        QString html;
+        html += "<h1>" + title + "</h1>\n";
+        for(const auto p: wordContent.split("\n")) {
+            html += "<p>" + p + "</p>";
+        }
+        setHtml(html);
+    } else {
+        qWarning() << "not allowed." << path;
+    }
 }
 
 QString TextPreview::fileName() const {
@@ -68,4 +79,12 @@ QString TextPreview::fileName() const {
 
 QString TextPreview::filePath() const {
     return m_filePath;
+}
+
+void TextPreview::setHtml(const QString &html) {
+#ifdef USE_WEB_ENGINE_VIEW
+    m_webEngineView->setHtml(html, QUrl("file://" + QFileInfo(path).absolutePath() + '/'));
+#else
+    m_textBrowser->setHtml(html);
+#endif
 }

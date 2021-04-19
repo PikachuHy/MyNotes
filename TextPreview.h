@@ -20,6 +20,7 @@ public:
     QString filePath() const;
 private:
     QString m_filePath;
+    void setHtml(const QString& html);
 #ifdef USE_WEB_ENGINE_VIEW
     QWebEngineView *m_webEngineView;
 #else
