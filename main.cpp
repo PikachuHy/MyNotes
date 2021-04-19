@@ -16,14 +16,15 @@
 #include "LoginDialog.h"
 #include "Utils.h"
 int showWindow(SingleApplication* app) {
-    Widget w;
+    auto w = new Widget();
+    w->setAttribute(Qt::WA_DeleteOnClose, true);
     QObject::connect(app, &SingleApplication::messageAvailable,
-        [&w](QString message) {
+        [w](QString message) {
         qDebug() << "show";
-        w.showNormal();
+        w->showNormal();
     }
     );
-    w.show();
+    w->show();
     auto ret = QApplication::exec();
     qWarning() << "Something went wrong." << "Result code is" << ret;
     return ret;
