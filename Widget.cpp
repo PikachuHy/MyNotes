@@ -1,5 +1,4 @@
 #include "Widget.h"
-#include "WebEngineView.h"
 #include "TreeItem.h"
 #include "TreeModel.h"
 #include "TreeView.h"
@@ -1555,6 +1554,7 @@ void Widget::syncWorkshopFile(const Note& note) {
 }
 
 void Widget::initShortcut() {
+#if 0
     // 用一种比较奇怪的方式，兼容焦点在webengine时没法按E进入Typora编辑的问题
     auto editShortcut = new QShortcut((Qt::Key_E), m_textPreview);
     QObject::connect(editShortcut, &QShortcut::activated, m_textPreview, [this]() {
@@ -1577,6 +1577,7 @@ void Widget::initShortcut() {
         qDebug() << "open in browser" << url;
         QDesktopServices::openUrl(QUrl(url));
     });
+#endif
 }
 
 QString Widget::currentNoteStrId() {

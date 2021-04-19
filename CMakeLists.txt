@@ -5,7 +5,7 @@ project(MyNotes LANGUAGES CXX
         )
 configure_file(config.h.in ${PROJECT_BINARY_DIR}/config.h)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
+option(USE_WEB_ENGINE_VIEW "use QWebEngineView" OFF)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -40,15 +40,21 @@ endif()
 #    endif()
 #endif()
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets LinguistTools Sql Concurrent Quick WebChannel Positioning REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets LinguistTools Sql Concurrent Quick REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS
         Widgets LinguistTools Sql Concurrent
-        WebEngineWidgets
         Quick
-        WebChannel
-        Positioning
         REQUIRED)
+if (USE_WEB_ENGINE_VIEW)
+    find_package(QT NAMES Qt6 Qt5 COMPONENTS WebChannel Positioning REQUIRED)
+    find_package(Qt${QT_VERSION_MAJOR} COMPONENTS
+            WebEngineWidgets
+            WebChannel
+            Positioning
+            REQUIRED)
+else()
 
+endif()
 set(TS_FILES MyNotes_zh_CN.ts)
 
 set(PROJECT_SOURCES
@@ -82,7 +88,7 @@ set(PROJECT_SOURCES
         ElasticSearchRestApi.cpp ElasticSearchRestApi.h
         PiDialog.cpp PiDialog.h
         LoginApi.cpp LoginApi.h
-        WebEngineView.cpp WebEngineView.h
+
         TrojanThread.cpp TrojanThread.h
         TabWidget.cpp TabWidget.h
         TextPreview.cpp TextPreview.h
@@ -130,12 +136,19 @@ target_link_libraries(MyNotes PRIVATE
         Qt${QT_VERSION_MAJOR}::Widgets
         Qt${QT_VERSION_MAJOR}::Sql
         Qt${QT_VERSION_MAJOR}::Concurrent
-        Qt${QT_VERSION_MAJOR}::WebEngineWidgets
         Qt${QT_VERSION_MAJOR}::Quick
-        Qt${QT_VERSION_MAJOR}::WebChannel
-        Qt${QT_VERSION_MAJOR}::Positioning
         QtMarkdownParser
         QtWordReader
         CuteLogger
         trojan
         )
+if (USE_WEB_ENGINE_VIEW)
+    target_compile_definitions(MyNotes PRIVATE -DUSE_WEB_ENGINE_VIEW)
+    target_link_libraries(MyNotes PRIVATE
+            Qt${QT_VERSION_MAJOR}::WebEngineWidgets
+            Qt${QT_VERSION_MAJOR}::WebChannel
+            Qt${QT_VERSION_MAJOR}::Positioning
+            )
+    target_sources(MyNotes PRIVATE WebEngineView.cpp WebEngineView.h)
+else()
+endif ()

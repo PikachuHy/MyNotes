@@ -13,7 +13,6 @@
 #include <QSqlQuery>
 //#include "cppjieba/Jieba.hpp"
 #include "DbModel.h"
-#include <QWebEngineView>
 #include <QSettings>
 #include <QFile>
 #include <QFileSystemWatcher>

@@ -9,8 +9,17 @@
 #include <QDebug>
 #include <QtMarkdownParser/QtMarkdownParser>
 #include <QStandardPaths>
-TextPreview::TextPreview(QWidget *parent) : QWebEngineView(parent) {
-
+#include <QVBoxLayout>
+TextPreview::TextPreview(QWidget *parent) : QWidget(parent) {
+    auto layout = new QVBoxLayout();
+#ifdef USE_WEB_ENGINE_VIEW
+    m_webEngineView = new QWebEngineView();
+    layout->addWidget(m_webEngineView);
+#else
+    m_textBrowser = new QTextBrowser();
+    layout->addWidget(m_textBrowser);
+#endif
+    setLayout(layout);
 }
 
 void TextPreview::loadFile(const QString &path) {
@@ -45,7 +54,12 @@ void TextPreview::loadFile(const QString &path) {
                    html
                    +
                    R"(</article></body></html>)";
-    setHtml(allHtml, QUrl("file://" + QFileInfo(path).absolutePath() + '/'));
+
+#ifdef USE_WEB_ENGINE_VIEW
+    m_webEngineView->setHtml(allHtml, QUrl("file://" + QFileInfo(path).absolutePath() + '/'));
+#else
+    m_textBrowser->setHtml(allHtml);
+#endif
 }
 
 QString TextPreview::fileName() const {
