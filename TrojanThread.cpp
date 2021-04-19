@@ -111,4 +111,5 @@ bool TrojanThread::loadConfig(const QString &path) {
         return false;
     }
     _config->load(path.toStdString());
+    return true;
 }
