@@ -19,7 +19,7 @@ int showWindow(SingleApplication* app) {
     auto w = new Widget();
     w->setAttribute(Qt::WA_DeleteOnClose, true);
     QObject::connect(app, &SingleApplication::messageAvailable,
-        [w](QString message) {
+        [w](const QString& message) {
         qDebug() << "show";
         w->showNormal();
     }
