@@ -8,6 +8,7 @@
 #include <QKeyEvent>
 #include "TabBar.h"
 #include <QMenu>
+#include <QDebug>
 TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent) {
     auto tabBar = new TabBar();
     setTabBar(tabBar);
