@@ -19,3 +19,9 @@
 - https://github.com/yanyiwu/cppjieba
 
 - https://github.com/PikachuHy/QtMarkdownParser
+
+- https://github.com/PikachuHy/CuteLogger
+
+- https://github.com/PikachuHy/QtWordReader
+
+- https://github.com/PikachuHy/trojan
