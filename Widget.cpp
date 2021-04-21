@@ -1391,6 +1391,7 @@ void Widget::syncWatchingFile(const QString& path) {
 
     }
     else if (path.endsWith(".docx")) {
+        qDebug() << "sync" << path;
         auto title = QFileInfo(path).baseName();
         WordReader reader(path);
         auto wordContent = reader.readAll();
