@@ -301,6 +301,7 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
                     m_treeModel->addWatchingDir(m_treeView->currentIndex(), dir);
                     // 添加的监控文件夹要自动同步
                     this->syncWatchingFolder(dir);
+                    this->updateProfile();
                     this->showInfo(tr("Sync Folder"), tr("Sync Folder Done."));
                 }
             });
