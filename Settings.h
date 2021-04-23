@@ -33,7 +33,8 @@ public:
     template<const char *key>
     struct QStringRef {
         operator QString() const {
-            return settings()->value(key).toString();
+            // 解决中文乱码问题
+            return QString::fromUtf8(settings()->value(key).toByteArray());
         }
 
         QStringRef &operator=(const QString &newValue) {
