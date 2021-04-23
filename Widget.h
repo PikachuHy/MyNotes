@@ -30,7 +30,9 @@ class ElasticSearchRestApi;
 class Settings;
 class FileSystemWatcher;
 class WebEngineView;
+#ifdef ENABLE_TROJAN
 class TrojanThread;
+#endif
 class TabWidget;
 #include <QTimer>
 #include "PiWidget.h"
@@ -172,7 +174,9 @@ private:
     QSystemTrayIcon* m_systemTrayIcon;
     QString m_curNotePath;
     QTimer* m_timer;
+#ifdef ENABLE_TROJAN
     TrojanThread* m_trojanThread;
+#endif
 };
 
 #endif // WIDGET_H

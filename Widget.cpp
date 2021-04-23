@@ -48,7 +48,9 @@
 #include "AboutDialog.h"
 #include <QtWorderReader>
 #include <QSplitter>
+#ifdef ENABLE_TROJAN
 #include "TrojanThread.h"
+#endif
 #include "TabWidget.h"
 #include "TextPreview.h"
 #include <QVector>
@@ -75,7 +77,9 @@ Widget::Widget(QWidget *parent)
         , m_fileSystemWatcher(FileSystemWatcher::instance())
         , m_systemTrayIcon(new QSystemTrayIcon(this))
         , m_timer(new QTimer(this))
+#ifdef ENABLE_TROJAN
         , m_trojanThread(nullptr)
+#endif
 //        ,m_jieba(nullptr)
         {
     initSystemTrayIcon();
@@ -1050,6 +1054,7 @@ void Widget::initSystemTrayIcon()
         SettingsDialog dialog;
         dialog.exec();
     });
+#ifdef ENABLE_TROJAN
     auto a = new QAction("Trojan");
     a->setCheckable(true);
     menu->addAction(a);
@@ -1082,6 +1087,7 @@ Current config: %1)").arg(configPath));
             m_trojanThread->stop();
         }
     });
+#endif
     menu->addAction(tr("About"), [this](){
         AboutDialog dialog(this);
         dialog.exec();

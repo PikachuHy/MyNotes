@@ -6,6 +6,7 @@ project(MyNotes LANGUAGES CXX
 configure_file(config.h.in ${PROJECT_BINARY_DIR}/config.h)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 option(USE_WEB_ENGINE_VIEW "use QWebEngineView" OFF)
+option(ENABLE_TROJAN "enable trojan" OFF)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -88,8 +89,6 @@ set(PROJECT_SOURCES
         ElasticSearchRestApi.cpp ElasticSearchRestApi.h
         PiDialog.cpp PiDialog.h
         LoginApi.cpp LoginApi.h
-
-        TrojanThread.cpp TrojanThread.h
         TabWidget.cpp TabWidget.h
         TextPreview.cpp TextPreview.h
         TabBar.cpp TabBar.h
@@ -131,7 +130,12 @@ endif()
 add_subdirectory(CuteLogger)
 add_subdirectory(QtMarkdownParser)
 add_subdirectory(QtWordReader)
-add_subdirectory(trojan)
+if(ENABLE_TROJAN)
+    add_subdirectory(trojan)
+    target_compile_definitions(MyNotes PRIVATE -DENABLE_TROJAN)
+    target_link_libraries(MyNotes PRIVATE trojan)
+    target_sources(MyNotes PRIVATE TrojanThread.cpp TrojanThread.h)
+endif()
 target_link_libraries(MyNotes PRIVATE
         Qt${QT_VERSION_MAJOR}::Widgets
         Qt${QT_VERSION_MAJOR}::Sql
@@ -140,7 +144,6 @@ target_link_libraries(MyNotes PRIVATE
         QtMarkdownParser
         QtWordReader
         CuteLogger
-        trojan
         )
 if (USE_WEB_ENGINE_VIEW)
     target_compile_definitions(MyNotes PRIVATE -DUSE_WEB_ENGINE_VIEW)
