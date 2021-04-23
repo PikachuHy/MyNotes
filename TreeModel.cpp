@@ -305,7 +305,7 @@ void TreeModel::addWatchingNode(const QString &path) {
             if (fileInfo.isDir()) {
                 child = new WatchingFolderItem(path, filename, parentItem);
             } else {
-                child = new WatchingFileItem(path, fileInfo.baseName(), parentItem);
+                child = new WatchingFileItem(path, filename, parentItem);
             }
             beginInsertRows(parentIndex, row, row);
             parentItem->appendChild(child);
