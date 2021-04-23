@@ -1161,8 +1161,8 @@ void Widget::initFileSystemWatcher() {
     });
     connect(m_fileSystemWatcher, &FileSystemWatcher::newFile, [this](const QString& newFilePath){
         QStringList syncSuffix = Utils::syncSuffix();
-        for(const auto& suffic: syncSuffix) {
-            if (newFilePath.endsWith(suffic)) {
+        for(const auto& suffix: syncSuffix) {
+            if (newFilePath.endsWith(suffix)) {
                 m_treeModel->addWatchingNode(newFilePath);
                 this->syncWatchingFile(newFilePath);
                 this->updateProfile();
