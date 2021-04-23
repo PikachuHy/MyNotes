@@ -1057,13 +1057,13 @@ void Widget::initSystemTrayIcon()
         qDebug() << "trojan triggered" << a->isChecked();
         if (!m_trojanThread) {
             m_trojanThread = new TrojanThread();
-            connect(m_trojanThread, &TrojanThread::started, [this, a]() {
+            connect(m_trojanThread, &TrojanThread::started, this, [this, a]() {
                 int localPort = m_trojanThread->localPort();
                 a->setText(tr("Trojan: %1").arg(localPort));
-            });
-            connect(m_trojanThread, &TrojanThread::stopped, [this, a]() {
+            }, Qt::QueuedConnection);
+            connect(m_trojanThread, &TrojanThread::stopped, this, [this, a]() {
                 a->setText(tr("Trojan"));
-            });
+            }, Qt::QueuedConnection);
         }
         if (a->isChecked()) {
             QString configPath = Settings::instance()->trojanConfigPath;
