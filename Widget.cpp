@@ -1088,6 +1088,14 @@ Current config: %1)").arg(configPath));
         }
     });
 #endif
+    menu->addAction(tr("Show Config"), [this]() {
+        Settings::instance();
+        auto path = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation).first();
+        auto dir = QDir(path);
+        dir.cdUp();
+        QString url = QString("%1/MyNotes.ini").arg(dir.absolutePath());
+        QDesktopServices::openUrl(QUrl(url));
+    });
     menu->addAction(tr("About"), [this](){
         AboutDialog dialog(this);
         dialog.exec();
