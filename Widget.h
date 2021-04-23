@@ -138,6 +138,7 @@ private:
     void initShortcut();
     QString getWorkshopNoteStrIdFromPath(const QString& path);
     void updateProfile();
+    void _updateProfile();
     void traversalFileTree(const QString& path, QStringList& pathList);
 private:
     // 左边到文档树

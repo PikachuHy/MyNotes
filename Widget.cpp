@@ -80,14 +80,16 @@ Widget::Widget(QWidget *parent)
         {
     initSystemTrayIcon();
     initFileSystemWatcher();
-    // 一天
-    m_timer->setInterval(1000 * 60 * 60 * 24);
-    m_timer->start();
-    connect(m_timer, &QTimer::timeout, [this]() {
-        qInfo() << "24h sync";
-        this->syncAllWatching();
-        this->updateProfile();
-    });
+    if (!Settings::instance()->modeOffline) {
+        // 一天
+        m_timer->setInterval(1000 * 60 * 60 * 24);
+        m_timer->start();
+        connect(m_timer, &QTimer::timeout, [this]() {
+            qInfo() << "24h sync";
+            this->syncAllWatching();
+            this->updateProfile();
+        });
+    }
     m_treeView = new TreeView();
     m_textEdit = new QTextEdit();
     m_tabWidget = new TabWidget();
@@ -162,22 +164,24 @@ Widget::Widget(QWidget *parent)
     m_listView = nullptr;
     // 读最后一次打开的笔记
     loadLastOpenedNote();
-    const int syncVersion = 20210402;
-    int curSyncVersion = Settings::instance()->syncVersion;
-    if (curSyncVersion < syncVersion) {
-        QTimer::singleShot(1000, [this, syncVersion]() {
-            qInfo() << "reupload note for new sync version";
-            this->syncAll();
-            this->syncAllWatching();
-            Settings::instance()->syncVersion = syncVersion;
-            qInfo() << "reupload note done.";
+    if (!Settings::instance()->modeOffline) {
+        const int syncVersion = 20210402;
+        int curSyncVersion = Settings::instance()->syncVersion;
+        if (curSyncVersion < syncVersion) {
+            QTimer::singleShot(1000, [this, syncVersion]() {
+                qInfo() << "reupload note for new sync version";
+                this->syncAll();
+                this->syncAllWatching();
+                Settings::instance()->syncVersion = syncVersion;
+                qInfo() << "reupload note done.";
+            });
+        }
+        QTimer::singleShot(1000, [this]() {
+            this->updateProfile();
         });
     }
     // 设置开启自启动
     setAutoStart();
-    QTimer::singleShot(1000, [this]() {
-        this->updateProfile();
-    });
 }
 
 void Widget::loadLastOpenedNote() {
@@ -1605,6 +1609,15 @@ QString Widget::getWorkshopNoteStrIdFromPath(const QString& path) {
 }
 
 void Widget::updateProfile() {
+    if (Settings::instance()->modeOffline) {
+        qDebug() << "offline mode. ignore updateProfile";
+    } else {
+        _updateProfile();
+    }
+}
+
+
+void Widget::_updateProfile() {
     qDebug() << "update profile";
     QStringList watchingFolders = Settings::instance()->watchingFolders;
     QStringList pathList;
@@ -1617,8 +1630,8 @@ void Widget::updateProfile() {
 <meta charset="utf-8">
 <meta name='viewport' content='width=device-width initial-scale=1'>
 <title>)"+
-owner +
-R"( Home</title>
+                   owner +
+                   R"( Home</title>
 <body>
 )";
     html.append(QString("<h1>%1的主页</h1>").arg(Settings::instance()->usernameZh));
@@ -1632,7 +1645,7 @@ R"( Home</title>
         html.append(raw.arg(url).arg(fileInfo.baseName()));
     }
     html.append("</ul>");
-html += R"(
+    html += R"(
 </body>
 </html>
 )";
@@ -1641,7 +1654,6 @@ html += R"(
             .arg(serverIp).arg(owner);
     Http::instance()->uploadFile(url, html.toUtf8());
 }
-
 void Widget::traversalFileTree(const QString& path, QStringList& pathList) {
     QDir dir(path);
     if (!dir.exists()) {
