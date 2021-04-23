@@ -88,3 +88,8 @@ void TextPreview::setHtml(const QString &html) {
     m_textBrowser->setHtml(html);
 #endif
 }
+
+void TextPreview::reload() {
+    qDebug() << "reload" << m_filePath;
+    loadFile(m_filePath);
+}

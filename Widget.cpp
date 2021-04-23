@@ -1116,6 +1116,12 @@ void Widget::syncAll() {
 
 void Widget::on_fileSystemWatcher_fileChanged(const QString &path) {
     qDebug () << "file change:" << path;
+    // 如果当前变更的文档在tab页中，更新tab页的内容
+    for(auto tab: m_tabWidget->tabs()) {
+        if (tab->filePath() == path) {
+            tab->reload();
+        }
+    }
     if (path.startsWith(workshopPath())) {
         if (path.endsWith("index.md")) {
             // 标准的笔记处理

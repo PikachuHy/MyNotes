@@ -16,6 +16,7 @@ Q_OBJECT
 public:
     explicit TextPreview(QWidget* parent = nullptr);
     void loadFile(const QString& path);
+    void reload();
     QString fileName() const;
     QString filePath() const;
 private:
