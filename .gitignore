@@ -86,3 +86,4 @@ CuteLogger
 trojan
 .gradle
 .vs
+out
