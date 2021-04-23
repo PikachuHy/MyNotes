@@ -106,8 +106,7 @@ int main(int argc, char *argv[]) {
         }
     }
     qDebug() << "signature:" << signature;
-    needLogin = false;
-    if (needLogin) {
+    if (needLogin && !Settings::instance()->modeOffline) {
         LoginDialog dialog;
         auto ret = dialog.exec();
         if (ret == QDialog::Rejected) {

@@ -58,7 +58,7 @@ LoginDialog::LoginDialog() {
     auto loadingLabel = new QLabel(loginBtn);
     loadingLabel->setMovie(movie);
     loadingLabel->hide();
-    auto justTryBtn = new QPushButton(tr("Just try"));
+    auto justTryBtn = new QPushButton(tr("Offline Mode"));
     layout->addWidget(justTryBtn);
     connect(m_rememberPasswordCheckBox, &QCheckBox::stateChanged, [this]() {
         qDebug() << "pass change";
@@ -99,7 +99,8 @@ LoginDialog::LoginDialog() {
 
     });
     connect(justTryBtn, &QPushButton::clicked, [this]() {
-        showWarning(tr("Just try"), tr("This feature is still under development."));
+        Settings::instance()->modeOffline = true;
+        QDialog::accept();
     });
     setLayout(layout);
 

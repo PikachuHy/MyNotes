@@ -28,6 +28,7 @@ public:
     static const char KEY_SYNC_WORKSHOP_AUTO[];
     static const char KEY_SYNC_WATCHING_AUTO[];
     static const char KEY_WATCHING_FOLDERS[];
+    static const char KEY_MODE_OFFLINE[];
 
     template<const char *key>
     struct QStringRef {
@@ -104,6 +105,7 @@ public:
     BoolRef<KEY_SYNC_WORKSHOP_AUTO> syncWorkshopAuto;
     BoolRef<KEY_SYNC_WATCHING_AUTO> syncWatchingAuto;
     QStringListRef<KEY_WATCHING_FOLDERS> watchingFolders;
+    BoolRef<KEY_MODE_OFFLINE> modeOffline;
 
 // Singleton, to be used by any part of the app
 private:
