@@ -26,7 +26,9 @@ int showWindow(SingleApplication* app) {
     );
     w->show();
     auto ret = QApplication::exec();
-    qWarning() << "Something went wrong." << "Result code is" << ret;
+    if (ret != 0) {
+        qWarning() << "Something went wrong." << "Result code is" << ret;
+    }
     return ret;
 }
 int main(int argc, char *argv[]) {
