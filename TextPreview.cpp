@@ -83,7 +83,7 @@ QString TextPreview::filePath() const {
 
 void TextPreview::setHtml(const QString &html) {
 #ifdef USE_WEB_ENGINE_VIEW
-    m_webEngineView->setHtml(html, QUrl("file://" + QFileInfo(path).absolutePath() + '/'));
+    m_webEngineView->setHtml(html, QUrl("file://" + QFileInfo(m_filePath).absolutePath() + '/'));
 #else
     m_textBrowser->setHtml(html);
 #endif
