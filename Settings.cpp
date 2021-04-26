@@ -21,6 +21,7 @@ const char Settings::KEY_SYNC_WORKSHOP_AUTO[] = "sync/workshop_auto";
 const char Settings::KEY_SYNC_WATCHING_AUTO[] = "sync/watching_auto";
 const char Settings::KEY_WATCHING_FOLDERS[] = "watching/folders";
 const char Settings::KEY_MODE_OFFLINE[] = "mode/offline";
+const char Settings::KEY_MODE_RENDER[] = "mode/render";
 Settings *Settings::instance()
 {
     static Settings singleton;

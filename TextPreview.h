@@ -6,11 +6,10 @@
 #define MYNOTES_TEXTPREVIEW_H
 #ifdef USE_WEB_ENGINE_VIEW
 #include <QWebEngineView>
-#else
-#include <QTextBrowser>
 #endif
+#include <QTextBrowser>
 #include <QWidget>
-
+class Editor;
 class TextPreview : public QWidget{
 Q_OBJECT
 public:
@@ -24,9 +23,9 @@ private:
     void setHtml(const QString& html);
 #ifdef USE_WEB_ENGINE_VIEW
     QWebEngineView *m_webEngineView;
-#else
-    QTextBrowser *m_textBrowser;
 #endif
+    QTextBrowser *m_textBrowser;
+    Editor *m_editor;
 };
 
 

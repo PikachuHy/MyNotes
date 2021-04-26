@@ -11,15 +11,27 @@
 #include <QStandardPaths>
 #include <QVBoxLayout>
 #include <WordReader.h>
+#include <Editor.h>
+#include "Settings.h"
 TextPreview::TextPreview(QWidget *parent) : QWidget(parent) {
     auto layout = new QVBoxLayout();
+    int renderMode = Settings::instance()->modeRender;
+    if (renderMode == 0) {
+
 #ifdef USE_WEB_ENGINE_VIEW
-    m_webEngineView = new QWebEngineView();
-    layout->addWidget(m_webEngineView);
+        m_webEngineView = new QWebEngineView();
+        layout->addWidget(m_webEngineView);
 #else
-    m_textBrowser = new QTextBrowser();
-    layout->addWidget(m_textBrowser);
+        m_editor = new Editor();
+        layout->addWidget(m_editor);
 #endif
+    } else if (renderMode == 1) {
+        m_textBrowser = new QTextBrowser();
+        layout->addWidget(m_textBrowser);
+    } else {
+        m_editor = new Editor();
+        layout->addWidget(m_editor);
+    }
     setLayout(layout);
 }
 
@@ -34,6 +46,10 @@ void TextPreview::loadFile(const QString &path) {
         bool ok = mdFile.open(QIODevice::ReadOnly);
         if (!ok) {
             qDebug() << "file open fail." << path;
+            return;
+        }
+        if (Settings::instance()->modeRender == 2) {
+            m_editor->loadFile(path);
             return;
         }
         Document doc(mdFile.readAll());
@@ -82,11 +98,14 @@ QString TextPreview::filePath() const {
 }
 
 void TextPreview::setHtml(const QString &html) {
+    int renderMode = Settings::instance()->modeRender;
+    if (renderMode == 0) {
 #ifdef USE_WEB_ENGINE_VIEW
     m_webEngineView->setHtml(html, QUrl("file://" + QFileInfo(m_filePath).absolutePath() + '/'));
-#else
-    m_textBrowser->setHtml(html);
 #endif
+    } else if (renderMode == 1) {
+        m_textBrowser->setHtml(html);
+    }
 }
 
 void TextPreview::reload() {

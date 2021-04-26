@@ -10,6 +10,7 @@
 #include <QSpinBox>
 #include <QPushButton>
 #include <QCheckBox>
+#include <QRadioButton>
 #include "Settings.h"
 #include "PiDialog.h"
 class SettingsDialog: public PiDialog {
@@ -25,6 +26,9 @@ private:
     QPushButton *m_typoraPathChooseBtn;
     QLineEdit *m_trojanConfigPathLineEdit;
     QPushButton *m_trojanConfigPathChooseBtn;
+    QRadioButton *m_webEngineRenderModeRadioBtn;
+    QRadioButton *m_textBrowserRenderModeRadioBtn;
+    QRadioButton *m_selfRenderModeRadioBtn;
 };
 
 

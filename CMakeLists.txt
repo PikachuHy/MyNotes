@@ -142,6 +142,7 @@ target_link_libraries(MyNotes PRIVATE
         Qt${QT_VERSION_MAJOR}::Concurrent
         Qt${QT_VERSION_MAJOR}::Quick
         QtMarkdownParser
+        QtMarkdownEditor
         QtWordReader
         CuteLogger
         )

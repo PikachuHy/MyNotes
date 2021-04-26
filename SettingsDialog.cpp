@@ -15,6 +15,7 @@
 #include <QFormLayout>
 #include <QCheckBox>
 #include <QFileInfo>
+#include <QRadioButton>
 
 SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
     setWindowTitle(tr("MyNotes Settings"));
@@ -45,6 +46,24 @@ SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
     m_autoSyncWatchingCheckBox = new QCheckBox(tr("Auto sync watching"));
     formLayout->addRow(m_autoSyncWatchingCheckBox);
     m_autoSyncWatchingCheckBox->setChecked(Settings::instance()->syncWatchingAuto);
+    {
+        m_webEngineRenderModeRadioBtn = new QRadioButton("Web Engine");
+        m_textBrowserRenderModeRadioBtn = new QRadioButton("Text Browser");
+        m_selfRenderModeRadioBtn = new QRadioButton("MyNotes");
+        int renderMode = Settings::instance()->modeRender;
+        if (renderMode == 0) {
+            m_webEngineRenderModeRadioBtn->setChecked(true);
+        } else if (renderMode == 1) {
+            m_textBrowserRenderModeRadioBtn->setChecked(true);
+        } else {
+            m_selfRenderModeRadioBtn->setChecked(true);
+        }
+        auto hbox = new QHBoxLayout();
+        hbox->addWidget(m_webEngineRenderModeRadioBtn);
+        hbox->addWidget(m_textBrowserRenderModeRadioBtn);
+        hbox->addWidget(m_selfRenderModeRadioBtn);
+        formLayout->addRow(tr("Render"), hbox);
+    }
 #ifdef Q_OS_WIN
     m_typoraPathLineEdit = new QLineEdit();
     m_typoraPathChooseBtn = new QPushButton(tr("..."));
@@ -97,6 +116,13 @@ SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
             return;
         }
         Settings::instance()->serverIp = serverIp;
+        if (m_webEngineRenderModeRadioBtn->isChecked()) {
+            Settings::instance()->modeRender = 0;
+        } else if (m_textBrowserRenderModeRadioBtn->isChecked()) {
+            Settings::instance()->modeRender = 1;
+        } else {
+            Settings::instance()->modeRender = 2;
+        }
 #ifdef Q_OS_WIN
                          auto typoraPath = m_typoraPathLineEdit->text();
                          if (typoraPath.isEmpty()) {
