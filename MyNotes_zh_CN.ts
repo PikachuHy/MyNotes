@@ -24,40 +24,10 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
     </message>
 </context>
 <context>
-    <name>Editor</name>
+    <name>EditorWidget</name>
     <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="183"/>
-        <source>Character formats</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="188"/>
-        <source>Text can be displayed in a variety of different character formats. </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="190"/>
-        <source>We can emphasize text by </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="191"/>
-        <source>making it italic</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="208"/>
-        <source>Team %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="214"/>
-        <source>%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="220"/>
-        <source>On duty</source>
+        <location filename="QtMarkdownParser/Editor.cpp" line="391"/>
+        <source>Open URL</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -122,49 +92,54 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
 <context>
     <name>SettingsDialog</name>
     <message>
-        <location filename="SettingsDialog.cpp" line="20"/>
+        <location filename="SettingsDialog.cpp" line="21"/>
         <source>MyNotes Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="34"/>
+        <location filename="SettingsDialog.cpp" line="35"/>
         <source>ServerIP:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="42"/>
+        <location filename="SettingsDialog.cpp" line="43"/>
         <source>Auto sync workshop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="45"/>
+        <location filename="SettingsDialog.cpp" line="46"/>
         <source>Auto sync watching</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="55"/>
+        <location filename="SettingsDialog.cpp" line="65"/>
+        <source>Render</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="SettingsDialog.cpp" line="74"/>
         <source>Typora path:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="81"/>
+        <location filename="SettingsDialog.cpp" line="100"/>
         <source>Trojan config path:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="96"/>
-        <location filename="SettingsDialog.cpp" line="114"/>
-        <location filename="SettingsDialog.cpp" line="120"/>
+        <location filename="SettingsDialog.cpp" line="115"/>
+        <location filename="SettingsDialog.cpp" line="140"/>
+        <location filename="SettingsDialog.cpp" line="146"/>
         <source>SettingDialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="96"/>
+        <location filename="SettingsDialog.cpp" line="115"/>
         <source>ServerIp can&apos;t be empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="107"/>
+        <location filename="SettingsDialog.cpp" line="133"/>
         <source>Typora is not %1.
 Please check your typora path.
 Current path is &quot;%2&quot;
@@ -172,28 +147,28 @@ Current path is &quot;%2&quot;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="153"/>
+        <location filename="SettingsDialog.cpp" line="179"/>
         <source>Choose Trojan Config Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="50"/>
-        <location filename="SettingsDialog.cpp" line="76"/>
+        <location filename="SettingsDialog.cpp" line="69"/>
+        <location filename="SettingsDialog.cpp" line="95"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="143"/>
+        <location filename="SettingsDialog.cpp" line="169"/>
         <source>Choose Typora Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="103"/>
+        <location filename="SettingsDialog.cpp" line="129"/>
         <source>SettingsDialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="103"/>
+        <location filename="SettingsDialog.cpp" line="129"/>
         <source>Typora path can&apos;t be empty</source>
         <translation type="unfinished"></translation>
     </message>
@@ -416,31 +391,36 @@ Please check your config file.
     </message>
     <message>
         <location filename="Widget.cpp" line="1091"/>
+        <source>Show Config</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Widget.cpp" line="1099"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1095"/>
+        <location filename="Widget.cpp" line="1103"/>
         <source>About Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1098"/>
+        <location filename="Widget.cpp" line="1106"/>
         <source>Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1143"/>
+        <location filename="Widget.cpp" line="1151"/>
         <source>invalid note from strId: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1198"/>
+        <location filename="Widget.cpp" line="1206"/>
         <source>Sync All Watching Success</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1434"/>
+        <location filename="Widget.cpp" line="1442"/>
         <source>Sync Result</source>
         <translation type="unfinished"></translation>
     </message>
