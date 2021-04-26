@@ -4,6 +4,7 @@
 
 #include "Settings.h"
 #include <QApplication>
+#include <QStandardPaths>
 const char Settings::KEY_LAST_OPEN_NOTE_PATH[] = "path/last_open_note";
 const char Settings::KEY_TYPORA_PATH[] = "path/typora";
 const char Settings::KEY_TROJAN_CONFIG_PATH[] = "path/trojan_config";
@@ -22,6 +23,7 @@ const char Settings::KEY_SYNC_WATCHING_AUTO[] = "sync/watching_auto";
 const char Settings::KEY_WATCHING_FOLDERS[] = "watching/folders";
 const char Settings::KEY_MODE_OFFLINE[] = "mode/offline";
 const char Settings::KEY_MODE_RENDER[] = "mode/render";
+const char Settings::KEY_MODE_HIDPI[] = "mode/hidpi";
 Settings *Settings::instance()
 {
     static Settings singleton;
@@ -31,10 +33,11 @@ Settings *Settings::instance()
 Settings::Settings(){}
 
 QSettings *Settings::settings() {
-    static QSettings ret(QSettings::IniFormat,
-              QSettings::UserScope,
-              QApplication::organizationName(),
-              QApplication::applicationName()
-    );
+    static QSettings ret(
+            QString("%1/config.ini")
+                    .arg(QStandardPaths::standardLocations(
+                            QStandardPaths::ConfigLocation).first()
+                            ),
+                            QSettings::IniFormat);
     return &ret;
 }

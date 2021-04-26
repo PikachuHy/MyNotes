@@ -46,6 +46,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
     m_autoSyncWatchingCheckBox = new QCheckBox(tr("Auto sync watching"));
     formLayout->addRow(m_autoSyncWatchingCheckBox);
     m_autoSyncWatchingCheckBox->setChecked(Settings::instance()->syncWatchingAuto);
+    m_enableHiDPICheckBox = new QCheckBox(tr("Enable HiDPI"));
+    formLayout->addRow(m_enableHiDPICheckBox);
+    m_enableHiDPICheckBox->setChecked(Settings::instance()->modeHiDPI);
+    m_oldHiDPIFlag = Settings::instance()->modeHiDPI;
     {
         m_webEngineRenderModeRadioBtn = new QRadioButton("Web Engine");
         m_textBrowserRenderModeRadioBtn = new QRadioButton("Text Browser");
@@ -109,6 +113,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
     QObject::connect(buttonBox, &QDialogButtonBox::accepted, [this]() {
         Settings::instance()->syncWorkshopAuto = m_autoSyncWorkshopCheckBox->isChecked();
         Settings::instance()->syncWatchingAuto = m_autoSyncWatchingCheckBox->isChecked();
+        Settings::instance()->modeHiDPI = m_enableHiDPICheckBox->isChecked();
         auto serverIp = m_serverLineEdit->text();
         if (serverIp.isEmpty()) {
             qWarning() << "serverIp is empty.";
@@ -149,6 +154,10 @@ Current path is "%2"
                          Settings::instance()->typoraPath = typoraPath;
 #endif
                          Settings::instance()->trojanConfigPath = m_trojanConfigPathLineEdit->text();
+                         if (m_oldHiDPIFlag != Settings::instance()->modeHiDPI) {
+                             showInfo(tr("HiDPI Config Changed"),
+                                      tr("The HiDPI Config work after restart"));
+                         }
                          this->accept();
                      }
     );

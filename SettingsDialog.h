@@ -21,6 +21,7 @@ public:
 private:
     QCheckBox *m_autoSyncWorkshopCheckBox;
     QCheckBox *m_autoSyncWatchingCheckBox;
+    QCheckBox *m_enableHiDPICheckBox;
     QLineEdit *m_serverLineEdit;
     QLineEdit *m_typoraPathLineEdit;
     QPushButton *m_typoraPathChooseBtn;
@@ -29,6 +30,7 @@ private:
     QRadioButton *m_webEngineRenderModeRadioBtn;
     QRadioButton *m_textBrowserRenderModeRadioBtn;
     QRadioButton *m_selfRenderModeRadioBtn;
+    bool m_oldHiDPIFlag;
 };
 
 

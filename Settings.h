@@ -30,6 +30,7 @@ public:
     static const char KEY_WATCHING_FOLDERS[];
     static const char KEY_MODE_OFFLINE[];
     static const char KEY_MODE_RENDER[];
+    static const char KEY_MODE_HIDPI[];
 
     template<const char *key>
     struct QStringRef {
@@ -109,6 +110,7 @@ public:
     QStringListRef<KEY_WATCHING_FOLDERS> watchingFolders;
     BoolRef<KEY_MODE_OFFLINE> modeOffline;
     IntRef<KEY_MODE_RENDER> modeRender;
+    BoolRef<KEY_MODE_HIDPI> modeHiDPI;
 
 // Singleton, to be used by any part of the app
 private:

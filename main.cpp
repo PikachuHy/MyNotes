@@ -33,7 +33,16 @@ int showWindow(SingleApplication* app) {
 }
 int main(int argc, char *argv[]) {
 #if (QT_VERSION > QT_VERSION_CHECK(5,6,0) && QT_VERSION < QT_VERSION_CHECK(6,0,0))
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QSettings settings(
+            QString("%1/PikachuHy/MyNotes/config.ini")
+                    .arg(QStandardPaths::standardLocations(
+                            QStandardPaths::ConfigLocation).first()
+                    ),
+            QSettings::IniFormat);
+    if (settings.value(Settings::KEY_MODE_HIDPI, false).toBool()) {
+        QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+        qInfo() << "enable HiDPI";
+    }
 #endif
     SingleApplication a(argc, argv, "MyNotes");
     if (a.isRunning()) {
