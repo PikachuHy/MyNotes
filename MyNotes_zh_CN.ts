@@ -26,7 +26,7 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
 <context>
     <name>EditorWidget</name>
     <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="391"/>
+        <location filename="QtMarkdownParser/Editor.cpp" line="399"/>
         <source>Open URL</source>
         <translation type="unfinished"></translation>
     </message>
@@ -112,34 +112,39 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="65"/>
+        <location filename="SettingsDialog.cpp" line="49"/>
+        <source>Enable HiDPI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="SettingsDialog.cpp" line="69"/>
         <source>Render</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="74"/>
+        <location filename="SettingsDialog.cpp" line="78"/>
         <source>Typora path:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="100"/>
+        <location filename="SettingsDialog.cpp" line="104"/>
         <source>Trojan config path:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="115"/>
-        <location filename="SettingsDialog.cpp" line="140"/>
-        <location filename="SettingsDialog.cpp" line="146"/>
+        <location filename="SettingsDialog.cpp" line="120"/>
+        <location filename="SettingsDialog.cpp" line="145"/>
+        <location filename="SettingsDialog.cpp" line="151"/>
         <source>SettingDialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="115"/>
+        <location filename="SettingsDialog.cpp" line="120"/>
         <source>ServerIp can&apos;t be empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="133"/>
+        <location filename="SettingsDialog.cpp" line="138"/>
         <source>Typora is not %1.
 Please check your typora path.
 Current path is &quot;%2&quot;
@@ -147,28 +152,38 @@ Current path is &quot;%2&quot;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="179"/>
+        <location filename="SettingsDialog.cpp" line="158"/>
+        <source>HiDPI Config Changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="SettingsDialog.cpp" line="159"/>
+        <source>The HiDPI Config work after restart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="SettingsDialog.cpp" line="188"/>
         <source>Choose Trojan Config Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="69"/>
-        <location filename="SettingsDialog.cpp" line="95"/>
+        <location filename="SettingsDialog.cpp" line="73"/>
+        <location filename="SettingsDialog.cpp" line="99"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="169"/>
+        <location filename="SettingsDialog.cpp" line="178"/>
         <source>Choose Typora Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="129"/>
+        <location filename="SettingsDialog.cpp" line="134"/>
         <source>SettingsDialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SettingsDialog.cpp" line="129"/>
+        <location filename="SettingsDialog.cpp" line="134"/>
         <source>Typora path can&apos;t be empty</source>
         <translation type="unfinished"></translation>
     </message>
