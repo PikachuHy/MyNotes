@@ -12,6 +12,7 @@
 #include <QVBoxLayout>
 #include <WordReader.h>
 #include <Editor.h>
+#include <QMenu>
 #include "Settings.h"
 TextPreview::TextPreview(QWidget *parent) : QWidget(parent) {
     auto layout = new QVBoxLayout();
@@ -33,6 +34,15 @@ TextPreview::TextPreview(QWidget *parent) : QWidget(parent) {
         layout->addWidget(m_editor);
     }
     setLayout(layout);
+    setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(this, &TextPreview::customContextMenuRequested, [this](const QPoint &pos) {
+        QMenu menu(this);
+        menu.addAction(tr("Reload"), [this]() {
+            this->reload();
+        });
+        menu.exec(this->mapToGlobal(pos));
+    });
+
 }
 
 void TextPreview::loadFile(const QString &path) {
@@ -110,5 +120,10 @@ void TextPreview::setHtml(const QString &html) {
 
 void TextPreview::reload() {
     qDebug() << "reload" << m_filePath;
-    loadFile(m_filePath);
+    int renderMode = Settings::instance()->modeRender;
+    if (renderMode == 2) {
+        m_editor->reload();
+    } else if (renderMode == 1) {
+        loadFile(m_filePath);
+    }
 }
