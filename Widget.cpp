@@ -791,7 +791,6 @@ void Widget::loadNote(const Note &note) {
     qDebug() << "load" << note.strId() << note.title();
     m_curNote = note;
     const QString &path = noteRealPath(note);
-    m_fileSystemWatcher->addPath(path);
     loadNote(path);
     if (m_showOpenInTyporaTip) {
         Toast::showTip("Press E Open in Typora", this);
@@ -804,6 +803,7 @@ void Widget::loadNote(const QString &path)
     if (!QFile(path).exists()) {
         qWarning() << "note not exist." << path;
     }
+    m_fileSystemWatcher->addPath(path);
     m_curNotePath = path;
     qDebug() << "load" << path;
     loadMdText(path);
