@@ -199,12 +199,12 @@ void Widget::loadLastOpenedNote() {
             qInfo() << "last open note not exist." << lastOpenNotePath;
             return;
         }
-        if (lastOpenNotePath.startsWith(workshopPath())) {
-            // 
-        } else {
-            // 监控文件夹的情况
-            loadNote(lastOpenNotePath);
-        }
+//        if (lastOpenNotePath.startsWith(workshopPath())) {
+//            //
+//        } else {
+//            // 监控文件夹的情况
+//        }
+        loadNote(lastOpenNotePath);
 //        auto lastNoteId = m_settings->value("last_note", -1).toInt();
 //        if (lastNoteId != -1) {
 //            auto lastNote = m_dbManager->getNote(lastNoteId);
