@@ -107,6 +107,11 @@ QString TextPreview::filePath() const {
     return m_filePath;
 }
 
+QString TextPreview::title() const
+{
+    return m_title;
+}
+
 void TextPreview::setHtml(const QString &html) {
     int renderMode = Settings::instance()->modeRender;
     if (renderMode == 0) {

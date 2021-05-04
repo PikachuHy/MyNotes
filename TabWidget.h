@@ -12,7 +12,7 @@ class TabWidget : public QTabWidget {
     Q_OBJECT
 public:
     explicit TabWidget(QWidget* parent = nullptr);
-    void add(TextPreview* tab);
+    void add(TextPreview* tab, const QString& title);
 
     TextPreview *currentTab() const;
     TextPreview *tabAt(int index) const;

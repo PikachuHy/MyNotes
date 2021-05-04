@@ -36,7 +36,7 @@ TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent) {
             menu.addAction(tr("Close Other Tabs"), [this, i]() {
                 auto tab = this->tabs()[i];
                 this->clear();
-                this->add(tab);
+                this->add(tab, tab->title());
             });
             menu.addAction(tr("Close All Tabs"), [this]() {
                 this->clear();
@@ -48,8 +48,8 @@ TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent) {
     });
 }
 
-void TabWidget::add(TextPreview *tab) {
-    QTabWidget::addTab(tab, tab->fileName());
+void TabWidget::add(TextPreview *tab, const QString &title) {
+    QTabWidget::addTab(tab, title);
     setCurrentWidget(tab);
     setDocumentMode(true);
     setTabBarAutoHide(true);

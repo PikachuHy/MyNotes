@@ -18,8 +18,10 @@ public:
     void reload();
     QString fileName() const;
     QString filePath() const;
+    QString title() const;
 private:
     QString m_filePath;
+    QString m_title;
     void setHtml(const QString& html);
 #ifdef USE_WEB_ENGINE_VIEW
     QWebEngineView *m_webEngineView;

@@ -477,7 +477,13 @@ void Widget::updatePreview(const QString& path) {
     }
     TextPreview* textPreview = new TextPreview();
     textPreview->loadFile(path);
-    m_tabWidget->add(textPreview);
+    QString title = QFileInfo(path).fileName();
+    if (path.startsWith(workshopPath())) {
+        auto strId = getWorkshopNoteStrIdFromPath(path);
+        auto note = m_dbManager->getNote(strId);
+        title = note.title();
+    }
+    m_tabWidget->add(textPreview, title);
 #if 0
     QFile mdFile(path);
     mdFile.open(QIODevice::ReadOnly);
