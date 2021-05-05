@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 project(MyNotes LANGUAGES CXX
-                VERSION "0.3.0"
+                VERSION "0.6.0"
         )
 configure_file(config.h.in ${PROJECT_BINARY_DIR}/config.h)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
