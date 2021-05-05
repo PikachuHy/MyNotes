@@ -95,37 +95,34 @@ set(PROJECT_SOURCES
         )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(MyNotes
-        ${PROJECT_SOURCES}
-    )
 if(${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
     qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 else()
-    if(ANDROID)
-        add_library(MyNotes SHARED
-            ${PROJECT_SOURCES}
-        )
-    else()
-        if (WIN32)
-            set(app_WINRC icon.rc)
-            set_property(SOURCE icon.rc APPEND PROPERTY
-                    OBJECT_DEPENDS ${PROJECT_SOURCE_DIR}/icon/icon.ico
-                    )
-            add_executable(MyNotes WIN32
-                    ${PROJECT_SOURCES}
-                    ${app_WINRC}
-                    )
-        else()
-            add_executable(MyNotes
-                    ${PROJECT_SOURCES}
-                    )
-        endif ()
-    endif()
-
 if(${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
     qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
+endif()
+
+if(ANDROID)
+    add_library(MyNotes SHARED
+        ${PROJECT_SOURCES}
+    )
+else()
+    if (WIN32)
+        set(app_WINRC icon.rc)
+        set_property(SOURCE icon.rc APPEND PROPERTY
+                OBJECT_DEPENDS ${PROJECT_SOURCE_DIR}/icon/icon.ico
+                )
+        add_executable(MyNotes WIN32
+                ${PROJECT_SOURCES}
+                ${app_WINRC}
+                )
+    else()
+        add_executable(MyNotes
+                ${PROJECT_SOURCES}
+                )
+    endif ()
 endif()
 add_subdirectory(CuteLogger)
 add_subdirectory(QtMarkdownParser)
