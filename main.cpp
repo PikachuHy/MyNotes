@@ -43,6 +43,8 @@ int main(int argc, char *argv[]) {
         QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
         qInfo() << "enable HiDPI";
     }
+#else
+    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Floor);
 #endif
     SingleApplication a(argc, argv, "MyNotes");
     if (a.isRunning()) {
