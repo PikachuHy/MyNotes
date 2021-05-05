@@ -26,7 +26,7 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
 <context>
     <name>EditorWidget</name>
     <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="399"/>
+        <location filename="QtMarkdownParser/Editor.cpp" line="477"/>
         <source>Open URL</source>
         <translation type="unfinished"></translation>
     </message>
@@ -207,6 +207,14 @@ Current path is &quot;%2&quot;
     </message>
 </context>
 <context>
+    <name>TextPreview</name>
+    <message>
+        <location filename="TextPreview.cpp" line="40"/>
+        <source>Reload</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Widget</name>
     <message>
         <location filename="Widget.cpp" line="241"/>
@@ -287,115 +295,115 @@ Current path is &quot;%2&quot;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="534"/>
+        <location filename="Widget.cpp" line="540"/>
         <source>New Note</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="534"/>
+        <location filename="Widget.cpp" line="540"/>
         <source>Note name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="547"/>
-        <location filename="Widget.cpp" line="594"/>
+        <location filename="Widget.cpp" line="553"/>
+        <location filename="Widget.cpp" line="600"/>
         <source>current item is null</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="580"/>
+        <location filename="Widget.cpp" line="586"/>
         <source>New Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="580"/>
+        <location filename="Widget.cpp" line="586"/>
         <source>Folder name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="600"/>
+        <location filename="Widget.cpp" line="606"/>
         <source>folder exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="607"/>
+        <location filename="Widget.cpp" line="613"/>
         <source>new folder: save to db fail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="623"/>
         <location filename="Widget.cpp" line="629"/>
+        <location filename="Widget.cpp" line="635"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="623"/>
+        <location filename="Widget.cpp" line="629"/>
         <source>File not exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="629"/>
+        <location filename="Widget.cpp" line="635"/>
         <source>File open fail.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="647"/>
-        <location filename="Widget.cpp" line="656"/>
+        <location filename="Widget.cpp" line="653"/>
+        <location filename="Widget.cpp" line="662"/>
         <source>trash note fail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="672"/>
+        <location filename="Widget.cpp" line="678"/>
         <source>trash folder fail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="686"/>
+        <location filename="Widget.cpp" line="692"/>
         <source>ERROR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="880"/>
+        <location filename="Widget.cpp" line="886"/>
         <source>open in typora fail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="899"/>
+        <location filename="Widget.cpp" line="905"/>
         <source>export to HTML fail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="904"/>
+        <location filename="Widget.cpp" line="910"/>
         <source>Export Note to HTML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1049"/>
+        <location filename="Widget.cpp" line="1055"/>
         <source>Show</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1053"/>
+        <location filename="Widget.cpp" line="1059"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1067"/>
+        <location filename="Widget.cpp" line="1073"/>
         <source>Trojan: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1070"/>
+        <location filename="Widget.cpp" line="1076"/>
         <source>Trojan</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1079"/>
+        <location filename="Widget.cpp" line="1085"/>
         <source>Start Trojan</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1080"/>
+        <location filename="Widget.cpp" line="1086"/>
         <source>Trojan config is error.
 Please check your config file.
 Current config: %1</source>
@@ -405,37 +413,37 @@ Please check your config file.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1091"/>
+        <location filename="Widget.cpp" line="1097"/>
         <source>Show Config</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1099"/>
+        <location filename="Widget.cpp" line="1105"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1103"/>
+        <location filename="Widget.cpp" line="1109"/>
         <source>About Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1106"/>
+        <location filename="Widget.cpp" line="1112"/>
         <source>Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1151"/>
+        <location filename="Widget.cpp" line="1157"/>
         <source>invalid note from strId: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1206"/>
+        <location filename="Widget.cpp" line="1212"/>
         <source>Sync All Watching Success</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Widget.cpp" line="1442"/>
+        <location filename="Widget.cpp" line="1448"/>
         <source>Sync Result</source>
         <translation type="unfinished"></translation>
     </message>
