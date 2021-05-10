@@ -26,7 +26,7 @@ This example needs SQLite support. Please read the Qt SQL driver documentation f
 <context>
     <name>EditorWidget</name>
     <message>
-        <location filename="QtMarkdownParser/Editor.cpp" line="477"/>
+        <location filename="QtMarkdownParser/Editor.cpp" line="524"/>
         <source>Open URL</source>
         <translation type="unfinished"></translation>
     </message>
