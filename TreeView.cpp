@@ -11,4 +11,5 @@ TreeView::TreeView(QWidget *parent) : QTreeView(parent) {
     setFrameStyle(QFrame::NoFrame);
     // setStyleSheet("QTreeView::branch {image:none;}");
 #endif
+    setIconSize(QSize(32, 32));
 }

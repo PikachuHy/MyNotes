@@ -12,5 +12,11 @@
         <file>icon/github_128x128.png</file>
         <file>icon/avatar_300x300.png</file>
         <file>icon/loading.gif</file>
+        <file>icon/trash_64x64.png</file>
+        <file>icon/watching_64x64.png</file>
+        <file>icon/workshop_64x64.png</file>
+        <file>icon/attachment_64x64.png</file>
+        <file>icon/folder_64x64.png</file>
+        <file>icon/note_64x64.png</file>
     </qresource>
 </RCC>
