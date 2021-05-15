@@ -334,18 +334,24 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
             auto noteItem = (NoteItem*)item;
             auto note = noteItem->note();
             auto notePath = noteRealPath(note);
-            auto url = QString("note://%1?path=%2").arg(note.strId()).arg(note.pathId());
+            QUrlQuery urlQuery;
+            urlQuery.addQueryItem("note", note.strId());
+            urlQuery.addQueryItem("path", QString::number(note.pathId()));
+
+            auto url = QString("note://localhost?%1").arg(urlQuery.toString());
             auto mdLink = QString("[%1](%2)").arg(note.title()).arg(url);
-            menu.addAction(tr("Copy Path: \"%1\"").arg(notePath)
+            auto submenu = new QMenu("Copy");
+            menu.addMenu(submenu);
+            submenu->addAction(tr("Copy Path: \"%1\"").arg(notePath.replace("&", "&&"))
                            , [this, notePath]() {
                 QApplication::clipboard()->setText(notePath);
             });
-            menu.addAction(tr("Copy URL: \"%1\"").arg(url),
+            submenu->addAction(tr("Copy URL: \"%1\"").arg(url.replace("&", "&&")),
                            [this, url]() {
                 QApplication::clipboard()->setText(url);
 
             });
-            menu.addAction(tr("Copy Markdown Link: \"%1\"").arg(mdLink),
+            submenu->addAction(tr("Copy Markdown Link: \"%1\"").arg(mdLink.replace("&", "&&")),
                            [this, mdLink]() {
                 QApplication::clipboard()->setText(mdLink);
             });
@@ -496,6 +502,25 @@ void Widget::updatePreview(const QString& path) {
         }
     }
     TextPreview* textPreview = new TextPreview();
+    connect(textPreview, &TextPreview::linkClicked, [this](QString link){
+        QUrl url(link);
+        auto scheme = url.scheme();
+        if (scheme != "note") {
+            return;
+        }
+        auto q = url.query();
+        qDebug() << "query" << q;
+        QUrlQuery urlQuery(q);
+        auto noteStrId = urlQuery.queryItemValue("note");
+        qDebug() << "note id" << noteStrId;
+        auto pathId = urlQuery.queryItemValue("path");
+        auto note = this->m_dbManager->getNote(noteStrId);
+        if (note.id() == -1) {
+            showWarning(tr("Open Note"), tr("Note not exist.\nNote Str ID: %1").arg(noteStrId));
+        } else {
+            loadNote(note);
+        }
+    });
     textPreview->loadFile(path);
     QString title = QFileInfo(path).fileName();
     if (path.startsWith(workshopPath())) {

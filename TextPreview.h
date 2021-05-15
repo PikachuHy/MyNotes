@@ -19,6 +19,8 @@ public:
     QString fileName() const;
     QString filePath() const;
     QString title() const;
+signals:
+    void linkClicked(QString);
 private:
     QString m_filePath;
     QString m_title;

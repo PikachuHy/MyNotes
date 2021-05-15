@@ -24,6 +24,15 @@ TextPreview::TextPreview(QWidget *parent) : QWidget(parent) {
         layout->addWidget(m_webEngineView);
 #else
         m_editor = new Editor();
+        auto fn = [this](QString link){
+            if (link.startsWith("note://")) {
+                emit linkClicked(link);
+                return true;
+            } else {
+                return false;
+            }
+        };
+        m_editor->setLinkClickedCallback(fn);
         layout->addWidget(m_editor);
 #endif
     } else if (renderMode == 1) {
@@ -31,6 +40,15 @@ TextPreview::TextPreview(QWidget *parent) : QWidget(parent) {
         layout->addWidget(m_textBrowser);
     } else {
         m_editor = new Editor();
+        auto fn = [this](QString link){
+            if (link.startsWith("note://")) {
+                emit linkClicked(link);
+                return true;
+            } else {
+                return false;
+            }
+        };
+        m_editor->setLinkClickedCallback(fn);
         layout->addWidget(m_editor);
     }
     setLayout(layout);
