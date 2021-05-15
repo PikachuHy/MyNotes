@@ -358,7 +358,8 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
                         tr("Open in Explore"),
 #endif
                     [this, item]() {
-                        QString url = "file://" + item->path();
+                        auto note = this->m_dbManager->getNote(item->path());
+                        QString url = this->noteRealPath(note)+"/..";
                         QDesktopServices::openUrl(QUrl(url));
                     }
             );
