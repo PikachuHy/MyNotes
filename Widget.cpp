@@ -54,6 +54,7 @@
 #include "TabWidget.h"
 #include "TextPreview.h"
 #include <QVector>
+#include <QApplication>
 // Returns empty QByteArray() on failure.
 QByteArray fileChecksum(const QString &fileName,
                         QCryptographicHash::Algorithm hashAlgorithm)
@@ -329,6 +330,24 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
             connect(c, &QAction::triggered, this, &Widget::on_action_exportNoteToHTML);
             menu.addAction(tr("Add to ..."), [this](){
                 this->addNoteTo();
+            });
+            auto noteItem = (NoteItem*)item;
+            auto note = noteItem->note();
+            auto notePath = noteRealPath(note);
+            auto url = QString("note://%1?path=%2").arg(note.strId()).arg(note.pathId());
+            auto mdLink = QString("[%1](%2)").arg(note.title()).arg(url);
+            menu.addAction(tr("Copy Path: \"%1\"").arg(notePath)
+                           , [this, notePath]() {
+                QApplication::clipboard()->setText(notePath);
+            });
+            menu.addAction(tr("Copy URL: \"%1\"").arg(url),
+                           [this, url]() {
+                QApplication::clipboard()->setText(url);
+
+            });
+            menu.addAction(tr("Copy Markdown Link: \"%1\"").arg(mdLink),
+                           [this, mdLink]() {
+                QApplication::clipboard()->setText(mdLink);
             });
         } else {
             auto a = new QAction("New Note", &menu);
