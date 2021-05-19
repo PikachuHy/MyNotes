@@ -36,6 +36,7 @@ class TrojanThread;
 class TabWidget;
 #include <QTimer>
 #include "PiWidget.h"
+class Indexer;
 class Widget : public PiWidget {
 Q_OBJECT
 
@@ -174,6 +175,7 @@ private:
     QSystemTrayIcon* m_systemTrayIcon;
     QString m_curNotePath;
     QTimer* m_timer;
+    Indexer* m_indexer;
 #ifdef ENABLE_TROJAN
     TrojanThread* m_trojanThread;
 #endif

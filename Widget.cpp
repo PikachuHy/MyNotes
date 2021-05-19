@@ -55,6 +55,7 @@
 #include "TextPreview.h"
 #include <QVector>
 #include <QApplication>
+#include "Indexer.h"
 // Returns empty QByteArray() on failure.
 QByteArray fileChecksum(const QString &fileName,
                         QCryptographicHash::Algorithm hashAlgorithm)
@@ -131,6 +132,7 @@ Widget::Widget(QWidget *parent)
     m_dbManager = new DbManager(m_notesPath, this);
     m_treeModel = new TreeModel(m_notesPath, m_dbManager);
     m_treeView->setModel(m_treeModel);
+    m_indexer = new Indexer(m_dbManager);
     initSlots();
     auto screenSize = QApplication::primaryScreen()->size();
     QRect winGeometry = Settings::instance()->mainWindowGeometry;
@@ -450,7 +452,7 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
                 }
             }
         }
-        /*
+
         if (event->key() == Qt::Key_Shift) {
             auto curTime = Utils::getTimeStamp();
             if (curTime - m_lastPressShiftTime < m_maxShiftInterval) {
@@ -461,7 +463,7 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
                 m_lastPressShiftTime = curTime;
             }
         }
-         */
+
     }
     return QObject::eventFilter(watched, e);
 }

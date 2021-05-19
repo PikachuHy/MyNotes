@@ -92,6 +92,7 @@ set(PROJECT_SOURCES
         TabWidget.cpp TabWidget.h
         TextPreview.cpp TextPreview.h
         TabBar.cpp TabBar.h
+        Indexer.cpp Indexer.h
         )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

@@ -7,7 +7,7 @@
 #include <QLineEdit>
 #include <QVBoxLayout>
 SearchDialog::SearchDialog(QWidget *parent): QDialog(parent) {
-    setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::Popup);
     m_lineEdit = new QLineEdit(this);
     m_lineEdit->setMinimumSize(Constant::searchDialogWidth, Constant::searchDialogHeight);
     auto vbox = new QVBoxLayout();
