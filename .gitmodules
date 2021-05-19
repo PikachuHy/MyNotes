@@ -1,0 +1,9 @@
+[submodule "QtMarkdown"]
+	path = QtMarkdown
+	url = https://github.com/PikachuHy/QtMarkdown
+[submodule "CuteLogger"]
+	path = CuteLogger
+	url = https://github.com/PikachuHy/CuteLogger.git
+[submodule "QtWordReader"]
+	path = QtWordReader
+	url = https://github.com/PikachuHy/QtWordReader
