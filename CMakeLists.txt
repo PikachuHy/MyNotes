@@ -7,9 +7,6 @@ configure_file(config.h.in ${PROJECT_BINARY_DIR}/config.h)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 option(USE_WEB_ENGINE_VIEW "use QWebEngineView" OFF)
 option(ENABLE_TROJAN "enable trojan" OFF)
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
 if(${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
     if (APPLE)
         SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/MyNotes.app/Contents/MacOS)
@@ -19,8 +16,13 @@ endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 message("CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
+add_library(libMyNotes "")
+set_target_properties(libMyNotes PROPERTIES OUTPUT_NAME MyNotes)
+set_target_properties(libMyNotes PROPERTIES AUTOMOC ON)
+set_target_properties(libMyNotes PROPERTIES AUTOUIC ON)
+set_target_properties(libMyNotes PROPERTIES AUTORCC ON)
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-    add_definitions(-D_DEBUG)
+    target_compile_definitions(libMyNotes PUBLIC -D_DEBUG)
 endif()
 if(MSVC)
     add_compile_options("/utf-8")
@@ -56,10 +58,8 @@ if (USE_WEB_ENGINE_VIEW)
 else()
 
 endif()
-set(TS_FILES MyNotes_zh_CN.ts)
-
-set(PROJECT_SOURCES
-        main.cpp
+target_sources(libMyNotes PRIVATE MyNotes_zh_CN.ts)
+target_sources(libMyNotes PRIVATE
         Widget.cpp
         Widget.h
         ListModel.cpp
@@ -94,16 +94,14 @@ set(PROJECT_SOURCES
         TabBar.cpp TabBar.h
         Indexer.cpp Indexer.h
         )
-
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-if(${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
-    qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
-endif()
-else()
-if(${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
-    qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
-endif()
-endif()
+option(UPDATE_TS "update translate" OFF)
+if (UPDATE_TS)
+    if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+        qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
+    else()
+        qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
+    endif()
+endif ()
 
 if(ANDROID)
     add_library(MyNotes SHARED
@@ -115,14 +113,11 @@ else()
         set_property(SOURCE icon.rc APPEND PROPERTY
                 OBJECT_DEPENDS ${PROJECT_SOURCE_DIR}/icon/icon.ico
                 )
-        add_executable(MyNotes WIN32
-                ${PROJECT_SOURCES}
-                ${app_WINRC}
-                )
+        add_executable(MyNotes WIN32 main.cpp ${app_WINRC})
+        target_link_libraries(MyNotes PRIVATE libMyNotes)
     else()
-        add_executable(MyNotes
-                ${PROJECT_SOURCES}
-                )
+        add_executable(MyNotes main.cpp)
+        target_link_libraries(MyNotes PRIVATE libMyNotes)
     endif ()
 endif()
 add_subdirectory(CuteLogger)
@@ -131,11 +126,11 @@ add_subdirectory(QtMarkdown)
 add_subdirectory(QtWordReader)
 if(ENABLE_TROJAN)
     add_subdirectory(trojan)
-    target_compile_definitions(MyNotes PRIVATE -DENABLE_TROJAN)
-    target_link_libraries(MyNotes PRIVATE trojan)
-    target_sources(MyNotes PRIVATE TrojanThread.cpp TrojanThread.h)
+    target_compile_definitions(libMyNotes PRIVATE -DENABLE_TROJAN)
+    target_link_libraries(libMyNotes PRIVATE trojan)
+    target_sources(libMyNotes PRIVATE TrojanThread.cpp TrojanThread.h)
 endif()
-target_link_libraries(MyNotes PRIVATE
+target_link_libraries(libMyNotes PUBLIC
         Qt${QT_VERSION_MAJOR}::Widgets
         Qt${QT_VERSION_MAJOR}::Sql
         Qt${QT_VERSION_MAJOR}::Concurrent
@@ -147,12 +142,12 @@ target_link_libraries(MyNotes PRIVATE
         CuteLogger
         )
 if (USE_WEB_ENGINE_VIEW)
-    target_compile_definitions(MyNotes PRIVATE -DUSE_WEB_ENGINE_VIEW)
-    target_link_libraries(MyNotes PRIVATE
+    target_compile_definitions(libMyNotes PRIVATE -DUSE_WEB_ENGINE_VIEW)
+    target_link_libraries(libMyNotes PUBLIC
             Qt${QT_VERSION_MAJOR}::WebEngineWidgets
             Qt${QT_VERSION_MAJOR}::WebChannel
             Qt${QT_VERSION_MAJOR}::Positioning
             )
-    target_sources(MyNotes PRIVATE WebEngineView.cpp WebEngineView.h)
+    target_sources(libMyNotes PRIVATE WebEngineView.cpp WebEngineView.h)
 else()
 endif ()
