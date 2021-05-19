@@ -126,6 +126,7 @@ else()
     endif ()
 endif()
 add_subdirectory(CuteLogger)
+add_subdirectory(QtJieba)
 add_subdirectory(QtMarkdown)
 add_subdirectory(QtWordReader)
 if(ENABLE_TROJAN)
@@ -139,6 +140,7 @@ target_link_libraries(MyNotes PRIVATE
         Qt${QT_VERSION_MAJOR}::Sql
         Qt${QT_VERSION_MAJOR}::Concurrent
         Qt${QT_VERSION_MAJOR}::Quick
+        QtJieba
         QtMarkdownParser
         QtMarkdownEditor
         QtWordReader
