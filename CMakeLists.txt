@@ -151,3 +151,8 @@ if (USE_WEB_ENGINE_VIEW)
     target_sources(libMyNotes PRIVATE WebEngineView.cpp WebEngineView.h)
 else()
 endif ()
+
+add_executable(IndexerTest test/IndexerTest.cpp)
+target_link_libraries(IndexerTest PRIVATE
+        libMyNotes
+        )

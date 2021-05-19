@@ -114,6 +114,7 @@ private:
     void updateIndex(QString text, int id);
     void initSearchDialog();
     void initJieba();
+    void initIndexer();
     void updateStatistics();
     void openNoteInTypora(const Note& note);
     void openInTypora(const QString& path);
