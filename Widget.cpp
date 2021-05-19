@@ -79,6 +79,7 @@ Widget::Widget(QWidget *parent)
         , m_fileSystemWatcher(FileSystemWatcher::instance())
         , m_systemTrayIcon(new QSystemTrayIcon(this))
         , m_timer(new QTimer(this))
+//        , m_indexer(new Indexer())
 #ifdef ENABLE_TROJAN
         , m_trojanThread(nullptr)
 #endif
@@ -129,10 +130,12 @@ Widget::Widget(QWidget *parent)
         qDebug() << "mkdir" << m_notesPath;
         QDir().mkdir(m_notesPath);
     }
+    m_indexer = new Indexer(m_notesPath+"index", "note");
+    m_indexer->loadIndex();
     m_dbManager = new DbManager(m_notesPath, this);
     m_treeModel = new TreeModel(m_notesPath, m_dbManager);
     m_treeView->setModel(m_treeModel);
-    m_indexer = new Indexer(m_dbManager);
+    // initIndexer();
     initSlots();
     auto screenSize = QApplication::primaryScreen()->size();
     QRect winGeometry = Settings::instance()->mainWindowGeometry;
@@ -771,6 +774,35 @@ void Widget::initSearchDialog() {
 }
 
 void Widget::on_searchDialog_searchTextChanged(const QString &text) {
+#if 1
+    qDebug() << "search" << text;
+    auto f = [this](const QString& text) -> QList<Note> {
+        qDebug() << "do searching";
+        auto noteIds = this->m_indexer->search(text);
+        QList<Note> noteList;
+        for(auto noteId: noteIds) {
+            auto note = m_dbManager->getNote(noteId);
+            if (note.id() != -1) {
+                noteList.push_back(note);
+            }
+        }
+        return noteList;
+    };
+    auto callback = [this](const QList<Note> &noteList) {
+        auto model = new QStandardItemModel(this);
+        for(const auto& note: noteList) {
+            auto item = new QStandardItem(note.title());
+            item->setData(QVariant::fromValue(note), Qt::UserRole+1);
+            model->appendRow(item);
+        }
+//    m_listModel->reset(noteList);
+        searchResultView()->setModel(model);
+        searchResultView()->show();
+    };
+    auto ret = QtConcurrent::run(f, text);
+    Utils::checkFuture<QList<Note>>(ret, callback);
+#endif
+#if 0
     auto f = [this](const QString& text) -> QList<Note> {
         std::vector<std::string> words;
         /*
@@ -799,6 +831,7 @@ void Widget::on_searchDialog_searchTextChanged(const QString &text) {
     };
     auto ret = QtConcurrent::run(f, text);
     Utils::checkFuture<QList<Note>>(ret, callback);
+#endif
 }
 
 void Widget::initJieba() {
@@ -815,6 +848,42 @@ void Widget::initJieba() {
                           IDF_PATH,
                           STOP_WORD_PATH);
                           */
+}
+
+void Widget::initIndexer()
+{
+    auto readNoteContent = [this](const Note& note) -> QString {
+        auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
+        QString notePath = docPath + "/MyNotes/workshop/" + note.strId() + "/index.md";
+        QFile noteFile(notePath);
+        if (!noteFile.exists()) {
+            qWarning() << "note not exist." << notePath;
+            return "";
+        }
+        bool ok = noteFile.open(QIODevice::ReadOnly);
+        if (!ok) {
+            qWarning() << "file open fail." << notePath;
+            return "";
+        }
+        return noteFile.readAll();
+    };
+    auto f = [this, &readNoteContent]() {
+        auto notes = m_dbManager->getAllNotes();
+        int count = 0;
+        for(const auto& note: notes) {
+            auto content = readNoteContent(note);
+            m_indexer->updateIndex(note.id(), content);
+            count++;
+            qDebug() << count << "/" << notes.size();
+        }
+        m_indexer->saveIndex();
+        return 0;
+    };
+    auto callback = [](int) {
+        qDebug() << "index all done!";
+    };
+    auto ret = QtConcurrent::run(f);
+    Utils::checkFuture<int>(ret, callback);
 }
 
 QListView* Widget::searchResultView() {

@@ -9,26 +9,41 @@
 namespace index {
     struct Node;
 }
+
+namespace QtJieba {
+    class Tokenizer;
+}
 class DbManager;
 // Indexer 索引器
 class Indexer {
 public:
-    Indexer(DbManager* dbManager);
-    // 开始索引
-    void startIndex();
-    // 索引所有笔记
-    void indexAll();
+    Indexer(QString  basePath, QString  name);
+    // 从磁盘中载入索引
+    void loadIndex();
+    // 更新索引
+    void updateIndex(int id, const QString& text);
     // 保存索引到磁盘
     void saveIndex();
     // 根据搜索的文本，返回相关的笔记ID
-    QList<int> search(QString q);
+    QList<int> search(const QString& q);
+
+    bool isReady();
 
 private:
+    QStringList cut(const QString& text);
+    void writeDictToDisk();
+    void writeIndexToDisk();
+    QString dictPath();
+    QString indexPath();
+private:
+    static quint32 m_magic;
+    QString m_indexName;
     QString m_indexPath;
     QMap<int, index::Node*> m_index;
     QStringList m_words;
     QMap<QString, int> m_wordDict;
-    DbManager* m_dbManager;
+    QtJieba::Tokenizer* m_tokenizer;
+    bool m_loading;
 };
 
 
