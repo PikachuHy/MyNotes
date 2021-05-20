@@ -32,6 +32,10 @@ int showWindow(SingleApplication* app) {
     return ret;
 }
 int main(int argc, char *argv[]) {
+    // 不是在dll中使用的话，默认是找不到这些资源的
+    Q_INIT_RESOURCE(css);
+    Q_INIT_RESOURCE(db);
+    Q_INIT_RESOURCE(icon);
 #if (QT_VERSION > QT_VERSION_CHECK(5,6,0) && QT_VERSION < QT_VERSION_CHECK(6,0,0))
     QSettings settings(
             QString("%1/PikachuHy/MyNotes/config.ini")
