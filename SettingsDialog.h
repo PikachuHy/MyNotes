@@ -17,7 +17,8 @@ class SettingsDialog: public PiDialog {
     Q_OBJECT
 public:
     explicit SettingsDialog(QWidget* parent = nullptr);
-
+signals:
+    void requestReindex();
 private:
     QCheckBox *m_autoSyncWorkshopCheckBox;
     QCheckBox *m_autoSyncWatchingCheckBox;

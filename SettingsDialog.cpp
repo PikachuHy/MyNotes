@@ -104,6 +104,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
         formLayout->addRow(tr("Trojan config path:"), hbox);
     }
     layout->addLayout(formLayout);
+    auto indexBtn = new QPushButton("Reindex");
+    connect(indexBtn, &QPushButton::clicked, this, &SettingsDialog::requestReindex);
+    layout->addWidget(indexBtn);
     auto buttonBox = new QDialogButtonBox(this);
     buttonBox->setObjectName(QString::fromUtf8("buttonBox"));
     buttonBox->setGeometry(QRect(30, 240, 341, 32));

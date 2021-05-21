@@ -1174,6 +1174,9 @@ void Widget::initSystemTrayIcon()
 
     menu->addAction(tr("Settings"), [this](){
         SettingsDialog dialog;
+        connect(&dialog, &SettingsDialog::requestReindex, [this](){
+            this->initIndexer();
+        });
         dialog.exec();
     });
 #ifdef ENABLE_TROJAN
