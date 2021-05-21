@@ -17,16 +17,17 @@
 #include "Settings.h"
 #include "LoginApi.h"
 #include "Utils.h"
+#include "Constant.h"
 
 
 LoginDialog::LoginDialog() {
-    setWindowIcon(QIcon(":/icon/notebook_128x128.png"));
+    setWindowIcon(QIcon(Constant::notebookImagePath));
     auto layout = new QVBoxLayout();
     {
         auto hbox = new QHBoxLayout();
         hbox->addStretch(1);
         auto icon = new QLabel();
-        icon->setPixmap(QPixmap(":/icon/notebook_128x128.png"));
+        icon->setPixmap(QPixmap(Constant::notebookImagePath));
         hbox->addWidget(icon);
         hbox->addStretch(1);
         layout->addLayout(hbox);
@@ -51,7 +52,7 @@ LoginDialog::LoginDialog() {
     auto loginBtn = new QPushButton(tr("Login"));
     layout->addWidget(loginBtn);
     // 登录中的加载动画
-    auto movie = new QMovie(":/icon/loading.gif");
+    auto movie = new QMovie(Constant::loadingImagePath);
     auto ok = movie->isValid();
     qDebug() << "movie ok?"<<ok;
     movie->start();

@@ -1,5 +1,6 @@
 
 #include "TreeItem.h"
+#include "Constant.h"
 #include <QFileInfo>
 #include <QFileIconProvider>
 #include <QIcon>
@@ -104,7 +105,7 @@ void TreeItem::setDisplayName(const QString& name) {
 QVariant TrashItem::data(int column, int role) const {
     if (role == Qt::DecorationRole && column == 0) {
 #ifdef Q_OS_WIN
-        return QIcon(QPixmap(":/icon/trash_64x64.png"));
+        return QIcon(QPixmap(Constant::trashImagePath));
 #else
         QFileIconProvider provider;
         return provider.icon(QFileIconProvider::Trashcan);
@@ -129,7 +130,7 @@ bool TrashItem::isFile() {
 QVariant AttachmentItem::data(int column, int role) const {
     if (role == Qt::DecorationRole && column == 0) {
 #ifdef Q_OS_WIN
-        return QIcon(QPixmap(":/icon/attachment_64x64.png"));
+        return QIcon(QPixmap(Constant::attachmentImagePath));
 #else
         QFileIconProvider provider;
         return provider.icon(QFileIconProvider::Drive);
@@ -153,7 +154,7 @@ bool AttachmentItem::isFile() {
 QVariant WorkshopItem::data(int column, int role) const {
     if (role == Qt::DecorationRole && column == 0) {
 #ifdef Q_OS_WIN
-        return QIcon(QPixmap(":/icon/workshop_64x64.png"));
+        return QIcon(QPixmap(Constant::workshopImagePath));
 #else
         QFileIconProvider provider;
         return provider.icon(QFileIconProvider::Computer);
@@ -190,7 +191,7 @@ int NoteItem::pathId() {
 QVariant NoteItem::data(int column, int role) const {
     if (role == Qt::DecorationRole && column == 0) {
 #ifdef Q_OS_WIN
-        return QIcon(QPixmap(":/icon/note_64x64.png"));
+        return QIcon(QPixmap(Constant::noteImagePath));
 #else
         QFileIconProvider provider;
         return provider.icon(QFileIconProvider::File);
@@ -218,7 +219,7 @@ int FolderItem::pathId() {
 QVariant FolderItem::data(int column, int role) const {
     if (role == Qt::DecorationRole && column == 0) {
 #ifdef Q_OS_WIN
-        return QIcon(QPixmap(":/icon/folder_64x64.png"));
+        return QIcon(QPixmap(Constant::folderImagePath));
 #else
         QFileIconProvider provider;
         return provider.icon(QFileIconProvider::Folder);
@@ -235,7 +236,7 @@ WatchingItem::WatchingItem(TreeItem *parentItem): TreeItem({"Watching"}, parentI
 QVariant WatchingItem::data(int column, int role) const {
     if (role == Qt::DecorationRole && column == 0) {
 #ifdef Q_OS_WIN
-        return QIcon(QPixmap(":/icon/watching_64x64.png"));
+        return QIcon(QPixmap(Constant::watchingImagePath));
 #else
         QFileIconProvider provider;
         return provider.icon(QFileIconProvider::Folder);
@@ -252,7 +253,7 @@ WatchingFolderItem::WatchingFolderItem(const QString& path, const QString& displ
 QVariant WatchingFolderItem::data(int column, int role) const {
     if (role == Qt::DecorationRole && column == 0) {
 #ifdef Q_OS_WIN
-        return QIcon(QPixmap(":/icon/folder_64x64.png"));
+        return QIcon(QPixmap(Constant::folderImagePath));
 #else
         QFileIconProvider provider;
         return provider.icon(QFileIconProvider::Folder);
@@ -268,7 +269,7 @@ WatchingFileItem::WatchingFileItem(const QString &path, const QString& displayNa
 QVariant WatchingFileItem::data(int column, int role) const {
     if (role == Qt::DecorationRole && column == 0) {
 #ifdef Q_OS_WIN
-        return QIcon(QPixmap(":/icon/note_64x64.png"));
+        return QIcon(QPixmap(Constant::noteImagePath));
 #else
         QFileIconProvider provider;
         return provider.icon(QFileIconProvider::File);

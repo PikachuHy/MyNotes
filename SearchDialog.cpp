@@ -43,8 +43,9 @@ namespace Search {
         setEditTriggers(QAbstractItemView::NoEditTriggers);
         m_loading = new QLabel(this);
 //    m_loading->setWindowFlag(Qt::FramelessWindowHint);
-        auto movie = new QMovie(":icon/loading.gif");
+        auto movie = new QMovie(Constant::loadingImagePath);
         movie->start();
+        m_loading->resize(QPixmap(Constant::loadingImagePath).size());
         m_loading->setMovie(movie);
 //    m_loading->move(250, 109);
         m_loading->hide();
