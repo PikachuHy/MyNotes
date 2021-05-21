@@ -9,10 +9,7 @@
 #include <QThread>
 #include <QTimer>
 #include <QCryptographicHash>
-
-using namespace std;
-
-
+#include <QWidget>
 
 using namespace std;
 std::string chMap = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"s;
@@ -49,6 +46,32 @@ namespace Utils {
         suffix << ".docx";
         suffix << ".txt";
         return suffix;
+    }
+
+    void moveToCenter(QWidget *source, QWidget *target) {
+        if (source->parent() == target) {
+            qDebug() <<"source is child of target";
+            // 如果有父子关系
+            auto g = target->geometry();
+            qDebug() << g;
+            auto size = source->size();
+            qDebug() << source->geometry();
+            qDebug() << size;
+            int x = (g.width() - size.width()) / 2;
+            int y = (g.height() - size.height()) / 2;
+            qDebug() << QPoint(x, y);
+            source->move(x, y);
+        } else {
+            auto g = target->geometry();
+            qDebug() << g;
+            auto size = source->size();
+            qDebug() << source->geometry();
+            qDebug() << size;
+            int x = g.x() + (g.width() - size.width()) / 2;
+            int y = g.y() + (g.height() - size.height()) / 2;
+            qDebug() << QPoint(x, y);
+            source->move(x, y);
+        }
     }
 
 }

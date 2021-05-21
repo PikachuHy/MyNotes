@@ -8,6 +8,7 @@
 #include <QString>
 #include <QFuture>
 #include <QTimer>
+class QWidget;
 namespace Utils {
     /**
      * 获取当前时间戳
@@ -46,6 +47,12 @@ namespace Utils {
     QString md5(const QString& str);
 
     QStringList syncSuffix();
+
+    /**
+     * 移动source到target中间
+     * 注意：这个必须是两者的高度宽带都已经算出来的情况下才有效
+     */
+     void moveToCenter(QWidget* source, QWidget* target);
 };
 
 
