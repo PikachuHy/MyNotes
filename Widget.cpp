@@ -461,6 +461,8 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
             if (curTime - m_lastPressShiftTime < m_maxShiftInterval) {
                 m_lastPressShiftTime = curTime;
                 if (!m_searchDialog) initSearchDialog();
+                auto x = this->geometry().left() + this->geometry().width() / 2 - m_searchDialog->width() / 2;
+                m_searchDialog->move(x, this->geometry().top() + Constant::marginToTop);
                 m_searchDialog->show();
             } else {
                 m_lastPressShiftTime = curTime;
@@ -768,8 +770,6 @@ void Widget::initSearchDialog() {
     // 强制计算搜索框的实际大小
     m_searchDialog->show();
     m_searchDialog->hide();
-    auto x = this->geometry().left() + this->geometry().width() / 2 - m_searchDialog->width() / 2;
-    m_searchDialog->move(x, this->geometry().top() + Constant::marginToTop);
     connect(m_searchDialog, &SearchDialog::searchTextChanged, this, &Widget::on_searchDialog_searchTextChanged);
     connect(m_searchDialog, &SearchDialog::clickNote, [this](int noteId) {
         auto note = m_dbManager->getNote(noteId);
