@@ -771,10 +771,23 @@ void Widget::initSearchDialog() {
     auto x = this->geometry().left() + this->geometry().width() / 2 - m_searchDialog->width() / 2;
     m_searchDialog->move(x, this->geometry().top() + Constant::marginToTop);
     connect(m_searchDialog, &SearchDialog::searchTextChanged, this, &Widget::on_searchDialog_searchTextChanged);
+    connect(m_searchDialog, &SearchDialog::clickNote, [this](int noteId) {
+        auto note = m_dbManager->getNote(noteId);
+        if (note.id() == -1) {
+            qWarning() << "invalid note id" << noteId;
+            return;
+        }
+        this->loadNote(note);
+        m_searchDialog->hide();
+    });
 }
 
 void Widget::on_searchDialog_searchTextChanged(const QString &text) {
 #if 1
+    if (text.isEmpty()) {
+        qDebug() << "ignore empty search string";
+        return;
+    }
     qDebug() << "search" << text;
     auto f = [this](const QString& text) -> QList<Note> {
         qDebug() << "do searching";
@@ -789,15 +802,15 @@ void Widget::on_searchDialog_searchTextChanged(const QString &text) {
         return noteList;
     };
     auto callback = [this](const QList<Note> &noteList) {
-        auto model = new QStandardItemModel(this);
+        Search::SearchResult ret;
         for(const auto& note: noteList) {
-            auto item = new QStandardItem(note.title());
-            item->setData(QVariant::fromValue(note), Qt::UserRole+1);
-            model->appendRow(item);
+            Search::SearchResultItem item;
+            item.noteId = note.id();
+            item.noteTitle = note.title();
+
+            ret.items.emplace_back(item);
         }
-//    m_listModel->reset(noteList);
-        searchResultView()->setModel(model);
-        searchResultView()->show();
+        this->m_searchDialog->setSearchResult(ret);
     };
     auto ret = QtConcurrent::run(f, text);
     Utils::checkFuture<QList<Note>>(ret, callback);
