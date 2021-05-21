@@ -807,7 +807,15 @@ void Widget::on_searchDialog_searchTextChanged(const QString &text) {
             Search::SearchResultItem item;
             item.noteId = note.id();
             item.noteTitle = note.title();
-
+            // 获得笔记的完整路径
+            int pathId = note.pathId();
+            QStringList paths;
+            while (pathId != 0) {
+                auto path = m_dbManager->getPath(pathId);
+                paths.append(path.name());
+                pathId = path.parentId();
+            }
+            item.paths = QStringList (paths.rbegin(), paths.rend());
             ret.items.emplace_back(item);
         }
         this->m_searchDialog->setSearchResult(ret);

@@ -20,6 +20,7 @@ namespace Search {
         int noteId = -1;
         QString noteTitle;
         std::vector<Highlight> highlights;
+        QStringList paths;
         SearchResultItem() = default;
     };
     struct SearchResult {

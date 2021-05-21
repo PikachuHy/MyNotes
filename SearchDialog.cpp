@@ -85,11 +85,34 @@ public:
         painter->drawPixmap(option.rect.topLeft(), QPixmap(":icon/note_64x64.png").scaled(32, 32));
         QRect textRect(option.rect.left() + 40, option.rect.top(), option.rect.width() - 40, 32);
         painter->drawText(textRect, Qt::AlignVCenter, item.noteTitle);
+        int x = 30;
+        int y = option.rect.top() + textRect.height();
+        auto folderImage = QPixmap(Constant::folderImagePath).scaled(16, 16);
+        painter->drawPixmap(x, y, folderImage);
+        x += folderImage.width() + 5;
+        painter->save();
+        auto font = painter->font();
+        font.setPixelSize(12);
+        painter->setFont(font);
+        auto fm = painter->fontMetrics();
+        QString absolutePath;
+        for(const auto& path: item.paths) {
+            absolutePath += "/" + path;
+        }
+        auto needWidth = fm.horizontalAdvance(absolutePath);
+        QRect pathRect = QRect(x, y, needWidth, fm.height());
+        if (absolutePath.isEmpty()) {
+            absolutePath = "/";
+        }
+        painter->drawText(pathRect, absolutePath);
+        painter->restore();
         painter->restore();
     }
 
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override {
-        return QStyledItemDelegate::sizeHint(option, index);
+        auto s = QStyledItemDelegate::sizeHint(option, index);
+        auto fm = option.fontMetrics;
+        return QSize(s.width(), s.height() + fm.height());
     }
 private:
 };
