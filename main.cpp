@@ -1,3 +1,4 @@
+#include <qglobal.h>
 #include "Widget.h"
 #include "SettingsDialog.h"
 #include <QApplication>
@@ -126,6 +127,8 @@ int main(int argc, char *argv[]) {
         }
     }
     qDebug() << "signature:" << signature;
+#ifdef Q_OS_ANDROID
+#else
     if (needLogin && !Settings::instance()->modeOffline) {
         LoginDialog dialog;
         auto ret = dialog.exec();
@@ -134,6 +137,7 @@ int main(int argc, char *argv[]) {
             return 0;
         }
     }
+#endif
     bool needSetConfig = false;
     QString serverIp = Settings::instance()->serverIp;
     if (serverIp.isEmpty()) {
@@ -147,6 +151,9 @@ int main(int argc, char *argv[]) {
     }
     qDebug() << "typoraPath:" << typoraPath;
 #endif
+#ifdef Q_OS_ANDROID
+    return showWindow(&a);
+#else
     if (needSetConfig) {
         auto settingsDialog = new SettingsDialog();
         auto ret = settingsDialog->exec();
@@ -156,5 +163,6 @@ int main(int argc, char *argv[]) {
     } else {
         return showWindow(&a);
     }
+#endif
     return 0;
 }

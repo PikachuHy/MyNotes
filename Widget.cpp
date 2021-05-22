@@ -46,7 +46,7 @@
 #include <QStringList>
 #include "FileSystemWatcher.h"
 #include "AboutDialog.h"
-#include <QtWorderReader>
+#include <QtWordReader>
 #include <QSplitter>
 #ifdef ENABLE_TROJAN
 #include "TrojanThread.h"

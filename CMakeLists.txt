@@ -22,7 +22,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 message("CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 add_library(libMyNotes "")
+if (ANDROID)
+    else()
 set_target_properties(libMyNotes PROPERTIES OUTPUT_NAME MyNotes)
+endif()
 set_target_properties(libMyNotes PROPERTIES AUTOMOC ON)
 set_target_properties(libMyNotes PROPERTIES AUTOUIC ON)
 set_target_properties(libMyNotes PROPERTIES AUTORCC ON)
@@ -35,6 +38,11 @@ if(MSVC)
     add_definitions(-DWIN32_LEAN_AND_MEAN)
     add_definitions(-D_WIN32_WINNT=0x0A00)
 endif()
+if (ANDROID)
+    message(STATUS "andorid abi ${CMAKE_ANDROID_ARCH_ABI}")
+    set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/)
+    set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/)
+endif ()
 # QtCreator supports the following variables for Android, which are identical to qmake Android variables.
 # Check https://doc.qt.io/qt/deployment-android.html for more information.
 # They need to be set before the find_package( ...) calls below.
@@ -48,10 +56,9 @@ endif()
 #    endif()
 #endif()
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets LinguistTools Sql Concurrent Quick REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Sql Concurrent Network REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS
-        Widgets LinguistTools Sql Concurrent
-        Quick
+        Widgets Sql Concurrent Network
         REQUIRED)
 if (USE_WEB_ENGINE_VIEW)
     find_package(QT NAMES Qt6 Qt5 COMPONENTS WebChannel Positioning REQUIRED)
@@ -109,9 +116,12 @@ if (UPDATE_TS)
 endif ()
 
 if(ANDROID)
-    add_library(MyNotes SHARED
-        ${PROJECT_SOURCES}
-    )
+    qt_add_executable(MyNotes
+            MANUAL_FINALIZATION
+            main.cpp
+            )
+    qt_finalize_executable(MyNotes)
+    target_link_libraries(MyNotes PUBLIC libMyNotes)
 else()
     if (WIN32)
         set(app_WINRC icon.rc)
@@ -124,7 +134,10 @@ else()
     endif ()
     target_link_libraries(MyNotes PRIVATE libMyNotes)
 endif()
+if(ANDROID)
+else()
 add_subdirectory(CuteLogger)
+endif()
 add_subdirectory(QtJieba)
 add_subdirectory(QtMarkdown)
 add_subdirectory(QtWordReader)
@@ -138,13 +151,17 @@ target_link_libraries(libMyNotes PUBLIC
         Qt${QT_VERSION_MAJOR}::Widgets
         Qt${QT_VERSION_MAJOR}::Sql
         Qt${QT_VERSION_MAJOR}::Concurrent
-        Qt${QT_VERSION_MAJOR}::Quick
+        Qt${QT_VERSION_MAJOR}::Network
         QtJieba
         QtMarkdownParser
         QtMarkdownEditor
         QtWordReader
-        CuteLogger
+
         )
+    if(ANDROID)
+    else()
+        target_link_libraries(libMyNotes PUBLIC CuteLogger)
+    endif()
 if (USE_WEB_ENGINE_VIEW)
     target_compile_definitions(libMyNotes PRIVATE -DUSE_WEB_ENGINE_VIEW)
     target_link_libraries(libMyNotes PUBLIC
@@ -155,8 +172,14 @@ if (USE_WEB_ENGINE_VIEW)
     target_sources(libMyNotes PRIVATE WebEngineView.cpp WebEngineView.h)
 else()
 endif ()
-
+if (BUILD_TEST)
 add_executable(IndexerTest test/IndexerTest.cpp)
 target_link_libraries(IndexerTest PRIVATE
         libMyNotes
         )
+endif()
+if (ANDROID)
+    message(STATUS "andorid abi ${CMAKE_ANDROID_ARCH_ABI}")
+    set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/)
+    set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/)
+endif ()
