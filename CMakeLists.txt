@@ -120,7 +120,8 @@ if(BUILD_WITH_QT_QUICK)
     find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Quick Qml REQUIRED)
     qt_add_executable(MyNotesQtQuick
             MANUAL_FINALIZATION
-            QtQuickMain.cpp qml.qrc
+            mobile/main.cpp
+            mobile/qml/qml.qrc
             )
     qt_finalize_executable(MyNotesQtQuick)
     set_target_properties(MyNotesQtQuick PROPERTIES AUTOMOC ON)
@@ -138,9 +139,9 @@ else()
         set_property(SOURCE icon.rc APPEND PROPERTY
                 OBJECT_DEPENDS ${PROJECT_SOURCE_DIR}/icon/icon.ico
                 )
-        add_executable(MyNotes WIN32 main.cpp ${app_WINRC})
+        add_executable(MyNotes WIN32 desktop/main.cpp ${app_WINRC})
     else()
-        add_executable(MyNotes main.cpp)
+        add_executable(MyNotes desktop/main.cpp)
     endif ()
     target_link_libraries(MyNotes PRIVATE libMyNotes)
 endif()
