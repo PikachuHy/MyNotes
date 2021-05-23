@@ -85,9 +85,9 @@ target_sources(libMyNotes PRIVATE
         SearchDialog.cpp
         Utils.cpp
         ${TS_FILES}
-        db.qrc
-        css.qrc
-        icon.qrc
+        assets/db.qrc
+        assets/css.qrc
+        assets/icon.qrc
         Toast.cpp
         ChooseFolderWidget.cpp
         Http.cpp
@@ -137,9 +137,9 @@ else()
     if (WIN32)
         set(app_WINRC icon.rc)
         set_property(SOURCE icon.rc APPEND PROPERTY
-                OBJECT_DEPENDS ${PROJECT_SOURCE_DIR}/icon/icon.ico
+                OBJECT_DEPENDS ${PROJECT_SOURCE_DIR}/assets/icon/icon.ico
                 )
-        add_executable(MyNotes WIN32 desktop/main.cpp ${app_WINRC})
+        add_executable(MyNotes WIN32 desktop/main.cpp assets/${app_WINRC})
     else()
         add_executable(MyNotes desktop/main.cpp)
     endif ()
