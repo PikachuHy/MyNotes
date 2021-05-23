@@ -11,7 +11,7 @@
 #include <QDataStream>
 #include <utility>
 #include "DbManager.h"
-#include "QtJieba/Tokenizer.h"
+#include "Tokenizer.h"
 namespace index {
     struct Node {
         int noteId;

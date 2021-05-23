@@ -7,7 +7,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QDebug>
-#include <QtMarkdown/QtMarkdownParser>
+#include <QtMarkdownParser>
 #include <QStandardPaths>
 #include <QVBoxLayout>
 #include <WordReader.h>
