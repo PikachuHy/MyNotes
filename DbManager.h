@@ -17,7 +17,9 @@ public:
     virtual ~DbManager();
 
     QList<Path> getPathList(int parentPathId = 0);
+    Q_INVOKABLE QVariantList getPathList_qml(int parentPathId = 0);
     QList<Note> getNoteList(int pathId = 0);
+    Q_INVOKABLE QVariantList getNoteList_qml(int pathId = 0);
     QList<Note> getNoteList(QStringList words);
     QList<Note> getAllNotes();
     bool addNewNote(Note & note);

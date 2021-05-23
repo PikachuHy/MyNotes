@@ -1,5 +1,6 @@
 
 #include "TreeItem.h"
+#include "TreeModel.h"
 #include "Constant.h"
 #include <QFileInfo>
 #include <QFileIconProvider>
@@ -103,6 +104,9 @@ void TreeItem::setDisplayName(const QString& name) {
 }
 
 QVariant TrashItem::data(int column, int role) const {
+    if (role == TreeModel::IconPathRole && column == 0) {
+        return Constant::trashImagePath;
+    }
     if (role == Qt::DecorationRole && column == 0) {
 #ifdef Q_OS_WIN
         return QIcon(QPixmap(Constant::trashImagePath));
@@ -128,6 +132,9 @@ bool TrashItem::isFile() {
 }
 
 QVariant AttachmentItem::data(int column, int role) const {
+    if (role == TreeModel::IconPathRole && column == 0) {
+        return Constant::attachmentImagePath;
+    }
     if (role == Qt::DecorationRole && column == 0) {
 #ifdef Q_OS_WIN
         return QIcon(QPixmap(Constant::attachmentImagePath));
@@ -152,6 +159,9 @@ bool AttachmentItem::isFile() {
 }
 
 QVariant WorkshopItem::data(int column, int role) const {
+    if (role == TreeModel::IconPathRole) {
+        return Constant::workshopImagePath;
+    }
     if (role == Qt::DecorationRole && column == 0) {
 #ifdef Q_OS_WIN
         return QIcon(QPixmap(Constant::workshopImagePath));
@@ -189,6 +199,9 @@ int NoteItem::pathId() {
 }
 
 QVariant NoteItem::data(int column, int role) const {
+    if (role == TreeModel::IconPathRole && column == 0) {
+        return Constant::noteImagePath;
+    }
     if (role == Qt::DecorationRole && column == 0) {
 #ifdef Q_OS_WIN
         return QIcon(QPixmap(Constant::noteImagePath));
@@ -217,6 +230,9 @@ int FolderItem::pathId() {
 }
 
 QVariant FolderItem::data(int column, int role) const {
+    if (role == TreeModel::IconPathRole && column == 0) {
+        return Constant::folderImagePath;
+    }
     if (role == Qt::DecorationRole && column == 0) {
 #ifdef Q_OS_WIN
         return QIcon(QPixmap(Constant::folderImagePath));
@@ -234,6 +250,9 @@ WatchingItem::WatchingItem(TreeItem *parentItem): TreeItem({"Watching"}, parentI
 }
 
 QVariant WatchingItem::data(int column, int role) const {
+    if (role == TreeModel::IconPathRole && column == 0) {
+        return Constant::watchingImagePath;
+    }
     if (role == Qt::DecorationRole && column == 0) {
 #ifdef Q_OS_WIN
         return QIcon(QPixmap(Constant::watchingImagePath));
@@ -251,6 +270,9 @@ WatchingFolderItem::WatchingFolderItem(const QString& path, const QString& displ
 }
 
 QVariant WatchingFolderItem::data(int column, int role) const {
+    if (role == TreeModel::IconPathRole && column == 0) {
+        return Constant::folderImagePath;
+    }
     if (role == Qt::DecorationRole && column == 0) {
 #ifdef Q_OS_WIN
         return QIcon(QPixmap(Constant::folderImagePath));
@@ -267,6 +289,9 @@ WatchingFileItem::WatchingFileItem(const QString &path, const QString& displayNa
 }
 
 QVariant WatchingFileItem::data(int column, int role) const {
+    if (role == TreeModel::IconPathRole && column == 0) {
+        return Constant::noteImagePath;
+    }
     if (role == Qt::DecorationRole && column == 0) {
 #ifdef Q_OS_WIN
         return QIcon(QPixmap(Constant::noteImagePath));

@@ -13,6 +13,9 @@ class TreeModel : public QAbstractItemModel {
 Q_OBJECT
 
 public:
+    enum DataRoles{
+        IconPathRole = Qt::UserRole + 2
+    };
     explicit TreeModel(const QString &dataPath, DbManager* dbManager, QObject *parent = nullptr);
 
     ~TreeModel();
@@ -46,6 +49,8 @@ public:
     void addWatchingNode(const QString& path);
 
     void removeWatchingNote(const QString& path);
+protected:
+    Q_INVOKABLE QHash<int, QByteArray> roleNames() const override;
 private:
     void setupModelData(TreeItem *parent);
     void buildFileTreeFromDb(int parentPathId, TreeItem* parentItem);

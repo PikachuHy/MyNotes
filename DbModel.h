@@ -7,7 +7,8 @@
 #include <QString>
 #include <QVariant>
 class DbManager;
-class DbModel {
+class DbModel{
+    Q_PROPERTY(QString id READ id)
 public:
     inline int id() const { return m_id; }
     inline bool trashed() const { return m_trashed; }
@@ -49,6 +50,7 @@ private:
     friend DbManager;
 };
 
+Q_DECLARE_METATYPE(Path)
 
 
 #endif //MYNOTES_DBMODEL_H

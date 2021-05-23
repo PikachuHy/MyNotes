@@ -3,6 +3,7 @@
 //
 
 #include "DbManager.h"
+#include "Constant.h"
 #include <QtCore>
 #include <QtWidgets>
 #include <QtSql>
@@ -73,6 +74,67 @@ QList<Path> DbManager::getPathList(int parentPathId) {
     }
     return ret;
 }
+class Path_qml : public QObject {
+    Q_OBJECT
+    Q_PROPERTY(QString name READ name WRITE setName)
+    Q_PROPERTY(QString icon READ icon WRITE setIcon)
+    Q_PROPERTY(int pathId READ pathId WRITE setPathId)
+public:
+    QString name() const { return m_name; }
+    void setName(const QString& name) {
+        m_name = name;
+    }
+    QString icon() const { return m_icon; }
+    void setIcon(const QString& icon) {
+        m_icon = icon;
+    }
+    int pathId() const { return m_pathId; }
+    void setPathId(int pathId) {
+        m_pathId = pathId;
+    }
+private:
+    QString m_name;
+    QString m_icon;
+    int m_pathId;
+};
+Q_DECLARE_METATYPE(Path_qml*)
+class Note_qml : public QObject {
+    Q_OBJECT
+    Q_PROPERTY(QString name READ name WRITE setName)
+    Q_PROPERTY(QString icon READ icon WRITE setIcon)
+    Q_PROPERTY(int pathId READ pathId WRITE setPathId)
+public:
+    QString name() const { return m_name; }
+    void setName(const QString& name) {
+        m_name = name;
+    }
+    QString icon() const { return m_icon; }
+    void setIcon(const QString& icon) {
+        m_icon = icon;
+    }
+    int pathId() const { return m_pathId; }
+    void setPathId(int pathId) {
+        m_pathId = pathId;
+    }
+private:
+    QString m_name;
+    QString m_icon;
+    int m_pathId;
+};
+Q_DECLARE_METATYPE(Note_qml*)
+QVariantList DbManager::getPathList_qml(int parentPathId)
+{
+    auto list = getPathList(parentPathId);
+    QVariantList ret;
+    for(const auto& it: list) {
+        Path_qml* p = new Path_qml();
+        p->setName(it.name());
+        p->setIcon(Constant::folderImagePath);
+        p->setPathId(it.id());
+        ret.push_back(QVariant::fromValue(p));
+    }
+    return ret;
+}
 
 QList<Note> DbManager::getNoteList(int pathId) {
     QList<Note> ret;
@@ -82,6 +144,20 @@ QList<Note> DbManager::getNoteList(int pathId) {
         Note note;
         fillNote(note, query);
         ret.append(note);
+    }
+    return ret;
+}
+
+QVariantList DbManager::getNoteList_qml(int pathId)
+{
+    auto list = getNoteList(pathId);
+    QVariantList ret;
+    for(const auto& it: list) {
+        Path_qml* p = new Path_qml();
+        p->setName(it.title());
+        p->setIcon(Constant::noteImagePath);
+        p->setPathId(it.pathId());
+        ret.push_back(QVariant::fromValue(p));
     }
     return ret;
 }
@@ -288,3 +364,4 @@ QList<Note> DbManager::getAllNotes() {
     }
     return ret;
 }
+#include "DbManager.moc"

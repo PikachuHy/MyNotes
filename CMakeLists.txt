@@ -114,14 +114,24 @@ if (UPDATE_TS)
         qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
     endif()
 endif ()
-
-if(ANDROID)
-    qt_add_executable(MyNotes
+option(BUILD_WITH_QT_QUICK "build with qt quick" ON)
+if(BUILD_WITH_QT_QUICK)
+    find_package(QT NAMES Qt6 Qt5 COMPONENTS Quick Qml REQUIRED)
+    find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Quick Qml REQUIRED)
+    qt_add_executable(MyNotesQtQuick
             MANUAL_FINALIZATION
-            main.cpp
+            QtQuickMain.cpp qml.qrc
             )
-    qt_finalize_executable(MyNotes)
-    target_link_libraries(MyNotes PUBLIC libMyNotes)
+    qt_finalize_executable(MyNotesQtQuick)
+    set_target_properties(MyNotesQtQuick PROPERTIES AUTOMOC ON)
+    set_target_properties(MyNotesQtQuick PROPERTIES AUTOUIC ON)
+    set_target_properties(MyNotesQtQuick PROPERTIES AUTORCC ON)
+    target_link_libraries(MyNotesQtQuick PUBLIC libMyNotes
+        Qt${QT_VERSION_MAJOR}::Quick
+        Qt${QT_VERSION_MAJOR}::Qml
+        )
+endif()
+if(ANDROID)
 else()
     if (WIN32)
         set(app_WINRC icon.rc)

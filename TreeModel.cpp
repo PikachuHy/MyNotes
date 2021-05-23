@@ -37,7 +37,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const {
     if (!index.isValid())
         return QVariant();
 
-    if (role != Qt::DisplayRole && role != Qt::DecorationRole)
+    if (role != Qt::DisplayRole && role != Qt::DecorationRole && role != IconPathRole)
         return QVariant();
 
     TreeItem *item = static_cast<TreeItem *>(index.internalPointer());
@@ -334,4 +334,12 @@ void TreeModel::removeWatchingNote(const QString &path) {
     } else {
         qWarning() << "path not in watching tree." << path;
     }
+}
+
+QHash<int, QByteArray> TreeModel::roleNames() const
+{
+    QHash<int, QByteArray> roles;
+    roles[Qt::DisplayRole] = "text";
+    roles[IconPathRole] = "iconPath";
+    return roles;
 }
