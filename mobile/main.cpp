@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("$Model",treeModel);
     engine.rootContext()->setContextProperty("$DbManager", dbManager);
     engine.rootContext()->setContextProperty("$KeyFilter", keyFilter);
-//    qmlRegisterType<QtQuickMarkdownItem>("cn.net.pikachu.control", 1, 0, "QtQuickMarkdownItem");
+    qmlRegisterType<QtQuickMarkdownItem>("cn.net.pikachu.control", 1, 0, "QtQuickMarkdownItem");
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url, keyFilter](QObject *obj, const QUrl &objUrl) {

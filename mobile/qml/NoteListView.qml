@@ -1,53 +1,52 @@
-import QtQuick 2.0
+import QtQuick
+import cn.net.pikachu.control
+
 Item {
     id: noteListView
     property int pathId: 0
-    // property array modelStack: []
     ListView {
         anchors.fill: parent
+        visible: true
         model: ListModel {
             id: model2
         }
-        delegate: Rectangle {
+        delegate: NoteListItem {
             width: noteListView.width
-            height: 40
+            name: model.name
+            icon: model.icon
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
                     noteListView.visible = false
                     console.log(model.name)
                     console.log(model.icon)
-                    // modelStack.append(model2)
-
-                    var NoteListViewPage = Qt.createComponent(
-                                "NoteListView.qml").createObject(root, {
+                    if (model.type === 'note') {
+                        console.log('load note', model.path)
+                        console.log(model.basePath)
+                        var NoteViewPage = Qt.createComponent(
+                                    "NoteView.qml").createObject(root, {
                                                                      "x": 0,
                                                                      "y": 0,
                                                                      "width": noteListView.width,
                                                                      "height": noteListView.height,
-                                                                     "pathId": model.pathId
+                                                                     "source": model.path,
+                                                                     "path": model.path
                                                                  })
-                    root.pageStack.push(NoteListViewPage)
-
+                        root.pageStack.push(NoteViewPage)
+                    } else {
+                        var NoteListViewPage = Qt.createComponent(
+                                    "NoteListView.qml").createObject(root, {
+                                                                         "x": 0,
+                                                                         "y": 0,
+                                                                         "width": noteListView.width,
+                                                                         "height": noteListView.height,
+                                                                         "pathId": model.pathId
+                                                                     })
+                        root.pageStack.push(NoteListViewPage)
+                    }
                 }
             }
-            Image {
-                source: model.icon
-                width: 32
-                height: 32
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            Text {
-                text: model.name
-                anchors.left: parent.left
-                anchors.leftMargin: 40
-                anchors.verticalCenter: parent.verticalCenter
-
-            }
         }
-
-
     }
     Text {
         id: returnBtn
@@ -63,6 +62,7 @@ Item {
             }
         }
     }
+
     Component.onCompleted: {
         console.log(pathId)
         const pathList = $DbManager.getPathList_qml(pathId)
@@ -74,19 +74,23 @@ Item {
         }
 
         pathList.forEach(data => {
-                             console.log(data.name)
+                             //                             console.log(data.name)
                              model2.append({
                                                "name": data.name,
                                                "icon": "qrc" + data.icon,
-                                               "pathId": data.pathId
+                                               "pathId": data.pathId,
+                                               "type": "folder"
                                            })
                          })
         noteList.forEach(data => {
-                             console.log(data.name)
+                             //                             console.log(data.name)
                              model2.append({
                                                "name": data.name,
                                                "icon": "qrc" + data.icon,
-                                               "pathId": data.pathId
+                                               "pathId": data.pathId,
+                                               "path": data.path,
+                                               "basePath": data.basePath,
+                                               "type": "note"
                                            })
                          })
     }

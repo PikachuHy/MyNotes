@@ -99,27 +99,49 @@ private:
 };
 Q_DECLARE_METATYPE(Path_qml*)
 class Note_qml : public QObject {
-    Q_OBJECT
+Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName)
     Q_PROPERTY(QString icon READ icon WRITE setIcon)
     Q_PROPERTY(int pathId READ pathId WRITE setPathId)
+    Q_PROPERTY(QString path READ path WRITE setPath)
+    Q_PROPERTY(QString basePath READ basePath WRITE setBasePath)
 public:
     QString name() const { return m_name; }
-    void setName(const QString& name) {
+
+    void setName(const QString &name) {
         m_name = name;
     }
+
     QString icon() const { return m_icon; }
-    void setIcon(const QString& icon) {
+
+    void setIcon(const QString &icon) {
         m_icon = icon;
     }
+
     int pathId() const { return m_pathId; }
+
     void setPathId(int pathId) {
         m_pathId = pathId;
     }
+
+    QString path() const { return m_path; }
+
+    void setPath(const QString &path) {
+        m_path = path;
+    }
+
+    QString basePath() const { return m_basePath; }
+
+    void setBasePath(const QString &basePath) {
+        m_basePath = basePath;
+    }
+
 private:
     QString m_name;
     QString m_icon;
     int m_pathId;
+    QString m_path;
+    QString m_basePath;
 };
 Q_DECLARE_METATYPE(Note_qml*)
 QVariantList DbManager::getPathList_qml(int parentPathId)
@@ -148,15 +170,18 @@ QList<Note> DbManager::getNoteList(int pathId) {
     return ret;
 }
 
-QVariantList DbManager::getNoteList_qml(int pathId)
-{
+QVariantList DbManager::getNoteList_qml(int pathId) {
+    auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
+    auto notesPath = docPath + "/MyNotes/workshop/";
     auto list = getNoteList(pathId);
     QVariantList ret;
-    for(const auto& it: list) {
-        Path_qml* p = new Path_qml();
+    for (const auto &it: list) {
+        Note_qml *p = new Note_qml();
         p->setName(it.title());
         p->setIcon(Constant::noteImagePath);
         p->setPathId(it.pathId());
+        p->setPath(notesPath + it.strId() + "/index.md");
+        p->setBasePath(notesPath + it.strId() + '/');
         ret.push_back(QVariant::fromValue(p));
     }
     return ret;

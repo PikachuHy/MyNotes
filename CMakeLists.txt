@@ -129,6 +129,7 @@ if (BUILD_WITH_QT_QUICK)
     set_target_properties(MyNotesQtQuick PROPERTIES AUTOUIC ON)
     set_target_properties(MyNotesQtQuick PROPERTIES AUTORCC ON)
     target_link_libraries(MyNotesQtQuick PUBLIC libMyNotes
+            QtQuickMarkdownItem
             Qt${QT_VERSION_MAJOR}::Quick
             Qt${QT_VERSION_MAJOR}::Qml
             )

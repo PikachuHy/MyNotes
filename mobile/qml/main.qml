@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
+import cn.net.pikachu.control
 
 Window {
     id: root
@@ -8,9 +9,10 @@ Window {
     visible: true
     title: qsTr("MyNotes")
     property var pageStack: []
+
     Connections {
         target: $KeyFilter
-        function onKeyBackPress(){
+        function onKeyBackPress() {
             console.log('back press')
             if (pageStack.length === 1) {
                 console.log('no page to destroy')
@@ -27,14 +29,14 @@ Window {
         width: parent.width
         height: parent.height
 
-        model: // $Model
-               ListModel {
+        model: ListModel {
             id: model2
         }
 
-        delegate: Rectangle {
-            width: parent.width
-            height: 40
+        delegate: NoteListItem {
+            width: root.width
+            name: model.name
+            icon: model.icon
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
@@ -43,29 +45,14 @@ Window {
                     mainListView.visible = false
                     var NoteListViewPage = Qt.createComponent(
                                 "NoteListView.qml").createObject(root, {
-                                                                     x: 0,
-                                                                     y: 0,
-                                                                     width: root.width,
-                                                                     height: root.height,
-                                                                     pathId: 0
+                                                                     "x": 0,
+                                                                     "y": 0,
+                                                                     "width": root.width,
+                                                                     "height": root.height,
+                                                                     "pathId": 0
                                                                  })
                     pageStack.push(NoteListViewPage)
-
                 }
-            }
-            Image {
-                source: model.icon
-                width: 32
-                height: 32
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            Text {
-                text: model.name
-                anchors.left: parent.left
-                anchors.leftMargin: 40
-                anchors.verticalCenter: parent.verticalCenter
-
             }
         }
     }
