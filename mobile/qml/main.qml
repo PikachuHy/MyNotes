@@ -10,7 +10,7 @@ Window {
     property var pageStack: []
     Connections {
         target: $KeyFilter
-        onKeyBackPress: {
+        function onKeyBackPress(){
             console.log('back press')
             if (pageStack.length === 1) {
                 console.log('no page to destroy')
@@ -24,7 +24,7 @@ Window {
 
     ListView {
         id: mainListView
-        width: 180
+        width: parent.width
         height: parent.height
 
         model: // $Model
@@ -34,7 +34,7 @@ Window {
 
         delegate: Rectangle {
             width: parent.width
-            height: 64
+            height: 40
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
@@ -53,16 +53,19 @@ Window {
 
                 }
             }
-            Row {
+            Image {
+                source: model.icon
+                width: 32
+                height: 32
+                anchors.verticalCenter: parent.verticalCenter
+            }
 
-                Image {
-                    source: model.icon
-                    width: 32
-                    height: 32
-                }
-                Text {
-                    text: model.name
-                }
+            Text {
+                text: model.name
+                anchors.left: parent.left
+                anchors.leftMargin: 40
+                anchors.verticalCenter: parent.verticalCenter
+
             }
         }
     }
