@@ -15,7 +15,6 @@ Item {
                 anchors.fill: parent
                 onClicked: {
                     noteListView.visible = false
-                    root.pageStack.push(noteListView)
                     console.log(model.name)
                     console.log(model.icon)
                     // modelStack.append(model2)
@@ -28,6 +27,7 @@ Item {
                                                                      "height": noteListView.height,
                                                                      "pathId": model.pathId
                                                                  })
+                    root.pageStack.push(NoteListViewPage)
 
                 }
             }
@@ -55,8 +55,8 @@ Item {
             anchors.fill: parent
             onClicked: {
                 noteListView.destroy()
-                var lastPage = root.pageStack.pop()
-                lastPage.visible = true
+                root.pageStack.pop()
+                pageStack[pageStack.length - 1].visible = true
             }
         }
     }

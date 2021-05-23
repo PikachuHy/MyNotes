@@ -12,6 +12,7 @@
 #include "QtQuickMarkdownItem.h"
 #include "DbManager.h"
 #include "TreeModel.h"
+#include "KeyFilter.h"
 int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(css);
@@ -30,15 +31,18 @@ int main(int argc, char *argv[])
     }
     auto dbManager = new DbManager(notesPath);
     auto treeModel = new TreeModel(notesPath, dbManager);
+    auto keyFilter = new KeyFilter();
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("$Model",treeModel);
-    engine.rootContext()->setContextProperty("$DbManager",dbManager);
+    engine.rootContext()->setContextProperty("$DbManager", dbManager);
+    engine.rootContext()->setContextProperty("$KeyFilter", keyFilter);
 //    qmlRegisterType<QtQuickMarkdownItem>("cn.net.pikachu.control", 1, 0, "QtQuickMarkdownItem");
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
-                     &app, [url](QObject *obj, const QUrl &objUrl) {
+                     &app, [url, keyFilter](QObject *obj, const QUrl &objUrl) {
                 if (!obj && url == objUrl)
                     QCoreApplication::exit(-1);
+                keyFilter->setFilter(obj);
             }, Qt::QueuedConnection);
 
     engine.load(url);

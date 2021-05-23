@@ -121,6 +121,7 @@ if (BUILD_WITH_QT_QUICK)
     qt_add_executable(MyNotesQtQuick
             MANUAL_FINALIZATION
             mobile/main.cpp
+            mobile/KeyFilter.cpp mobile/KeyFilter.h
             mobile/qml/qml.qrc
             )
     qt_finalize_executable(MyNotesQtQuick)

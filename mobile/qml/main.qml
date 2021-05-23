@@ -8,6 +8,20 @@ Window {
     visible: true
     title: qsTr("MyNotes")
     property var pageStack: []
+    Connections {
+        target: $KeyFilter
+        onKeyBackPress: {
+            console.log('back press')
+            if (pageStack.length === 1) {
+                console.log('no page to destroy')
+                Qt.quit()
+            } else {
+                pageStack.pop().destroy()
+                pageStack[pageStack.length - 1].visible = true
+            }
+        }
+    }
+
     ListView {
         id: mainListView
         width: 180
@@ -27,7 +41,6 @@ Window {
                     console.log(model.name)
                     console.log(model.icon)
                     mainListView.visible = false
-                    pageStack.push(mainListView)
                     var NoteListViewPage = Qt.createComponent(
                                 "NoteListView.qml").createObject(root, {
                                                                      x: 0,
@@ -36,6 +49,8 @@ Window {
                                                                      height: root.height,
                                                                      pathId: 0
                                                                  })
+                    pageStack.push(NoteListViewPage)
+
                 }
             }
             Row {
@@ -52,6 +67,7 @@ Window {
         }
     }
     Component.onCompleted: {
+        pageStack.push(mainListView)
         var modelData = [{
                              "name": "Workshop",
                              "icon": "qrc:/icon/workshop_64x64.png"
