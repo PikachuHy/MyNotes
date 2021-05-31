@@ -1,12 +1,13 @@
-[submodule "QtMarkdown"]
-	path = QtMarkdown
-	url = https://github.com/PikachuHy/QtMarkdown
-[submodule "CuteLogger"]
-	path = CuteLogger
-	url = https://github.com/PikachuHy/CuteLogger.git
-[submodule "QtWordReader"]
-	path = QtWordReader
-	url = https://github.com/PikachuHy/QtWordReader
-[submodule "QtJieba"]
-	path = QtJieba
+[submodule "deps/QtMarkdown"]
+	path = deps/QtMarkdown
+	url = https://github.com/PikachuHy/QtMarkdown.git
+[submodule "deps/QtJieba"]
+	path = deps/QtJieba
 	url = https://github.com/PikachuHy/QtJieba.git
+[submodule "deps/QtWordReader"]
+	path = deps/QtWordReader
+	url = https://github.com/PikachuHy/QtWordReader.git
+[submodule "deps/CuteLogger"]
+	path = deps/CuteLogger
+	url = https://github.com/PikachuHy/CuteLogger.git
+	branch = qt6

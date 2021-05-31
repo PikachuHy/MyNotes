@@ -81,10 +81,6 @@ md
 cppjieba
 limonp
 maddy
-QtJieba
-QtMarkdown
-QtWordReader
-CuteLogger
 trojan
 .gradle
 .vs
