@@ -1,5 +1,5 @@
-import QtQuick
-import cn.net.pikachu.control
+import QtQuick 2.15
+import cn.net.pikachu.control 1.0
 
 Flickable {
     property alias source: md.source

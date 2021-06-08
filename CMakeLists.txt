@@ -13,6 +13,12 @@ if (${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
         SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/MyNotes.app/Contents/PlugIns)
     endif ()
 endif ()
+if (MSVC)
+    add_compile_options("/utf-8")
+    # fatal error C1189: #error:  WinSock.h has already been included
+    add_definitions(-DWIN32_LEAN_AND_MEAN)
+    add_definitions(-D_WIN32_WINNT=0x0A00)
+endif ()
 # CLion默认不会把依赖库加到环境变量中去，每次跑都是崩溃
 if (MSVC)
     set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
@@ -31,12 +37,6 @@ set_target_properties(libMyNotes PROPERTIES AUTOUIC ON)
 set_target_properties(libMyNotes PROPERTIES AUTORCC ON)
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     target_compile_definitions(libMyNotes PUBLIC -D_DEBUG)
-endif ()
-if (MSVC)
-    add_compile_options("/utf-8")
-    # fatal error C1189: #error:  WinSock.h has already been included
-    add_definitions(-DWIN32_LEAN_AND_MEAN)
-    add_definitions(-D_WIN32_WINNT=0x0A00)
 endif ()
 if (ANDROID)
     message(STATUS "andorid abi ${CMAKE_ANDROID_ARCH_ABI}")
@@ -118,13 +118,20 @@ option(BUILD_WITH_QT_QUICK "build with qt quick" ON)
 if (BUILD_WITH_QT_QUICK)
     find_package(QT NAMES Qt6 Qt5 COMPONENTS Quick Qml REQUIRED)
     find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Quick Qml REQUIRED)
-    qt_add_executable(MyNotesQtQuick
-            MANUAL_FINALIZATION
-            mobile/main.cpp
-            mobile/KeyFilter.cpp mobile/KeyFilter.h
-            mobile/qml/qml.qrc
-            )
-    qt_finalize_executable(MyNotesQtQuick)
+    if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+        qt_add_executable(MyNotesQtQuick
+                MANUAL_FINALIZATION
+                mobile/main.cpp
+                mobile/KeyFilter.cpp mobile/KeyFilter.h
+                mobile/qml/qml.qrc
+                )
+        qt_finalize_executable(MyNotesQtQuick)
+    else ()
+        add_executable(MyNotesQtQuick
+                mobile/main.cpp
+                mobile/KeyFilter.cpp mobile/KeyFilter.h
+                mobile/qml/qml.qrc)
+    endif ()
     set_target_properties(MyNotesQtQuick PROPERTIES AUTOMOC ON)
     set_target_properties(MyNotesQtQuick PROPERTIES AUTOUIC ON)
     set_target_properties(MyNotesQtQuick PROPERTIES AUTORCC ON)

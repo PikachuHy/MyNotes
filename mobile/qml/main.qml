@@ -1,6 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
-import cn.net.pikachu.control
+import cn.net.pikachu.control 1.0
 
 Window {
     id: root
