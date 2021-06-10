@@ -6,7 +6,7 @@
 #define MYNOTES_INDEXER_H
 #include <QString>
 #include <QMap>
-namespace index {
+namespace index_ns {
     struct Node;
 }
 
@@ -39,7 +39,7 @@ private:
     static quint32 m_magic;
     QString m_indexName;
     QString m_indexPath;
-    QMap<int, index::Node*> m_index;
+    QMap<int, index_ns::Node *> m_index;
     QStringList m_words;
     QMap<QString, int> m_wordDict;
     QtJieba::Tokenizer* m_tokenizer;

@@ -12,10 +12,10 @@
 #include <utility>
 #include "DbManager.h"
 #include "Tokenizer.h"
-namespace index {
+namespace index_ns {
     struct Node {
         int noteId;
-        Node* next;
+        Node *next;
     };
 }
 quint32 Indexer::m_magic = (quint32)0xfabfabcd;
@@ -77,7 +77,7 @@ void Indexer::loadIndex() {
         in >> total;
 //        qDebug() << "total index:" << total;
         for(int i=0;i<total;i++) {
-            index::Node dummy{};
+            index_ns::Node dummy{};
             int count;
             in >> count;
             int wordId = i;
@@ -85,7 +85,7 @@ void Indexer::loadIndex() {
 //            qDebug() << "word id->count" << wordId << count;
             auto it = &dummy;
             for (int j = 0; j < count; ++j) {
-                auto node = new index::Node();
+                auto node = new index_ns::Node();
                 in >> node->noteId;
 //                qDebug() << node->noteId;
                 it->next = node;
@@ -165,7 +165,7 @@ void Indexer::updateIndex(int id, const QString &text) {
             m_wordDict[word] = wordId;
             m_words.append(word);
         }
-        auto node = new index::Node();
+        auto node = new index_ns::Node();
         node->noteId = id;
         if (m_index.contains(wordId)) {
             auto head = m_index[wordId];
