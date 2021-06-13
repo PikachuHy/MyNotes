@@ -54,18 +54,22 @@ SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
         m_webEngineRenderModeRadioBtn = new QRadioButton("Web Engine");
         m_textBrowserRenderModeRadioBtn = new QRadioButton("Text Browser");
         m_selfRenderModeRadioBtn = new QRadioButton("MyNotes");
+        m_qmlRenderModeRadioBtn = new QRadioButton("Qt Quick");
         int renderMode = Settings::instance()->modeRender;
         if (renderMode == 0) {
             m_webEngineRenderModeRadioBtn->setChecked(true);
         } else if (renderMode == 1) {
             m_textBrowserRenderModeRadioBtn->setChecked(true);
-        } else {
+        } else if (renderMode == 2) {
             m_selfRenderModeRadioBtn->setChecked(true);
+        } else{
+            m_qmlRenderModeRadioBtn->setChecked(true);
         }
         auto hbox = new QHBoxLayout();
         hbox->addWidget(m_webEngineRenderModeRadioBtn);
         hbox->addWidget(m_textBrowserRenderModeRadioBtn);
         hbox->addWidget(m_selfRenderModeRadioBtn);
+        hbox->addWidget(m_qmlRenderModeRadioBtn);
         formLayout->addRow(tr("Render"), hbox);
     }
 #ifdef Q_OS_WIN
@@ -128,8 +132,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) : PiDialog(parent) {
             Settings::instance()->modeRender = 0;
         } else if (m_textBrowserRenderModeRadioBtn->isChecked()) {
             Settings::instance()->modeRender = 1;
-        } else {
+        } else if (m_selfRenderModeRadioBtn->isChecked()) {
             Settings::instance()->modeRender = 2;
+        } else {
+            Settings::instance()->modeRender = 3;
         }
 #ifdef Q_OS_WIN
                          auto typoraPath = m_typoraPathLineEdit->text();

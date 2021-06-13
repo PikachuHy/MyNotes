@@ -149,11 +149,24 @@ else ()
         set_property(SOURCE icon.rc APPEND PROPERTY
                 OBJECT_DEPENDS ${PROJECT_SOURCE_DIR}/assets/icon/icon.ico
                 )
-        add_executable(MyNotes WIN32 desktop/main.cpp assets/${app_WINRC})
+        add_executable(MyNotes WIN32
+                assets/${app_WINRC}
+                )
     else ()
-        add_executable(MyNotes desktop/main.cpp)
+        add_executable(MyNotes "")
     endif ()
-    target_link_libraries(MyNotes PRIVATE libMyNotes)
+    target_sources(MyNotes PRIVATE
+            desktop/main.cpp
+            desktop/qml/qml.qrc
+            desktop/Controller.cpp desktop/Controller.h
+            )
+    target_link_libraries(MyNotes PRIVATE libMyNotes
+            Qt${QT_VERSION_MAJOR}::Quick
+            Qt${QT_VERSION_MAJOR}::Qml
+            QtQuickMarkdownItem
+            )
+    set_target_properties(MyNotes PROPERTIES AUTOMOC ON)
+    set_target_properties(MyNotes PROPERTIES AUTORCC ON)
 endif ()
 add_subdirectory(deps)
 target_link_libraries(libMyNotes PUBLIC

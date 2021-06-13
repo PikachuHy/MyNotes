@@ -14,7 +14,7 @@ Q_OBJECT
 
 public:
     enum DataRoles{
-        IconPathRole = Qt::UserRole + 2
+        IconPathRole = Qt::UserRole + 20
     };
     explicit TreeModel(const QString &dataPath, DbManager* dbManager, QObject *parent = nullptr);
 

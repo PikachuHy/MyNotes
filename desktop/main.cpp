@@ -7,26 +7,63 @@
 #include <QDir>
 #include "SingleApplication.h"
 #include <QDebug>
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
+#include "QtQuickMarkdownItem.h"
+#include "Controller.h"
 #ifndef _DEBUG
 #include <QLoggingCategory>
 #include <Logger.h>
 #include <ConsoleAppender.h>
 #include <FileAppender.h>
 #endif
+
 #include <QCommandLineParser>
 #include "config.h"
 #include "LoginDialog.h"
 #include "Utils.h"
-int showWindow(SingleApplication* app) {
-    auto w = new MainWindow();
-    w->setAttribute(Qt::WA_DeleteOnClose, true);
-    QObject::connect(app, &SingleApplication::messageAvailable,
-        [w](const QString& message) {
-        qDebug() << "show";
-        w->showNormal();
+#include "DbManager.h"
+#include "TreeModel.h"
+void showQtQuickVersion(QApplication *app) {
+    auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
+    auto m_notesPath = docPath + "/MyNotes/";
+    if (!QFile(m_notesPath).exists()) {
+        qDebug() << "mkdir" << m_notesPath;
+        QDir().mkdir(m_notesPath);
     }
-    );
-    w->show();
+    auto m_dbManager = new DbManager(m_notesPath);
+    auto m_treeModel = new TreeModel(m_notesPath, m_dbManager);
+    auto engine = new QQmlApplicationEngine();
+    qmlRegisterType<QtQuickMarkdownItem>("cn.net.pikachu.control", 1, 0, "QtQuickMarkdownItem");
+    qmlRegisterType<Controller>("Controller", 1, 0, "Controller");
+    engine->rootContext()->setContextProperty("treeModel", m_treeModel);
+    const QUrl url(QStringLiteral("qrc:/main.qml"));
+    QObject::connect(engine, &QQmlApplicationEngine::objectCreated,
+                     app, [url](QObject *obj, const QUrl &objUrl) {
+                if (!obj && url == objUrl) {
+                    qCritical() << "load error:" << url;
+                    QCoreApplication::exit(-1);
+                }
+            }, Qt::QueuedConnection);
+
+    engine->load(url);
+}
+int showWindow(SingleApplication *app) {
+    int modeRender = Settings::instance()->modeRender;
+    qDebug() << "render mode:" << modeRender;
+    if (modeRender == 3) {
+        showQtQuickVersion(app);
+    } else {
+        auto w = new MainWindow();
+        w->setAttribute(Qt::WA_DeleteOnClose, true);
+        QObject::connect(app, &SingleApplication::messageAvailable,
+                         [w](const QString &message) {
+                             qDebug() << "show";
+                             w->showNormal();
+                         }
+        );
+        w->show();
+    }
     auto ret = QApplication::exec();
     if (ret != 0) {
         qWarning() << "Something went wrong." << "Result code is" << ret;
@@ -38,6 +75,7 @@ int main(int argc, char *argv[]) {
     Q_INIT_RESOURCE(css);
     Q_INIT_RESOURCE(db);
     Q_INIT_RESOURCE(icon);
+    Q_INIT_RESOURCE(md);
 #if (QT_VERSION > QT_VERSION_CHECK(5,6,0) && QT_VERSION < QT_VERSION_CHECK(6,0,0))
     QSettings settings(
             QString("%1/PikachuHy/MyNotes/config.ini")
@@ -152,6 +190,7 @@ int main(int argc, char *argv[]) {
     }
     qDebug() << "typoraPath:" << typoraPath;
 #endif
+
 #ifdef Q_OS_ANDROID
     return showWindow(&a);
 #else

@@ -31,6 +31,7 @@ private:
     QRadioButton *m_webEngineRenderModeRadioBtn;
     QRadioButton *m_textBrowserRenderModeRadioBtn;
     QRadioButton *m_selfRenderModeRadioBtn;
+    QRadioButton *m_qmlRenderModeRadioBtn;
     bool m_oldHiDPIFlag;
 };
 
