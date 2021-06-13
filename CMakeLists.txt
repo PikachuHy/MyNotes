@@ -105,6 +105,7 @@ target_sources(libMyNotes PRIVATE
         TextPreview.cpp TextPreview.h
         TabBar.cpp TabBar.h
         Indexer.cpp Indexer.h
+        MainWindow.cpp MainWindow.h
         )
 option(UPDATE_TS "update translate" OFF)
 if (UPDATE_TS)

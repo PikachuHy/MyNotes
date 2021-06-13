@@ -1,4 +1,5 @@
 #include <qglobal.h>
+#include "MainWindow.h"
 #include "Widget.h"
 #include "SettingsDialog.h"
 #include <QApplication>
@@ -17,7 +18,7 @@
 #include "LoginDialog.h"
 #include "Utils.h"
 int showWindow(SingleApplication* app) {
-    auto w = new Widget();
+    auto w = new MainWindow();
     w->setAttribute(Qt::WA_DeleteOnClose, true);
     QObject::connect(app, &SingleApplication::messageAvailable,
         [w](const QString& message) {
