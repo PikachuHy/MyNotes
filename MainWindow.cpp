@@ -12,7 +12,8 @@
 #include <QScreen>
 
 MainWindow::MainWindow() {
-    setCentralWidget(new Widget());
+    auto w = new Widget();
+    setCentralWidget(w);
     auto bar = this->menuBar();
     if (bar == nullptr) {
         bar = new QMenuBar();
@@ -20,8 +21,8 @@ MainWindow::MainWindow() {
     }
     auto menu = new QMenu();
     bar->addMenu(menu);
-    menu->addAction("", this, [this]() {
-
+    menu->addAction("", this, [w]() {
+        w->showNextTab();
     }, QKeySequence(Qt::MetaModifier | Qt::Key_Tab));
 
 

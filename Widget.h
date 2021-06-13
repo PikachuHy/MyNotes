@@ -51,7 +51,7 @@ private:
 
 public:
     bool eventFilter(QObject *watched, QEvent *event) override;
-
+    void showNextTab();
 
     // QWidget interface
 protected:

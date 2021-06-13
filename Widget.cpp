@@ -1816,3 +1816,9 @@ void Widget::traversalFileTree(const QString& path, QStringList& pathList) {
 
 }
 
+void Widget::showNextTab() {
+    qDebug() << "next tab";
+    int newTabIndex = (m_tabWidget->currentIndex() + 1) % m_tabWidget->count();
+    m_tabWidget->setCurrentWidget(m_tabWidget->tabAt(newTabIndex));
+}
+
