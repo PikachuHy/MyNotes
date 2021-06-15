@@ -11,6 +11,7 @@
 #include <QQmlContext>
 #include "QtQuickMarkdownItem.h"
 #include "Controller.h"
+#include "SettingDialogController.h"
 #ifndef _DEBUG
 #include <QLoggingCategory>
 #include <Logger.h>
@@ -36,6 +37,7 @@ void showQtQuickVersion(QApplication *app) {
     auto engine = new QQmlApplicationEngine();
     qmlRegisterType<QtQuickMarkdownItem>("cn.net.pikachu.control", 1, 0, "QtQuickMarkdownItem");
     qmlRegisterType<Controller>("Controller", 1, 0, "Controller");
+    qmlRegisterType<SettingDialogController>("Controller", 1, 0, "SettingDialogController");
     engine->rootContext()->setContextProperty("treeModel", m_treeModel);
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(engine, &QQmlApplicationEngine::objectCreated,
@@ -77,11 +79,13 @@ int main(int argc, char *argv[]) {
     Q_INIT_RESOURCE(icon);
     Q_INIT_RESOURCE(md);
 #if (QT_VERSION > QT_VERSION_CHECK(5,6,0) && QT_VERSION < QT_VERSION_CHECK(6,0,0))
+    QString configPath = QString("%1/PikachuHy/MyNotes/config.ini")
+            .arg(QStandardPaths::standardLocations(
+                    QStandardPaths::ConfigLocation).first()
+            );
+    qDebug() << "config path:" << configPath;
     QSettings settings(
-            QString("%1/PikachuHy/MyNotes/config.ini")
-                    .arg(QStandardPaths::standardLocations(
-                            QStandardPaths::ConfigLocation).first()
-                    ),
+            configPath,
             QSettings::IniFormat);
     if (settings.value(Settings::KEY_MODE_HIDPI, false).toBool()) {
         QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);

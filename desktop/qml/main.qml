@@ -10,26 +10,42 @@ Window {
     title: "TreeView Example"
     visible: true
 
-    NoteTreeView {
-        width: 300
-        height: parent.height
-        onClicked: {
-            if (controller.isNote(index)) {
-                let path = controller.getNoteFullPath(index)
-                console.log(path)
-                editor.source = path
+    Rectangle {
+        anchors.fill: parent
+
+        NoteTreeView {
+            width: 300
+            height: parent.height
+            onClicked: {
+                if (controller.isNote(index)) {
+                    let path = controller.getNoteFullPath(index)
+                    console.log(path)
+                    editor.source = path
+                }
             }
         }
-    }
-    QtQuickMarkdownItem {
-        id: editor
-        source: "/Users/pikachu/Documents/MyNotes/workshop/jTioZzs/index.md"
-        x: 305
-        width: parent.width - 308
-        height: parent.height
-    }
-    Controller {
-        id: controller
+        QtQuickMarkdownItem {
+            id: editor
+            source: "/Users/pikachu/Documents/MyNotes/workshop/jTioZzs/index.md"
+            x: 305
+            width: parent.width - 308
+            height: parent.height
+        }
+        Controller {
+            id: controller
+        }
+        SettingDialog {
+            id: settingDialog
+            visible: false
+            anchors.centerIn: parent
+        }
+        Keys.onPressed: {
+            if (event.key === Qt.Key_Comma && event.modifiers === Qt.ControlModifier) {
+                console.log('show settings dialong')
+                settingDialog.visible = true
+                event.accepted = true;
+            }
+        }
     }
 
     Component.onCompleted: {

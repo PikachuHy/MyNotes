@@ -159,6 +159,7 @@ else ()
             desktop/main.cpp
             desktop/qml/qml.qrc
             desktop/Controller.cpp desktop/Controller.h
+            desktop/SettingDialogController.cpp desktop/SettingDialogController.h
             )
     target_link_libraries(MyNotes PRIVATE libMyNotes
             Qt${QT_VERSION_MAJOR}::Quick
