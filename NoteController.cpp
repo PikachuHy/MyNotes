@@ -139,3 +139,28 @@ void NoteController::trashNote(QModelIndex index) {
     auto m_treeModel = BeanFactory::instance()->getBean<TreeModel>("treeModel");
     m_treeModel->removeNode(index);
 }
+
+QModelIndex NoteController::createNewFolder(QModelIndex index, QString folderName) {
+
+    if (!index.isValid()) {
+        qDebug() << "index is invalid";
+        return QModelIndex();
+    }
+    auto item = static_cast<NoteItem *>(index.internalPointer());
+    auto m_dbManager = BeanFactory::instance()->getBean<DbManager>("dbManager");
+    auto ret = m_dbManager->isPathExist(folderName, item->pathId());
+    if (ret) {
+        qDebug() << "path exist." << folderName;
+        return QModelIndex();
+    }
+    Path path(folderName, item->pathId());
+    ret = m_dbManager->addNewPath(path);
+    if (!ret) {
+        qDebug() << "save to db fail";
+        return QModelIndex();
+    }
+    auto newPathItem = new FolderItem(path, item);
+    auto m_treeModel = BeanFactory::instance()->getBean<TreeModel>("treeModel");
+    auto newNodeIndex = m_treeModel->addNewFolder(index, newPathItem);
+    return newNodeIndex;
+}

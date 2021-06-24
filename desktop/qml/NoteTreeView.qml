@@ -114,7 +114,7 @@ TreeView {
         MenuItem {
             text: "New Folder"
             onTriggered: {
-
+                newFolderNameDialog.show()
             }
         }
     }
@@ -147,6 +147,24 @@ TreeView {
             itemSelectionModel.setCurrentIndex(newIndex, 0)
             var path = controller.getNoteFullPath(newIndex)
             treeView.noteClicked(path)
+        }
+    }
+
+    InputDialog {
+        id: newFolderNameDialog
+        title: "New Note Name"
+        placeholderText: "Please input new note name"
+
+        onAccepted: {
+            var folderName = newFolderNameDialog.text
+            if (folderName.length === 0) {
+                root.showPassiveNotification('folder name cannot be empty', 800)
+                return
+            }
+
+            var newIndex = controller.createNewFolder(itemSelectionModel.currentIndex, folderName)
+
+            itemSelectionModel.setCurrentIndex(newIndex, 0)
         }
     }
 
