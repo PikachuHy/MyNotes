@@ -13,7 +13,8 @@ Dialog {
 //    radius: FishUI.Theme.mediumRadius
     implicitWidth: 500
     implicitHeight: 400
-    title: "Title"
+    title: "Setting"
+    anchors.centerIn: parent
     standardButtons: Dialog.Ok | Dialog.Cancel
     ColumnLayout {
         id: _mainLayout

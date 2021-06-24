@@ -11,6 +11,7 @@
 #include <QQmlContext>
 #include "QtQuickMarkdownItem.h"
 #include "Controller.h"
+#include "Clipboard.h"
 #include "SettingDialogController.h"
 #ifndef _DEBUG
 #include <QLoggingCategory>
@@ -39,6 +40,7 @@ void showQtQuickVersion(QApplication *app) {
     qmlRegisterType<Controller>("Controller", 1, 0, "Controller");
     qmlRegisterType<SettingDialogController>("Controller", 1, 0, "SettingDialogController");
     engine->rootContext()->setContextProperty("treeModel", m_treeModel);
+    engine->rootContext()->setContextProperty("clipboard", new Clipboard());
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(engine, &QQmlApplicationEngine::objectCreated,
                      app, [url](QObject *obj, const QUrl &objUrl) {

@@ -158,6 +158,7 @@ else ()
     target_sources(MyNotes PRIVATE
             desktop/main.cpp
             desktop/qml/qml.qrc
+            desktop/Clipboard.cpp desktop/Clipboard.h
             desktop/Controller.cpp desktop/Controller.h
             desktop/SettingDialogController.cpp desktop/SettingDialogController.h
             )

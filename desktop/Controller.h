@@ -12,6 +12,9 @@ Q_OBJECT
 public:
     Q_INVOKABLE bool isNote(QModelIndex index);
     Q_INVOKABLE QString getNoteFullPath(QModelIndex index);
+    Q_INVOKABLE QString lastOpenedNote();
+    Q_INVOKABLE void setLastOpenedNote(QString path);
+    Q_INVOKABLE void openUrl(QString url);
 private:
 };
 

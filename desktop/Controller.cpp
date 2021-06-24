@@ -4,7 +4,10 @@
 
 #include "Controller.h"
 #include "TreeItem.h"
+#include "Settings.h"
 #include <QStandardPaths>
+#include <QDesktopServices>
+#include <QUrl>
 bool Controller::isNote(QModelIndex index) {
     if (!index.isValid()) {
         return false;
@@ -29,4 +32,16 @@ QString Controller::getNoteFullPath(QModelIndex index) {
     auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
     auto notePath = docPath + "/MyNotes/workshop/" + item->path() + "/index.md";
     return notePath;
+}
+
+QString Controller::lastOpenedNote() {
+    return Settings::instance()->lastOpenNotePath;
+}
+
+void Controller::setLastOpenedNote(QString path) {
+    Settings::instance()->lastOpenNotePath = path;
+}
+
+void Controller::openUrl(QString url) {
+    QDesktopServices::openUrl(QUrl(url));
 }
