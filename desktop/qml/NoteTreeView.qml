@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 1.4
-import QtQuick.Dialogs 1.3
+import QtQuick.Controls 2.15 as Ctrl2
+import FishUI 1.0 as FishUI
 import Controller 1.0
 import QtQml.Models 2.15
 
@@ -123,25 +124,41 @@ TreeView {
             }
         }
     }
-    Dialog {
+    Ctrl2.Dialog {
         id: newNoteNameDialog
         title: "New Note Name"
-        TextField {
+        standardButtons: Ctrl2.Dialog.Ok | Ctrl2.Dialog.Cancel
+        anchors.centerIn: parent
+        Ctrl2.TextField {
             id: newNoteNameTextField
+            focus: true
             anchors.fill: parent
-
+            placeholderText: "Please input new note name"
         }
-        onAccepted: {
 
+        onAccepted: {
+            var noteName = newNoteNameTextField.text
+            if (noteName.length === 0) {
+                root.showPassiveNotification('note name cannot be empty', 800)
+                return
+            }
+
+            var pathId = controller.getPathId(itemSelectionModel.currentIndex)
+            var newIndex = controller.createNewNote(itemSelectionModel.currentIndex, noteName)
+
+            itemSelectionModel.setCurrentIndex(newIndex, 0)
+            var path = controller.getNoteFullPath(newIndex)
+            treeView.noteClicked(path)
         }
 
         function show() {
             newNoteNameTextField.text = ""
             newNoteNameDialog.visible = true
+            // TODO: 如何让光标默认选中输入框
         }
     }
 
-    Controller {
+    NoteController {
         id: controller
     }
 }

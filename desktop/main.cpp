@@ -11,8 +11,10 @@
 #include <QQmlContext>
 #include "QtQuickMarkdownItem.h"
 #include "Controller.h"
+#include "NoteController.h"
 #include "Clipboard.h"
 #include "SettingDialogController.h"
+#include "BeanFactory.h"
 #ifndef _DEBUG
 #include <QLoggingCategory>
 #include <Logger.h>
@@ -35,9 +37,12 @@ void showQtQuickVersion(QApplication *app) {
     }
     auto m_dbManager = new DbManager(m_notesPath);
     auto m_treeModel = new TreeModel(m_notesPath, m_dbManager);
+    BeanFactory::instance()->registerBean("dbManager", m_dbManager);
+    BeanFactory::instance()->registerBean("treeModel", m_treeModel);
     auto engine = new QQmlApplicationEngine();
     qmlRegisterType<QtQuickMarkdownItem>("cn.net.pikachu.control", 1, 0, "QtQuickMarkdownItem");
     qmlRegisterType<Controller>("Controller", 1, 0, "Controller");
+    qmlRegisterType<NoteController>("Controller", 1, 0, "NoteController");
     qmlRegisterType<SettingDialogController>("Controller", 1, 0, "SettingDialogController");
     engine->rootContext()->setContextProperty("treeModel", m_treeModel);
     engine->rootContext()->setContextProperty("clipboard", new Clipboard());

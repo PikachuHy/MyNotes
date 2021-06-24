@@ -100,4 +100,13 @@ Window {
             }
         }
     }
+    Dialog {
+        id: newNoteDialg
+        title: "New Note"
+        anchors.centerIn: parent
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        TextEdit {
+
+        }
+    }
 }
