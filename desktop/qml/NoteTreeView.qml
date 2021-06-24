@@ -110,6 +110,13 @@ TreeView {
                 newNoteNameDialog.show()
             }
         }
+
+        MenuItem {
+            text: "New Folder"
+            onTriggered: {
+
+            }
+        }
     }
     Menu {
         id: noteMenu
@@ -122,22 +129,13 @@ TreeView {
             }
         }
     }
-    Ctrl2.Dialog {
+    InputDialog {
         id: newNoteNameDialog
         title: "New Note Name"
-        standardButtons: Ctrl2.Dialog.Ok | Ctrl2.Dialog.Cancel
-        anchors.centerIn: parent
-        focus: true
-        Ctrl2.TextField {
-            id: newNoteNameTextField
-            focus: true
-            anchors.fill: parent
-            placeholderText: "Please input new note name"
-            // TODO: 按回车，等同于点击OK
-        }
+        placeholderText: "Please input new note name"
 
         onAccepted: {
-            var noteName = newNoteNameTextField.text
+            var noteName = newNoteNameDialog.text
             if (noteName.length === 0) {
                 root.showPassiveNotification('note name cannot be empty', 800)
                 return
@@ -149,11 +147,6 @@ TreeView {
             itemSelectionModel.setCurrentIndex(newIndex, 0)
             var path = controller.getNoteFullPath(newIndex)
             treeView.noteClicked(path)
-        }
-
-        function show() {
-            newNoteNameTextField.text = ""
-            newNoteNameDialog.visible = true
         }
     }
 

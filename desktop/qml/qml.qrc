@@ -3,5 +3,6 @@
         <file>main.qml</file>
         <file>NoteTreeView.qml</file>
         <file>SettingDialog.qml</file>
+        <file>InputDialog.qml</file>
     </qresource>
 </RCC>
