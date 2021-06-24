@@ -22,6 +22,18 @@ QString noteRealPath(const Note& note) {
     return QString("%1/MyNotes/workshop/%2/index.md").arg(docPath, note.strId());
 }
 
+inline QString workshopPath() {
+    auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
+    return QString("%1/MyNotes/workshop/").arg(docPath);
+}
+inline QString tmpPath() {
+    auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
+    return QString("%1/MyNotes/tmp/").arg(docPath);
+}
+inline QString trashPath() {
+    auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
+    return QString("%1/MyNotes/trash/").arg(docPath);
+}
 NoteController::NoteController(QObject *parent) : QObject(parent) {
 
 }
@@ -100,4 +112,30 @@ int NoteController::getPathId(QModelIndex index) {
         return 0;
     }
     return item->pathId();
+}
+
+void NoteController::trashNote(QModelIndex index) {
+    if (!index.isValid()) {
+        qDebug() << "index is invalid";
+        return;
+    }
+    auto item = static_cast<NoteItem *>(index.internalPointer());
+    auto m_dbManager = BeanFactory::instance()->getBean<DbManager>("dbManager");
+    int noteId = item->note().id();
+    qDebug() << "trash note id:" << noteId;
+    auto ret = m_dbManager->removeNote(noteId);
+    if (!ret) {
+        qDebug() << "trash note fail";
+        return;
+    }
+    const QString noteOldPath = workshopPath() + item->note().strId();
+    QString noteTrashPath = trashPath() + item->note().strId();
+    qDebug() << "trash" << noteOldPath << "to" << noteTrashPath;
+    ret = QDir().rename(noteOldPath, noteTrashPath);
+    if (!ret) {
+        qDebug() << "trash" << noteOldPath << "fail";
+        return;
+    }
+    auto m_treeModel = BeanFactory::instance()->getBean<TreeModel>("treeModel");
+    m_treeModel->removeNode(index);
 }

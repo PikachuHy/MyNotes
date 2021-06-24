@@ -11,6 +11,7 @@ public:
     explicit NoteController(QObject *parent = nullptr);
 
     Q_INVOKABLE QModelIndex createNewNote(QModelIndex index, QString noteName);
+    Q_INVOKABLE void trashNote(QModelIndex index);
     Q_INVOKABLE bool isNote(QModelIndex index);
     Q_INVOKABLE QString getNoteFullPath(QModelIndex index);
     Q_INVOKABLE int getPathId(QModelIndex index);

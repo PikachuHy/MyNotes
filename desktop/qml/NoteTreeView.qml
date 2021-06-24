@@ -115,12 +115,10 @@ TreeView {
         id: noteMenu
 
         MenuItem {
-            text: "Delete"
+            text: "Trash Note"
             onTriggered: {
-                console.log('delete note')
-                var path = controller.getNoteFullPath(
-                            itemSelectionModel.currentIndex)
-                console.log(path)
+                console.log('transh note')
+                controller.trashNote(itemSelectionModel.currentIndex);
             }
         }
     }
@@ -135,6 +133,7 @@ TreeView {
             focus: true
             anchors.fill: parent
             placeholderText: "Please input new note name"
+            // TODO: 按回车，等同于点击OK
         }
 
         onAccepted: {
