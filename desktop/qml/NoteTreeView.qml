@@ -117,6 +117,13 @@ TreeView {
                 newFolderNameDialog.show()
             }
         }
+
+        MenuItem {
+            text: "Trash Folder"
+            onTriggered: {
+                controller.trashFolder(itemSelectionModel.currentIndex)
+            }
+        }
     }
     Menu {
         id: noteMenu

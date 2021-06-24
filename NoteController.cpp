@@ -164,3 +164,19 @@ QModelIndex NoteController::createNewFolder(QModelIndex index, QString folderNam
     auto newNodeIndex = m_treeModel->addNewFolder(index, newPathItem);
     return newNodeIndex;
 }
+
+void NoteController::trashFolder(QModelIndex index) {
+    if (!index.isValid()) {
+        return;
+    }
+    auto item = static_cast<FolderItem *>(index.internalPointer());
+    auto m_dbManager = BeanFactory::instance()->getBean<DbManager>("dbManager");
+    auto ret = m_dbManager->removePath(item->path().id());
+    if (!ret) {
+        qDebug() << "trash path fail";
+        return;
+    }
+    auto m_treeModel = BeanFactory::instance()->getBean<TreeModel>("treeModel");
+    m_treeModel->removeNode(index);
+    qDebug() << "trash" << item->path().name();
+}
