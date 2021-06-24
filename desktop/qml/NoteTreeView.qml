@@ -129,6 +129,7 @@ TreeView {
         title: "New Note Name"
         standardButtons: Ctrl2.Dialog.Ok | Ctrl2.Dialog.Cancel
         anchors.centerIn: parent
+        focus: true
         Ctrl2.TextField {
             id: newNoteNameTextField
             focus: true
@@ -154,7 +155,6 @@ TreeView {
         function show() {
             newNoteNameTextField.text = ""
             newNoteNameDialog.visible = true
-            // TODO: 如何让光标默认选中输入框
         }
     }
 
