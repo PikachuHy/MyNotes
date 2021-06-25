@@ -9,6 +9,7 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <QModelIndex>
+#include <QProcess>
 
 #include "DbManager.h"
 #include "DbModel.h"
@@ -179,4 +180,35 @@ void NoteController::trashFolder(QModelIndex index) {
     auto m_treeModel = BeanFactory::instance()->getBean<TreeModel>("treeModel");
     m_treeModel->removeNode(index);
     qDebug() << "trash" << item->path().name();
+}
+
+void NoteController::openInTypora(const QString &path) {
+    qDebug() << "open in typora:" << path;
+#ifdef Q_OS_WIN
+    QStringList pathList;
+    QString typoraPath = Settings::instance()->typoraPath;
+    pathList << typoraPath;
+    pathList << "C:\\Program Files\\Typora\\Typora.exe";
+    pathList << "C:\\Program Files (x86)\\Typora\\Typora.exe";
+    pathList << "D:\\typora\\Typora\\Typora.exe";
+    QString exePath;
+    bool exeFind = false;
+    for(auto path: pathList) {
+        if (QFile(path).exists()) {
+            exeFind = true;
+            exePath = path;
+        }
+    }
+    if (!exeFind) {
+        showErrorDialog("Please install Typora first.");
+    } else {
+        QStringList cmd;
+        cmd << notePath;
+        QProcess::startDetached(exePath,cmd);
+    }
+#else
+    QStringList cmd;
+    cmd << "-a" << "typora" << path;
+    QProcess::startDetached("open",cmd);
+#endif
 }

@@ -17,6 +17,7 @@ public:
     Q_INVOKABLE bool isNote(QModelIndex index);
     Q_INVOKABLE QString getNoteFullPath(QModelIndex index);
     Q_INVOKABLE int getPathId(QModelIndex index);
+    Q_INVOKABLE void openInTypora(const QString& path);
 private:
 };
 

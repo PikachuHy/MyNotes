@@ -9,6 +9,7 @@ TreeView {
     id: treeView
     width: 400
     height: parent.height
+    property bool isFirstClickNote: true
     signal noteClicked(string path)
     TableViewColumn {
         title: "Name"
@@ -39,6 +40,17 @@ TreeView {
 //                parent.color = "transparent"
 //            }
 //        }
+        Keys.onPressed: {
+            if (event.key === Qt.Key_E) {
+                console.log('press E')
+                var index = itemSelectionModel.currentIndex
+                if (controller.isNote(index)) {
+                    var path = controller.getNoteFullPath(index)
+                    console.log('path', path)
+                    controller.openInTypora(path)
+                }
+            }
+        }
     }
     itemDelegate: Item {
         // color: styleData.selected ? "#CDE8FF" : "transparent"
@@ -74,6 +86,10 @@ TreeView {
                     if (controller.isNote(index)) {
                         var path = controller.getNoteFullPath(index)
                         treeView.noteClicked(path)
+                        if (treeView.isFirstClickNote) {
+                            treeView.isFirstClickNote = false
+                            root.showPassiveNotification('press E open in Typora', 800)
+                        }
                     } else {
                         if (isExpanded(index)) {
                             collapse(index)
@@ -172,6 +188,18 @@ TreeView {
             var newIndex = controller.createNewFolder(itemSelectionModel.currentIndex, folderName)
 
             itemSelectionModel.setCurrentIndex(newIndex, 0)
+        }
+    }
+    Keys.onPressed: {
+        if (event.key === Qt.Key_E) {
+            console.log('press E')
+            var index = itemSelectionModel.currentIndex
+            if (controller.isNote(index)) {
+                var path = controller.getNoteFullPath(index)
+                console.log('path', path)
+                controller.openInTypora(path)
+                event.accepted = true
+            }
         }
     }
 
