@@ -151,6 +151,13 @@ TreeView {
                 controller.trashNote(itemSelectionModel.currentIndex);
             }
         }
+
+        MenuItem {
+            text: "Open In Typora"
+            onTriggered: {
+                treeView.openNoteInTypora()
+            }
+        }
     }
     InputDialog {
         id: newNoteNameDialog
@@ -200,6 +207,15 @@ TreeView {
                 controller.openInTypora(path)
                 event.accepted = true
             }
+        }
+    }
+    function openNoteInTypora() {
+        var index = itemSelectionModel.currentIndex
+        if (controller.isNote(index)) {
+            var path = controller.getNoteFullPath(index)
+            console.log('path', path)
+            controller.openInTypora(path)
+            event.accepted = true
         }
     }
 
