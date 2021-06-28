@@ -193,18 +193,18 @@ void NoteController::openInTypora(const QString &path) {
     pathList << "D:\\typora\\Typora\\Typora.exe";
     QString exePath;
     bool exeFind = false;
-    for(auto path: pathList) {
-        if (QFile(path).exists()) {
+    for (auto candidatePath: pathList) {
+        if (QFile(candidatePath).exists()) {
             exeFind = true;
-            exePath = path;
+            exePath = candidatePath;
         }
     }
     if (!exeFind) {
-        showErrorDialog("Please install Typora first.");
+        qWarning() << "Please install Typora first.";
     } else {
         QStringList cmd;
-        cmd << notePath;
-        QProcess::startDetached(exePath,cmd);
+        cmd << path;
+        QProcess::startDetached(exePath, cmd);
     }
 #else
     QStringList cmd;
