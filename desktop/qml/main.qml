@@ -87,6 +87,11 @@ Window {
         editor.height = root.height
         editor.path = controller.lastOpenedNote()
         editor.source = controller.lastOpenedNote()
+        var winRect = controller.lastWindowRect()
+        root.x = winRect.x
+        root.y = winRect.y
+        root.width = winRect.width
+        root.height = winRect.height
     }
     Popup {
         id: previewImagePopup
