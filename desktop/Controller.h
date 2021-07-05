@@ -11,11 +11,17 @@
 class Controller: public QObject {
 Q_OBJECT
 public:
+    Controller(QObject *parent = nullptr);
+
     Q_INVOKABLE QString lastOpenedNote();
     Q_INVOKABLE void setLastOpenedNote(QString path);
     Q_INVOKABLE void openUrl(QString url);
     Q_INVOKABLE QRect lastWindowRect();
     Q_INVOKABLE void setLastWindowRect(QRect rect);
+    Q_INVOKABLE void watchNote(const QString& path);
+
+signals:
+    void noteChanged(QString path);
 private:
 };
 

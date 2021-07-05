@@ -215,7 +215,6 @@ TreeView {
             var path = controller.getNoteFullPath(index)
             console.log('path', path)
             controller.openInTypora(path)
-            event.accepted = true
         }
     }
 

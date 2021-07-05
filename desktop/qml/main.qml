@@ -19,10 +19,8 @@ Window {
         NoteTreeView {
             width: 300
             height: parent.height
-            onNoteClicked: {
-                editor.path = path
-                editor.source = path
-                controller.setLastOpenedNote(path)
+            onNoteClicked: function(path) {
+                loadNote(path)
             }
         }
         ScrollView {
@@ -56,6 +54,11 @@ Window {
         }
         Controller {
             id: controller
+            onNoteChanged: function (path) {
+                if (path === editor.path) {
+                    loadNote(path)
+                }
+            }
         }
         SettingDialog {
             id: settingDialog
@@ -102,10 +105,17 @@ Window {
         internal.passiveNotification.showNotification(message, timeout,
                                                       actionText, callBack)
     }
+    function loadNote(path) {
+        console.log('load path', path)
+        editor.path = path
+        editor.source = path
+        controller.watchNote(path)
+    }
+
     Component.onCompleted: {
         editor.height = root.height
-        editor.path = controller.lastOpenedNote()
-        editor.source = controller.lastOpenedNote()
+        var path = controller.lastOpenedNote()
+        loadNote(path)
     }
     Popup {
         id: previewImagePopup

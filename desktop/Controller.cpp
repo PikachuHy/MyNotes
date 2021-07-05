@@ -6,11 +6,21 @@
 #include "TreeItem.h"
 #include "Settings.h"
 #include "TreeItem.h"
+#include "BeanFactory.h"
 
 #include <QStandardPaths>
 #include <QDesktopServices>
 #include <QUrl>
 #include <QDebug>
+#include <QFileSystemWatcher>
+
+Controller::Controller(QObject *parent) : QObject(parent) {
+    auto fileSystemWatcher = BeanFactory::instance()->getBean<QFileSystemWatcher>("fileSystemWatcher");
+    connect(fileSystemWatcher, &QFileSystemWatcher::fileChanged, this, [this](const QString &path){
+        emit noteChanged(path);
+    });
+}
+
 
 QString Controller::lastOpenedNote() {
     return Settings::instance()->lastOpenNotePath;
@@ -32,4 +42,12 @@ QRect Controller::lastWindowRect() {
 
 void Controller::setLastWindowRect(QRect rect) {
     Settings::instance()->mainWindowGeometry = rect;
+}
+
+void Controller::watchNote(const QString &path) {
+    auto fileSystemWatcher = BeanFactory::instance()->getBean<QFileSystemWatcher>("fileSystemWatcher");
+    bool ret = fileSystemWatcher->addPath(path);
+    if (!ret) {
+        qWarning() << "fileSystemWatcher.addPath error: " << path;
+    }
 }

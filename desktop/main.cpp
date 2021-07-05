@@ -15,6 +15,7 @@
 #include "Clipboard.h"
 #include "SettingDialogController.h"
 #include "BeanFactory.h"
+#include <QFileSystemWatcher>
 #ifndef _DEBUG
 #include <QLoggingCategory>
 #include <Logger.h>
@@ -37,8 +38,10 @@ void showQtQuickVersion(QApplication *app) {
     }
     auto m_dbManager = new DbManager(m_notesPath);
     auto m_treeModel = new TreeModel(m_notesPath, m_dbManager);
+    auto fileSystemWatcher = new QFileSystemWatcher();
     BeanFactory::instance()->registerBean("dbManager", m_dbManager);
     BeanFactory::instance()->registerBean("treeModel", m_treeModel);
+    BeanFactory::instance()->registerBean("fileSystemWatcher", fileSystemWatcher);
     auto engine = new QQmlApplicationEngine();
     qmlRegisterType<QtQuickMarkdownItem>("cn.net.pikachu.control", 1, 0, "QtQuickMarkdownItem");
     qmlRegisterType<Controller>("Controller", 1, 0, "Controller");
