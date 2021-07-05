@@ -29,3 +29,7 @@ QRect Controller::lastWindowRect() {
     qDebug() << "last window size:" << rect;
     return rect;
 }
+
+void Controller::setLastWindowRect(QRect rect) {
+    Settings::instance()->mainWindowGeometry = rect;
+}

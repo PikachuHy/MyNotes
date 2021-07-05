@@ -6,8 +6,10 @@ import Controller 1.0
 
 Window {
     id: root
-    width: 800
-    height: 600
+    x: controller.lastWindowRect().x
+    y: controller.lastWindowRect().y
+    width: controller.lastWindowRect().width
+    height: controller.lastWindowRect().height
     title: "MyNotes"
     visible: true
 
@@ -73,6 +75,23 @@ Window {
         id: internal
         property QtObject passiveNotification
     }
+    onXChanged: {
+        saveNewWindowGeometry()
+    }
+    onYChanged: {
+        saveNewWindowGeometry()
+    }
+    onWidthChanged: {
+        saveNewWindowGeometry()
+    }
+    onHeightChanged: {
+        saveNewWindowGeometry()
+    }
+    function saveNewWindowGeometry() {
+        var rect = Qt.rect(root.x, root.y, root.width, root.height)
+        console.log(rect)
+        controller.setLastWindowRect(rect)
+    }
 
     function showPassiveNotification(message, timeout, actionText, callBack) {
         if (!internal.passiveNotification) {
@@ -87,11 +106,6 @@ Window {
         editor.height = root.height
         editor.path = controller.lastOpenedNote()
         editor.source = controller.lastOpenedNote()
-        var winRect = controller.lastWindowRect()
-        root.x = winRect.x
-        root.y = winRect.y
-        root.width = winRect.width
-        root.height = winRect.height
     }
     Popup {
         id: previewImagePopup

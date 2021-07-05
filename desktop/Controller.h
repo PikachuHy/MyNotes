@@ -15,6 +15,7 @@ public:
     Q_INVOKABLE void setLastOpenedNote(QString path);
     Q_INVOKABLE void openUrl(QString url);
     Q_INVOKABLE QRect lastWindowRect();
+    Q_INVOKABLE void setLastWindowRect(QRect rect);
 private:
 };
 
