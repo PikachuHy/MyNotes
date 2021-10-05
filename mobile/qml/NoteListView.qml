@@ -26,7 +26,7 @@ Item {
                         var NoteViewPage = Qt.createComponent(
                                     "NoteView.qml").createObject(root, {
                                                                      "x": 0,
-                                                                     "y": 0,
+                                                                     "y": noteListView.y,
                                                                      "width": noteListView.width,
                                                                      "height": noteListView.height,
                                                                      "source": model.path,
@@ -37,7 +37,7 @@ Item {
                         var NoteListViewPage = Qt.createComponent(
                                     "NoteListView.qml").createObject(root, {
                                                                          "x": 0,
-                                                                         "y": 0,
+                                                                         "y": noteListView.y,
                                                                          "width": noteListView.width,
                                                                          "height": noteListView.height,
                                                                          "pathId": model.pathId

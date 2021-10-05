@@ -23,9 +23,41 @@ Window {
             }
         }
     }
+    Rectangle {
+        id: title
+        width: parent.width
+        height: 32
+
+        MouseArea {
+            width: parent.width / 3
+            height: parent.height
+            anchors.left: parent.left
+            Image {
+                width: 32
+                height: 32
+                source: "qrc:/icon/return_64x64.png"
+                anchors.left: parent.left
+            }
+            onClicked: {
+                console.log('return')
+                if (pageStack.length === 1) {
+                    console.log('no page to destroy')
+                } else {
+                    pageStack.pop().destroy()
+                    pageStack[pageStack.length - 1].visible = true
+                }
+            }
+        }
+
+        Text {
+            text: qsTr("MyNotes")
+            anchors.centerIn: parent
+        }
+    }
 
     ListView {
         id: mainListView
+        y: title.height
         width: parent.width
         height: parent.height
 
@@ -46,7 +78,7 @@ Window {
                     var NoteListViewPage = Qt.createComponent(
                                 "NoteListView.qml").createObject(root, {
                                                                      "x": 0,
-                                                                     "y": 0,
+                                                                     "y": mainListView.y,
                                                                      "width": root.width,
                                                                      "height": root.height,
                                                                      "pathId": 0
@@ -56,6 +88,7 @@ Window {
             }
         }
     }
+
     Component.onCompleted: {
         pageStack.push(mainListView)
         var modelData = [{

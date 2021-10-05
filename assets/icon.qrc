@@ -18,5 +18,6 @@
         <file>icon/attachment_64x64.png</file>
         <file>icon/folder_64x64.png</file>
         <file>icon/note_64x64.png</file>
+        <file>icon/return_64x64.png</file>
     </qresource>
 </RCC>
