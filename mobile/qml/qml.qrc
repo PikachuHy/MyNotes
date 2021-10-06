@@ -4,5 +4,6 @@
         <file>NoteListView.qml</file>
         <file>NoteView.qml</file>
         <file>NoteListItem.qml</file>
+        <file>FileListView.qml</file>
     </qresource>
 </RCC>

@@ -119,13 +119,15 @@ if (UPDATE_TS)
 endif ()
 option(BUILD_WITH_QT_QUICK "build with qt quick" ON)
 if (BUILD_WITH_QT_QUICK)
-    find_package(QT NAMES Qt6 Qt5 COMPONENTS Quick Qml REQUIRED)
-    find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Quick Qml REQUIRED)
+    find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick Qml REQUIRED)
+    find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick Qml REQUIRED)
     if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         qt_add_executable(MyNotesQtQuick
                 MANUAL_FINALIZATION
                 mobile/main.cpp
                 mobile/KeyFilter.cpp mobile/KeyFilter.h
+                mobile/FileSystem.cpp mobile/FileSystem.h
+                mobile/Controller.cpp mobile/Controller.h
                 mobile/qml/qml.qrc
                 )
         qt_finalize_executable(MyNotesQtQuick)
@@ -133,6 +135,8 @@ if (BUILD_WITH_QT_QUICK)
         add_executable(MyNotesQtQuick
                 mobile/main.cpp
                 mobile/KeyFilter.cpp mobile/KeyFilter.h
+                mobile/FileSystem.cpp mobile/FileSystem.h
+                mobile/Controller.cpp mobile/Controller.h
                 mobile/qml/qml.qrc)
     endif ()
     set_target_properties(MyNotesQtQuick PROPERTIES AUTOMOC ON)
@@ -142,6 +146,9 @@ if (BUILD_WITH_QT_QUICK)
             QtQuickMarkdownItem
             Qt${QT_VERSION_MAJOR}::Quick
             Qt${QT_VERSION_MAJOR}::Qml
+            PRIVATE
+            Qt${QT_VERSION_MAJOR}::Core
+            Qt${QT_VERSION_MAJOR}::CorePrivate
             )
 endif ()
 if (ANDROID)

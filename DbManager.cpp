@@ -8,24 +8,40 @@
 #include <QtWidgets>
 #include <QtSql>
 #include <QThread>
+#include <QSqlError>
 DbManager::DbManager(const QString& dataPath, QObject *parent): QObject(parent) {
     QString threadId = QString::number((long long)QThread::currentThread(), 16);
     m_connectionName = "db_connect_" + threadId;
     db = QSqlDatabase::addDatabase("QSQLITE", m_connectionName);
 //    db = QSqlDatabase::addDatabase("QSQLITE");
-    QString dbPath = dataPath+"db";
+    QString dbPath = dataPath+"/db";
     if (!QDir(dbPath).exists()) {
         qDebug() << "mkdir" << dbPath;
         QDir().mkdir(dbPath);
     }
-    QString database = dataPath+"db/sqlite.db";
+    QString database = dataPath+"/db/sqlite.db";
+    if (QFile(database).exists()) {
+        qDebug() << "file exist";
+    } else {
+        qDebug() << "file not exist";
+    }
+    qDebug() << "database:" << database;
     db.setDatabaseName(database);
     if (!db.open()) {
-        QMessageBox::critical(nullptr, tr("Cannot open database"),
-                              tr("Unable to establish a database connection.\n"
+        auto err = db.lastError();
+        qDebug() << "db err:" << err;
+
+        QString errMsg = tr("Unable to establish a database connection.\n"
                                  "This example needs SQLite support. Please read "
                                  "the Qt SQL driver documentation for information how "
-                                 "to build it."), QMessageBox::Cancel);
+                                 "to build it.\n"
+                                 "-- Current error --\n"
+                                 "code: %1\n"
+                                 "database: %2\n"
+                                 "driver: %3\n")
+                              .arg(err.nativeErrorCode(), err.databaseText(), err.driverText());
+
+        QMessageBox::critical(nullptr, tr("Cannot open database"), errMsg, QMessageBox::Cancel);
         return;
     }
      execDbSetupSql(":/sql/create_table_note.sql");

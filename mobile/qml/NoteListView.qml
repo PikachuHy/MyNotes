@@ -24,22 +24,22 @@ Item {
                         console.log('load note', model.path)
                         console.log(model.basePath)
                         var NoteViewPage = Qt.createComponent(
-                                    "NoteView.qml").createObject(root, {
+                                    "NoteView.qml").createObject(listContainer, {
                                                                      "x": 0,
-                                                                     "y": noteListView.y,
-                                                                     "width": noteListView.width,
-                                                                     "height": noteListView.height,
+                                                                     "y": 0,
+                                                                     "width": listContainer.width,
+                                                                     "height": listContainer.height,
                                                                      "source": model.path,
                                                                      "path": model.path
                                                                  })
                         root.pageStack.push(NoteViewPage)
                     } else {
                         var NoteListViewPage = Qt.createComponent(
-                                    "NoteListView.qml").createObject(root, {
+                                    "NoteListView.qml").createObject(listContainer, {
                                                                          "x": 0,
-                                                                         "y": noteListView.y,
-                                                                         "width": noteListView.width,
-                                                                         "height": noteListView.height,
+                                                                         "y": 0,
+                                                                         "width": listContainer.width,
+                                                                         "height": listContainer.height,
                                                                          "pathId": model.pathId
                                                                      })
                         root.pageStack.push(NoteListViewPage)

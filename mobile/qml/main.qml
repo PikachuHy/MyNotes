@@ -9,6 +9,7 @@ Window {
     visible: true
     title: qsTr("MyNotes")
     property var pageStack: []
+    property int titleHeight: 32
 
     Connections {
         target: $KeyFilter
@@ -24,9 +25,51 @@ Window {
         }
     }
     Rectangle {
+        id: listContainer
+        y: titleHeight
+        width: parent.width
+        height: parent.height - titleHeight
+
+        ListView {
+            id: mainListView
+            width: parent.width
+            height: parent.height
+
+            model: ListModel {
+                id: model2
+            }
+
+            delegate: NoteListItem {
+                width: root.width
+                name: model.name
+                icon: model.icon
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        console.log(model.name)
+                        console.log(model.icon)
+                        mainListView.visible = false
+                        var NoteListViewPage = Qt.createComponent(
+                                    "NoteListView.qml").createObject(listContainer, {
+                                                                         "x": 0,
+                                                                         "y": 0,
+                                                                         "width": listContainer.width,
+                                                                         "height": listContainer.height,
+                                                                         "pathId": 0
+                                                                     })
+                        pageStack.push(NoteListViewPage)
+                    }
+                }
+            }
+        }
+
+    }
+
+    Rectangle {
         id: title
         width: parent.width
-        height: 32
+        height: titleHeight
+        color: "#fff"
 
         MouseArea {
             width: parent.width / 3
@@ -53,39 +96,39 @@ Window {
             text: qsTr("MyNotes")
             anchors.centerIn: parent
         }
-    }
 
-    ListView {
-        id: mainListView
-        y: title.height
-        width: parent.width
-        height: parent.height
-
-        model: ListModel {
-            id: model2
-        }
-
-        delegate: NoteListItem {
-            width: root.width
-            name: model.name
-            icon: model.icon
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    console.log(model.name)
-                    console.log(model.icon)
-                    mainListView.visible = false
-                    var NoteListViewPage = Qt.createComponent(
-                                "NoteListView.qml").createObject(root, {
-                                                                     "x": 0,
-                                                                     "y": mainListView.y,
-                                                                     "width": root.width,
-                                                                     "height": root.height,
-                                                                     "pathId": 0
-                                                                 })
-                    pageStack.push(NoteListViewPage)
-                }
+        MouseArea {
+            width: parent.width / 3
+            height: parent.height
+            anchors.right: parent.right
+            Image {
+                width: 32
+                height: 32
+                source: "qrc:/icon/folder_64x64.png"
+                anchors.right: parent.right
             }
+            onClicked: {
+                console.log('choose folder')
+                mainListView.visible = false
+                var FileListViewPage = Qt.createComponent(
+                            "FileListView.qml").createObject(listContainer, {
+                                                                 "x": 0,
+                                                                 "y": 0,
+                                                                 "width": listContainer.width,
+                                                                 "height": listContainer.height,
+                                                                 "path": $FileSystem.defaultPath()
+                                                             })
+                pageStack.push(FileListViewPage)
+            }
+        }
+    }
+    Column {
+        anchors.bottom: parent.bottom
+        Text {
+            text: $Controller.noteDataPath()
+        }
+        Text {
+            text: $Controller.configStorePath()
         }
     }
 

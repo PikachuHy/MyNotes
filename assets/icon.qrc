@@ -19,5 +19,6 @@
         <file>icon/folder_64x64.png</file>
         <file>icon/note_64x64.png</file>
         <file>icon/return_64x64.png</file>
+        <file>icon/check_64x64.png</file>
     </qresource>
 </RCC>
