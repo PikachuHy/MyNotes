@@ -7,7 +7,7 @@
 #include <QStandardPaths>
 #include <QFile>
 #include <QDir>
-
+#include <QDebug>
 
 QString Controller::noteDataPath() {
     QString path = Settings::instance()->noteDataPath;

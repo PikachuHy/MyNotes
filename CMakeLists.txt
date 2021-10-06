@@ -27,9 +27,10 @@ if (MSVC)
 endif ()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-add_library(libMyNotes "")
 if (ANDROID)
+    add_library(libMyNotes SHARED "")
 else ()
+    add_library(libMyNotes "")
     set_target_properties(libMyNotes PROPERTIES OUTPUT_NAME MyNotes)
 endif ()
 set_target_properties(libMyNotes PROPERTIES AUTOMOC ON)
@@ -121,8 +122,9 @@ option(BUILD_WITH_QT_QUICK "build with qt quick" ON)
 if (BUILD_WITH_QT_QUICK)
     find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick Qml REQUIRED)
     find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick Qml REQUIRED)
+    set(MyNotesQtQuick_TargetName MyNotesQtQuick)
     if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-        qt_add_executable(MyNotesQtQuick
+        qt_add_executable(${MyNotesQtQuick_TargetName}
                 MANUAL_FINALIZATION
                 mobile/main.cpp
                 mobile/KeyFilter.cpp mobile/KeyFilter.h
@@ -130,19 +132,29 @@ if (BUILD_WITH_QT_QUICK)
                 mobile/Controller.cpp mobile/Controller.h
                 mobile/qml/qml.qrc
                 )
-        qt_finalize_executable(MyNotesQtQuick)
+        qt_finalize_executable(${MyNotesQtQuick_TargetName})
     else ()
-        add_executable(MyNotesQtQuick
+        find_package(QT NAMES Qt6 Qt5 COMPONENTS AndroidExtras REQUIRED)
+        find_package(Qt${QT_VERSION_MAJOR} COMPONENTS AndroidExtras REQUIRED)
+        if(ANDROID)
+            # Qt5.15 默认用的是项目名.so，所以改一下名字
+            set(MyNotesQtQuick_TargetName MyNotes)
+            add_library(${MyNotesQtQuick_TargetName} SHARED "")
+        else()
+            add_executable(${MyNotesQtQuick_TargetName} "")
+        endif()
+        target_sources(${MyNotesQtQuick_TargetName} PRIVATE
                 mobile/main.cpp
                 mobile/KeyFilter.cpp mobile/KeyFilter.h
                 mobile/FileSystem.cpp mobile/FileSystem.h
                 mobile/Controller.cpp mobile/Controller.h
                 mobile/qml/qml.qrc)
+        target_link_libraries(${MyNotesQtQuick_TargetName} PUBLIC Qt${QT_VERSION_MAJOR}::AndroidExtras)
     endif ()
-    set_target_properties(MyNotesQtQuick PROPERTIES AUTOMOC ON)
-    set_target_properties(MyNotesQtQuick PROPERTIES AUTOUIC ON)
-    set_target_properties(MyNotesQtQuick PROPERTIES AUTORCC ON)
-    target_link_libraries(MyNotesQtQuick PUBLIC libMyNotes
+    set_target_properties(${MyNotesQtQuick_TargetName} PROPERTIES AUTOMOC ON)
+    set_target_properties(${MyNotesQtQuick_TargetName} PROPERTIES AUTOUIC ON)
+    set_target_properties(${MyNotesQtQuick_TargetName} PROPERTIES AUTORCC ON)
+    target_link_libraries(${MyNotesQtQuick_TargetName} PUBLIC libMyNotes
             QtQuickMarkdownItem
             Qt${QT_VERSION_MAJOR}::Quick
             Qt${QT_VERSION_MAJOR}::Qml

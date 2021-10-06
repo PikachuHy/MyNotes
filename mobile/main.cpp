@@ -16,8 +16,12 @@
 #include "KeyFilter.h"
 #include "FileSystem.h"
 #ifdef Q_OS_ANDROID
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QtAndroidExtras>
+#else
 #include <private/qandroidextras_p.h>
 #include <QFuture>
+#endif
 #endif
 int main(int argc, char *argv[])
 {
@@ -30,6 +34,17 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 #ifdef Q_OS_ANDROID
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    QString needPermission = QString("android.permission.WRITE_EXTERNAL_STORAGE");
+    auto result = QtAndroid::checkPermission(needPermission);
+    if(result == QtAndroid::PermissionResult::Denied){
+        QtAndroid::PermissionResultMap resultHash = QtAndroid::requestPermissionsSync(QStringList({needPermission}));
+        if(resultHash[needPermission] == QtAndroid::PermissionResult::Denied) {
+            qCritical() << "no permission:" << needPermission;
+            return 0;
+        }
+    }
+#else
     using namespace QtAndroidPrivate;
     auto result = checkPermission(QString("android.permission.WRITE_EXTERNAL_STORAGE"));
     if(result.result() == PermissionResult::Denied){
@@ -39,6 +54,7 @@ int main(int argc, char *argv[])
             qApp->exit(0);
         }
     }
+#endif
 #endif
     auto controller = new Controller();
     auto notesPath = controller->noteDataPath();

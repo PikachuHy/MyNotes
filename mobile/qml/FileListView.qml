@@ -1,7 +1,7 @@
-import QtQuick
-import QtQuick.Controls.Material
-import QtQuick.Controls
-import cn.net.pikachu.control
+import QtQuick 2.15
+import QtQuick.Controls.Material 2.15
+import QtQuick.Controls 2.15
+import cn.net.pikachu.control 1.0
 
 Item {
     id: fileListView
