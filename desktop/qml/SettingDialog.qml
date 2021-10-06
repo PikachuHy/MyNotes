@@ -1,7 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.12
-import FishUI 1.0 as FishUI
 import Controller 1.0
 Dialog {
 //    Layout.fillWidth: true
@@ -16,18 +15,19 @@ Dialog {
     title: "Setting"
     anchors.centerIn: parent
     standardButtons: Dialog.Ok | Dialog.Cancel
+    property int largeSpacing: 12
     ColumnLayout {
         id: _mainLayout
         anchors.fill: parent
-        anchors.leftMargin: FishUI.Units.largeSpacing * 1.5
-        anchors.rightMargin: FishUI.Units.largeSpacing * 1.5
-        anchors.topMargin: FishUI.Units.largeSpacing
-        anchors.bottomMargin: FishUI.Units.largeSpacing
+        anchors.leftMargin: largeSpacing * 1.5
+        anchors.rightMargin: largeSpacing * 1.5
+        anchors.topMargin: largeSpacing
+        anchors.bottomMargin: largeSpacing
 
         GridLayout {
             columns: 2
-            columnSpacing: FishUI.Units.largeSpacing * 1.5
-            rowSpacing: FishUI.Units.largeSpacing
+            columnSpacing: largeSpacing * 1.5
+            rowSpacing: largeSpacing
 
             Label {
                 text: qsTr("Render")
@@ -38,8 +38,8 @@ Dialog {
                 Layout.fillWidth: true
                 model: ["Web Engine", "Text Browser", "Qt Widget", "Qt Quick"]
 
-                leftPadding: FishUI.Units.largeSpacing
-                rightPadding: FishUI.Units.largeSpacing
+                leftPadding: largeSpacing
+                rightPadding: largeSpacing
                 topInset: 0
                 bottomInset: 0
                 onActivated: {

@@ -4,5 +4,6 @@
         <file>NoteTreeView.qml</file>
         <file>SettingDialog.qml</file>
         <file>InputDialog.qml</file>
+        <file>Toast.qml</file>
     </qresource>
 </RCC>

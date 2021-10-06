@@ -98,7 +98,7 @@ Window {
 
     function showPassiveNotification(message, timeout, actionText, callBack) {
         if (!internal.passiveNotification) {
-            var component = Qt.createComponent("qrc:/fishui/kit/Toast.qml")
+            var component = Qt.createComponent("qrc:/Toast.qml")
             internal.passiveNotification = component.createObject(root)
         }
 
