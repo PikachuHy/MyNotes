@@ -29,7 +29,14 @@
 #include "Utils.h"
 #include "DbManager.h"
 #include "TreeModel.h"
+
+#include "TreeModelAdaptor.h"
+#include <QQuickStyle>
+
 void showQtQuickVersion(QApplication *app) {
+    QQuickStyle::setStyle("Material");
+//    QQuickStyle::setStyle("Universal");
+//    QQuickStyle::setStyle("macOS");
     auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
     auto m_notesPath = docPath + "/MyNotes/";
     if (!QFile(m_notesPath).exists()) {
@@ -44,9 +51,12 @@ void showQtQuickVersion(QApplication *app) {
     BeanFactory::instance()->registerBean("fileSystemWatcher", fileSystemWatcher);
     auto engine = new QQmlApplicationEngine();
     qmlRegisterType<QtQuickMarkdownItem>("cn.net.pikachu.control", 1, 0, "QtQuickMarkdownItem");
+//    qmlRegisterType<TreeModelAdaptor>("cn.net.pikachu.control", 1, 0, "TreeModelAdaptor");
+    qmlRegisterType<TreeModelAdaptor>("cn.net.pikachu.control", 1, 0, "TreeModelAdaptor");
     qmlRegisterType<Controller>("Controller", 1, 0, "Controller");
     qmlRegisterType<NoteController>("Controller", 1, 0, "NoteController");
     qmlRegisterType<SettingDialogController>("Controller", 1, 0, "SettingDialogController");
+
     engine->rootContext()->setContextProperty("treeModel", m_treeModel);
     engine->rootContext()->setContextProperty("clipboard", new Clipboard());
     const QUrl url(QStringLiteral("qrc:/main.qml"));

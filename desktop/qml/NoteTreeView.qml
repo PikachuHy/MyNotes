@@ -1,119 +1,26 @@
 import QtQuick 2.15
-import QtQuick.Controls 1.4
-import QtQuick.Controls 2.15 as Ctrl2
+import QtQuick.Controls 2.15
 import Controller 1.0
-import QtQml.Models 2.15
 
 TreeView {
     id: treeView
-    width: 400
-    height: parent.height
-    property bool isFirstClickNote: true
     signal noteClicked(string path)
-    TableViewColumn {
-        title: "Name"
-        role: "text"
-        width: 400 - 2
-    }
-    headerVisible: false
-    frameVisible: false
-    selectionMode: SelectionMode.SingleSelection
-    selection: ItemSelectionModel {
-        id: itemSelectionModel
-        model: treeView.model
-    }
+    model2: treeModel
+    onItemClicked: index => {
+                       if (controller.isNote(index)) {
+                           treeView.noteClicked(
+                               controller.getNoteFullPath(index))
+                       }
+                   }
+    onItemRightClicked: index => {
 
-    rowDelegate: Rectangle {
-        height: 32
-        property color selectedColor: parent.activeFocus ? "transparent" : "#CDE8FF"
-        color: styleData.selected ? selectedColor : "transparent"
-        // color: styleData.hasActiveFocus ? "#CDE8FF" : "transparent"
-        // TODO: 如何实现hover?
-//        MouseArea {
-//            anchors.fill: parent
-//            hoverEnabled: true
-//            onEntered: {
-//                parent.color = "#CDE8FF"
-//            }
-//            onExited: {
-//                parent.color = "transparent"
-//            }
-//        }
-        Keys.onPressed: {
-            if (event.key === Qt.Key_E) {
-                console.log('press E')
-                var index = itemSelectionModel.currentIndex
-                if (controller.isNote(index)) {
-                    var path = controller.getNoteFullPath(index)
-                    console.log('path', path)
-                    controller.openInTypora(path)
-                }
-            }
-        }
-    }
-    itemDelegate: Item {
-        // color: styleData.selected ? "#CDE8FF" : "transparent"
-        Row {
-            width: parent.width - 10
-            spacing: 10
-            Image {
-                width: 32
-                height: 32
-                source: model === null ? "" : "qrc://" + model.iconPath
-            }
-
-            Text {
-                text: model === null ? "" : model.text
-                anchors.verticalCenter: parent.verticalCenter
-            }
-        }
-        MouseArea {
-            anchors.fill: parent
-
-                        acceptedButtons: Qt.LeftButton | Qt.RightButton
-
-            onClicked: {
-                var index = styleData.index
-                itemSelectionModel.setCurrentIndex(index, 0)
-                if (mouse.button === Qt.RightButton) {
-                    if (controller.isNote(index)) {
-                        noteMenu.popup()
-                    } else {
-                        menu.popup()
-                    }
-                } else {
-                    if (controller.isNote(index)) {
-                        var path = controller.getNoteFullPath(index)
-                        treeView.noteClicked(path)
-                        if (treeView.isFirstClickNote) {
-                            treeView.isFirstClickNote = false
-                            root.showPassiveNotification('press E open in Typora', 800)
+                            if (controller.isNote(index)) {
+                                noteMenu.popup()
+                            } else {
+                                menu.popup()
+                            }
                         }
-                    } else {
-                        if (isExpanded(index)) {
-                            collapse(index)
-                        } else {
-                            expand(index)
-                        }
-                    }
-                }
-            }
-        }
-    }
 
-    model: treeModel
-    onDoubleClicked: {
-        if (isExpanded(index)) {
-            collapse(index)
-        } else {
-            expand(index)
-        }
-    }
-    //    onClicked: {
-    //        console.log(index)
-    //        console.log(index.row, index.column, index.internalId)
-    //        treeView.clicked(index)
-    //    }
     Menu {
         id: menu
 
@@ -121,7 +28,7 @@ TreeView {
             text: "New Note"
             onTriggered: {
                 console.log('new note')
-                console.log(itemSelectionModel.currentIndex)
+                console.log(treeView.currentIndex)
                 newNoteNameDialog.show()
             }
         }
@@ -136,7 +43,7 @@ TreeView {
         MenuItem {
             text: "Trash Folder"
             onTriggered: {
-                controller.trashFolder(itemSelectionModel.currentIndex)
+                controller.trashFolder(treeView.currentIndex)
             }
         }
     }
@@ -147,7 +54,7 @@ TreeView {
             text: "Trash Note"
             onTriggered: {
                 console.log('transh note')
-                controller.trashNote(itemSelectionModel.currentIndex);
+                controller.trashNote(treeView.currentIndex)
             }
         }
 
@@ -170,10 +77,10 @@ TreeView {
                 return
             }
 
-            var pathId = controller.getPathId(itemSelectionModel.currentIndex)
-            var newIndex = controller.createNewNote(itemSelectionModel.currentIndex, noteName)
+            var pathId = controller.getPathId(treeView.currentIndex)
+            var newIndex = controller.createNewNote(treeView.currentIndex, noteName)
 
-            itemSelectionModel.setCurrentIndex(newIndex, 0)
+            treeView.setCurrentIndex(newIndex, 0)
             var path = controller.getNoteFullPath(newIndex)
             treeView.noteClicked(path)
         }
@@ -191,32 +98,20 @@ TreeView {
                 return
             }
 
-            var newIndex = controller.createNewFolder(itemSelectionModel.currentIndex, folderName)
+            var newIndex = controller.createNewFolder(
+                        treeView.currentIndex, folderName)
 
-            itemSelectionModel.setCurrentIndex(newIndex, 0)
+            treeView.setCurrentIndex(newIndex, 0)
         }
     }
-    Keys.onPressed: {
-        if (event.key === Qt.Key_E) {
-            console.log('press E')
-            var index = itemSelectionModel.currentIndex
+    function openNoteInTypora() {
+            var index = treeView.currentIndex
             if (controller.isNote(index)) {
                 var path = controller.getNoteFullPath(index)
                 console.log('path', path)
                 controller.openInTypora(path)
-                event.accepted = true
             }
         }
-    }
-    function openNoteInTypora() {
-        var index = itemSelectionModel.currentIndex
-        if (controller.isNote(index)) {
-            var path = controller.getNoteFullPath(index)
-            console.log('path', path)
-            controller.openInTypora(path)
-        }
-    }
-
     NoteController {
         id: controller
     }

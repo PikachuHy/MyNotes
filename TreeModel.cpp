@@ -90,6 +90,21 @@ QModelIndex TreeModel::parent(const QModelIndex &index) const {
     return createIndex(parentItem->row(), 0, parentItem);
 }
 
+QModelIndex TreeModel::sibling(int row, int column, const QModelIndex &idx) const
+{
+    if (!idx.isValid()) {
+        return QModelIndex();
+    }
+    auto parentIndex = idx.parent();
+    if (!parentIndex.isValid()) {
+        return createIndex(row, column, rootItem->child(row));
+    }
+    if (!hasIndex(row, column, idx))
+        return QModelIndex();
+    TreeItem *parentItem = static_cast<TreeItem *>(parentIndex.internalPointer());
+    return createIndex(row, column, parentItem->child(row));
+}
+
 int TreeModel::rowCount(const QModelIndex &parent) const {
     TreeItem *parentItem;
     if (parent.column() > 0)

@@ -32,6 +32,8 @@ public:
 
     QModelIndex parent(const QModelIndex &index) const override;
 
+    QModelIndex sibling(int row, int column, const QModelIndex &idx) const override;
+
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -49,8 +51,8 @@ public:
     void addWatchingNode(const QString& path);
 
     void removeWatchingNote(const QString& path);
-protected:
-    Q_INVOKABLE QHash<int, QByteArray> roleNames() const override;
+    Q_INVOKABLE
+    QHash<int, QByteArray> roleNames() const override;
 private:
     void setupModelData(TreeItem *parent);
     void buildFileTreeFromDb(int parentPathId, TreeItem* parentItem);

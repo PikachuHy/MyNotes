@@ -75,10 +75,11 @@ bool TreeItem::isFile() {
 int TreeItem::insertFolder(TreeItem *child) {
     int i = 0;
     for(auto item: m_childItems) {
-        if (QFileInfo(item->path()).isDir()) {
+        if (item->isFolderItem() || QFileInfo(item->path()).isDir()) {
             i++;
+        } else {
+            break;
         }
-        break;
     }
     m_childItems.insert(i, child);
     return i;

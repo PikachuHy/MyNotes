@@ -9,6 +9,8 @@
 #include <QtSql>
 #include <QThread>
 #include <QSqlError>
+#include <QFileInfo>
+
 DbManager::DbManager(const QString& dataPath, QObject *parent): QObject(parent) {
     QString threadId = QString::number((long long)QThread::currentThread(), 16);
     m_connectionName = "db_connect_" + threadId;
@@ -19,7 +21,10 @@ DbManager::DbManager(const QString& dataPath, QObject *parent): QObject(parent) 
         qDebug() << "mkdir" << dbPath;
         QDir().mkdir(dbPath);
     }
-    QString database = dataPath+"/db/sqlite.db";
+    QString database = dbPath+"/sqlite.db";
+    QFileInfo fileInfo(database);
+
+    qDebug() << database << "read:" << fileInfo.isReadable() << "write:" << fileInfo.isWritable();
     if (QFile(database).exists()) {
         qDebug() << "file exist";
     } else {

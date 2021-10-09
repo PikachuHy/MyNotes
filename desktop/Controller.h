@@ -19,7 +19,12 @@ public:
     Q_INVOKABLE QRect lastWindowRect();
     Q_INVOKABLE void setLastWindowRect(QRect rect);
     Q_INVOKABLE void watchNote(const QString& path);
+    Q_INVOKABLE QString notePathFromModelIndex(QModelIndex index);
+    Q_INVOKABLE bool isNoteItem(QModelIndex index);
 
+    Q_INVOKABLE QString noteDataPath();
+    Q_INVOKABLE void setNoteDataPath(QString path);
+    Q_INVOKABLE QString configStorePath();
 signals:
     void noteChanged(QString path);
 private:

@@ -57,9 +57,9 @@ endif ()
 #    endif()
 #endif()
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Sql Concurrent Network REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Sql Concurrent Network QuickControls2 REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS
-        Widgets Sql Concurrent Network
+        Widgets Sql Concurrent Network QuickControls2
         REQUIRED)
 if (USE_WEB_ENGINE_VIEW)
     find_package(QT NAMES Qt6 Qt5 COMPONENTS WebChannel Positioning REQUIRED)
@@ -120,8 +120,8 @@ if (UPDATE_TS)
 endif ()
 option(BUILD_WITH_QT_QUICK "build with qt quick" ON)
 if (BUILD_WITH_QT_QUICK)
-    find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick Qml REQUIRED)
-    find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick Qml REQUIRED)
+    find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick Qml QuickControls2 REQUIRED)
+    find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick Qml QuickControls2 REQUIRED)
     set(MyNotesQtQuick_TargetName MyNotesQtQuick)
     if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         qt_add_executable(${MyNotesQtQuick_TargetName}
@@ -182,6 +182,7 @@ else ()
             desktop/Clipboard.cpp desktop/Clipboard.h
             desktop/Controller.cpp desktop/Controller.h
             desktop/SettingDialogController.cpp desktop/SettingDialogController.h
+            desktop/TreeModelAdaptor.cpp desktop/TreeModelAdaptor.h
             )
     target_link_libraries(MyNotes PRIVATE libMyNotes
             Qt${QT_VERSION_MAJOR}::Quick
@@ -197,6 +198,7 @@ target_link_libraries(libMyNotes PUBLIC
         Qt${QT_VERSION_MAJOR}::Sql
         Qt${QT_VERSION_MAJOR}::Concurrent
         Qt${QT_VERSION_MAJOR}::Network
+        Qt${QT_VERSION_MAJOR}::QuickControls2
         QtJieba
         QtMarkdownParser
         QtMarkdownEditor

@@ -43,7 +43,7 @@ Popup {
 
         open()
 
-        for (let i = 0; i < outerLayout.children.length - 3; ++i) {
+        for (var i = 0; i < outerLayout.children.length - 3; ++i) {
             outerLayout.children[i].close()
         }
 
@@ -56,7 +56,7 @@ Popup {
 
         // Reorder items to have the last on top
         let children = outerLayout.children;
-        for (let i in children) {
+        for (i in children) {
             children[i].Layout.row = children.length - 1 - i
         }
     }
