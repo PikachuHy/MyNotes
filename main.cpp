@@ -142,7 +142,9 @@ int main(int argc, char *argv[]) {
   Q_INIT_RESOURCE(css);
   Q_INIT_RESOURCE(db);
   Q_INIT_RESOURCE(icon);
+#ifndef Q_OS_WIN
   Q_INIT_RESOURCE(md);
+#endif
   Q_INIT_RESOURCE(qml);
 #if 0
   QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);

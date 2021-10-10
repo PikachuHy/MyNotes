@@ -79,10 +79,10 @@ endif ()
 if (WIN32)
     set(app_WINRC icon.rc)
     set_property(SOURCE ${app_WINRC} APPEND PROPERTY
-            OBJECT_DEPENDS ${PROJECT_SOURCE_DIR}/assets/icon/icon.ico
+            OBJECT_DEPENDS src/assets/icon/icon.ico
             )
     target_sources(MyNotes PRIVATE
-            assets/${app_WINRC}
+            src/assets/${app_WINRC}
             )
 endif()
 target_sources(MyNotes PRIVATE main.cpp)
