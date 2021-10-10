@@ -33,13 +33,12 @@ if (MSVC)
 endif ()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-add_library(libMyNotes "")
-set_target_properties(libMyNotes PROPERTIES OUTPUT_NAME MyNotes)
-set_target_properties(libMyNotes PROPERTIES AUTOMOC ON)
-set_target_properties(libMyNotes PROPERTIES AUTOUIC ON)
-set_target_properties(libMyNotes PROPERTIES AUTORCC ON)
+add_library(MyNotes_static "")
+set_target_properties(MyNotes_static PROPERTIES AUTOMOC ON)
+set_target_properties(MyNotes_static PROPERTIES AUTOUIC ON)
+set_target_properties(MyNotes_static PROPERTIES AUTORCC ON)
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-    target_compile_definitions(libMyNotes PUBLIC -D_DEBUG)
+    target_compile_definitions(MyNotes_static PUBLIC -D_DEBUG)
 endif ()
 # QtCreator supports the following variables for Android, which are identical to qmake Android variables.
 # Check https://doc.qt.io/qt/deployment-android.html for more information.
@@ -68,8 +67,8 @@ if (USE_WEB_ENGINE_VIEW)
 else ()
 
 endif ()
-target_sources(libMyNotes PRIVATE MyNotes_zh_CN.ts)
-target_sources(libMyNotes PRIVATE
+target_sources(MyNotes_static PRIVATE MyNotes_zh_CN.ts)
+target_sources(MyNotes_static PRIVATE
         Widget.cpp
         Widget.h
         ListModel.cpp
@@ -151,7 +150,7 @@ if (BUILD_WITH_QT_QUICK)
     set_target_properties(${MyNotesQtQuick_TargetName} PROPERTIES AUTOMOC ON)
     set_target_properties(${MyNotesQtQuick_TargetName} PROPERTIES AUTOUIC ON)
     set_target_properties(${MyNotesQtQuick_TargetName} PROPERTIES AUTORCC ON)
-    target_link_libraries(${MyNotesQtQuick_TargetName} PUBLIC libMyNotes
+    target_link_libraries(${MyNotesQtQuick_TargetName} PUBLIC MyNotes_static
             QtQuickMarkdownItem
             Qt${QT_VERSION_MAJOR}::Quick
             Qt${QT_VERSION_MAJOR}::Qml
@@ -181,7 +180,7 @@ else ()
             desktop/SettingDialogController.cpp desktop/SettingDialogController.h
             desktop/TreeModelAdaptor.cpp desktop/TreeModelAdaptor.h
             )
-    target_link_libraries(MyNotes PRIVATE libMyNotes
+    target_link_libraries(MyNotes PRIVATE MyNotes_static
             Qt${QT_VERSION_MAJOR}::Quick
             Qt${QT_VERSION_MAJOR}::Qml
             QtQuickMarkdownItem
@@ -220,7 +219,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(QtWordReader)
 
 
-target_link_libraries(libMyNotes PUBLIC
+target_link_libraries(MyNotes_static PUBLIC
         Qt${QT_VERSION_MAJOR}::Widgets
         Qt${QT_VERSION_MAJOR}::Sql
         Qt${QT_VERSION_MAJOR}::Concurrent
@@ -241,16 +240,16 @@ else ()
             GIT_SHALLOW ON
     )
     FetchContent_MakeAvailable(CuteLogger)
-    target_link_libraries(libMyNotes PUBLIC CuteLogger)
+    target_link_libraries(MyNotes_static PUBLIC CuteLogger)
 endif ()
 if (USE_WEB_ENGINE_VIEW)
-    target_compile_definitions(libMyNotes PRIVATE -DUSE_WEB_ENGINE_VIEW)
-    target_link_libraries(libMyNotes PUBLIC
+    target_compile_definitions(MyNotes_static PRIVATE -DUSE_WEB_ENGINE_VIEW)
+    target_link_libraries(MyNotes_static PUBLIC
             Qt${QT_VERSION_MAJOR}::WebEngineWidgets
             Qt${QT_VERSION_MAJOR}::WebChannel
             Qt${QT_VERSION_MAJOR}::Positioning
             )
-    target_sources(libMyNotes PRIVATE WebEngineView.cpp WebEngineView.h)
+    target_sources(MyNotes_static PRIVATE WebEngineView.cpp WebEngineView.h)
 endif ()
 if (BUILD_TEST)
     add_subdirectory(test)
