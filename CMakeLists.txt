@@ -7,8 +7,16 @@ configure_file(config.h.in ${PROJECT_BINARY_DIR}/config.h)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 option(USE_WEB_ENGINE_VIEW "use QWebEngineView" OFF)
 option(ENABLE_TROJAN "enable trojan" OFF)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING
+            "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel."
+            FORCE)
+    message(STATUS "Configuring default CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
+else()
+    message(STATUS "Configuring CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
+endif()
 message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
-if (${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
+if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
     if (APPLE)
         SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/MyNotes.app/Contents/MacOS)
         SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/MyNotes.app/Contents/PlugIns)
@@ -19,30 +27,19 @@ if (MSVC)
     # fatal error C1189: #error:  WinSock.h has already been included
     add_definitions(-DWIN32_LEAN_AND_MEAN)
     add_definitions(-D_WIN32_WINNT=0x0A00)
-endif ()
-# CLion默认不会把依赖库加到环境变量中去，每次跑都是崩溃
-if (MSVC)
+    # CLion默认不会把依赖库加到环境变量中去，每次跑都是崩溃
     set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
     set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 endif ()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-if (ANDROID)
-    add_library(libMyNotes SHARED "")
-else ()
-    add_library(libMyNotes "")
-    set_target_properties(libMyNotes PROPERTIES OUTPUT_NAME MyNotes)
-endif ()
+add_library(libMyNotes "")
+set_target_properties(libMyNotes PROPERTIES OUTPUT_NAME MyNotes)
 set_target_properties(libMyNotes PROPERTIES AUTOMOC ON)
 set_target_properties(libMyNotes PROPERTIES AUTOUIC ON)
 set_target_properties(libMyNotes PROPERTIES AUTORCC ON)
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     target_compile_definitions(libMyNotes PUBLIC -D_DEBUG)
-endif ()
-if (ANDROID)
-    message(STATUS "andorid abi ${CMAKE_ANDROID_ARCH_ABI}")
-    set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/)
-    set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/)
 endif ()
 # QtCreator supports the following variables for Android, which are identical to qmake Android variables.
 # Check https://doc.qt.io/qt/deployment-android.html for more information.
@@ -192,7 +189,37 @@ else ()
     set_target_properties(MyNotes PROPERTIES AUTOMOC ON)
     set_target_properties(MyNotes PROPERTIES AUTORCC ON)
 endif ()
-add_subdirectory(deps)
+####
+#   add dependency
+####
+include(FetchContent)
+message(STATUS "add dependency: QtMarkdown")
+FetchContent_Declare(
+        QtMarkdown
+        GIT_REPOSITORY https://github.com/PikachuHy/QtMarkdown.git
+        GIT_PROGRESS ON
+        GIT_SHALLOW ON
+)
+FetchContent_MakeAvailable(QtMarkdown)
+message(STATUS "add dependency: QtJieba")
+FetchContent_Declare(
+        QtJieba
+        GIT_REPOSITORY https://github.com/PikachuHy/QtJieba.git
+        GIT_TAG qt
+        GIT_PROGRESS ON
+        GIT_SHALLOW ON
+)
+FetchContent_MakeAvailable(QtJieba)
+message(STATUS "add dependency: QtWordReader")
+FetchContent_Declare(
+        QtWordReader
+        GIT_REPOSITORY https://github.com/PikachuHy/QtWordReader.git
+        GIT_PROGRESS ON
+        GIT_SHALLOW ON
+)
+FetchContent_MakeAvailable(QtWordReader)
+
+
 target_link_libraries(libMyNotes PUBLIC
         Qt${QT_VERSION_MAJOR}::Widgets
         Qt${QT_VERSION_MAJOR}::Sql
@@ -203,10 +230,17 @@ target_link_libraries(libMyNotes PUBLIC
         QtMarkdownParser
         QtMarkdownEditor
         QtWordReader
-
         )
 if (ANDROID)
 else ()
+    message(STATUS "add dependency: CuteLogger")
+    FetchContent_Declare(
+            CuteLogger
+            GIT_REPOSITORY https://github.com/PikachuHy/CuteLogger.git
+            GIT_TAG qt6
+            GIT_SHALLOW ON
+    )
+    FetchContent_MakeAvailable(CuteLogger)
     target_link_libraries(libMyNotes PUBLIC CuteLogger)
 endif ()
 if (USE_WEB_ENGINE_VIEW)
@@ -217,13 +251,7 @@ if (USE_WEB_ENGINE_VIEW)
             Qt${QT_VERSION_MAJOR}::Positioning
             )
     target_sources(libMyNotes PRIVATE WebEngineView.cpp WebEngineView.h)
-else ()
 endif ()
 if (BUILD_TEST)
     add_subdirectory(test)
-endif ()
-if (ANDROID)
-    message(STATUS "andorid abi ${CMAKE_ANDROID_ARCH_ABI}")
-    set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/)
-    set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/)
 endif ()
