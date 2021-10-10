@@ -15,6 +15,15 @@
 #include <QFile>
 #include <QDir>
 
+#ifdef Q_OS_ANDROID
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QtAndroidExtras>
+#else
+#include <private/qandroidextras_p.h>
+#include <QFuture>
+#endif
+#endif
+
 Controller::Controller(QObject *parent) : QObject(parent) {
     auto fileSystemWatcher = BeanFactory::instance()->getBean<QFileSystemWatcher>("fileSystemWatcher");
     connect(fileSystemWatcher, &QFileSystemWatcher::fileChanged, this, [this](const QString &path){
@@ -110,4 +119,26 @@ void Controller::setNoteDataPath(QString path) {
 
 QString Controller::configStorePath() {
     return Settings::instance()->configStorePath();
+}
+
+bool Controller::hasWriteExternalStoragePermission()
+{
+#ifdef Q_OS_ANDROID
+    using namespace QtAndroidPrivate;
+    auto result = checkPermission(QString("android.permission.WRITE_EXTERNAL_STORAGE"));
+    return result.result() == PermissionResult::Authorized;
+#else
+    return true;
+#endif
+}
+
+bool Controller::hasManageExternalStorage()
+{
+#ifdef Q_OS_ANDROID
+    using namespace QtAndroidPrivate;
+    auto result = checkPermission(QString("android.permission.MANAGE_EXTERNAL_STORAGE"));
+    return result.result() == PermissionResult::Authorized;
+#else
+    return true;
+#endif
 }

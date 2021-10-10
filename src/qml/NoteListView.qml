@@ -14,6 +14,8 @@ Item {
             width: noteListView.width
             name: model.name
             icon: model.icon
+
+
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
@@ -79,7 +81,7 @@ Item {
                                                "name": data.name,
                                                "icon": "qrc" + data.icon,
                                                "pathId": data.pathId,
-                                               "type": "folder"
+                                               "type": "folder",
                                            })
                          })
         noteList.forEach(data => {

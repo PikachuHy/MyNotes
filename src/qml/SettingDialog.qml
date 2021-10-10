@@ -10,7 +10,7 @@ Dialog {
 
 //    color: FishUI.Theme.darkMode ? "#363636" : "#FFFFFF"
 //    radius: FishUI.Theme.mediumRadius
-    implicitWidth: 500
+    implicitWidth: 800
     implicitHeight: 400
     title: "Setting"
     anchors.centerIn: parent
@@ -30,13 +30,32 @@ Dialog {
             rowSpacing: largeSpacing
 
             Label {
+                text: qsTr("Data Path")
+            }
+
+            Label {
+                text: $Controller.noteDataPath()
+            }
+
+
+            Label {
+                text: qsTr("Config Path")
+            }
+
+            Label {
+                text: $Controller.configStorePath()
+            }
+
+
+
+            Label {
                 text: qsTr("Render")
             }
 
             ComboBox {
                 id: renderComboBox
                 Layout.fillWidth: true
-                model: ["Web Engine", "Text Browser", "Qt Widget", "Qt Quick"]
+                model: ["Web Engine", "Text Browser", "Qt Widget", "Qt Quick Desktop", "Qt Quick Mobile"]
 
                 leftPadding: largeSpacing
                 rightPadding: largeSpacing

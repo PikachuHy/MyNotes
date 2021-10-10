@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>desktop_main.qml</file>
+        <file>NoteTreeView.qml</file>
+        <file>SettingDialog.qml</file>
+        <file>InputDialog.qml</file>
+        <file>Toast.qml</file>
+        <file>TreeView.qml</file>
+        <file>mobile_main.qml</file>
+        <file>NoteListView.qml</file>
+        <file>NoteView.qml</file>
+        <file>NoteListItem.qml</file>
+        <file>FileListView.qml</file>
+        <file>SideMenu.qml</file>
+    </qresource>
+</RCC>

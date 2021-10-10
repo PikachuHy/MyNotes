@@ -25,6 +25,9 @@ public:
     Q_INVOKABLE QString noteDataPath();
     Q_INVOKABLE void setNoteDataPath(QString path);
     Q_INVOKABLE QString configStorePath();
+
+    Q_INVOKABLE bool hasWriteExternalStoragePermission();
+    Q_INVOKABLE bool hasManageExternalStorage();
 signals:
     void noteChanged(QString path);
 private:

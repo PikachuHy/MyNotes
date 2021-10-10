@@ -33,3 +33,13 @@ QString FileSystem::defaultPath() {
     return QDir::homePath();
 #endif
 }
+
+bool FileSystem::isReadable(QString path)
+{
+    return QFileInfo(path).isReadable();
+}
+
+bool FileSystem::isWritable(QString path)
+{
+    return QFileInfo(path).isWritable();
+}

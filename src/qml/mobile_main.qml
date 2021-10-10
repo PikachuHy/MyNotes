@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
+import QtQuick.Controls 2.15
 import cn.net.pikachu.control 1.0
 
 Window {
@@ -48,16 +49,19 @@ Window {
                     onClicked: {
                         console.log(model.name)
                         console.log(model.icon)
-                        mainListView.visible = false
-                        var NoteListViewPage = Qt.createComponent(
-                                    "NoteListView.qml").createObject(listContainer, {
-                                                                         "x": 0,
-                                                                         "y": 0,
-                                                                         "width": listContainer.width,
-                                                                         "height": listContainer.height,
-                                                                         "pathId": 0
-                                                                     })
-                        pageStack.push(NoteListViewPage)
+                        if (model.name === "Workshop") {
+                            mainListView.visible = false
+                            var NoteListViewPage = Qt.createComponent(
+                                        "NoteListView.qml").createObject(listContainer, {
+                                                                             "x": 0,
+                                                                             "y": 0,
+                                                                             "width": listContainer.width,
+                                                                             "height": listContainer.height,
+                                                                             "pathId": 0
+                                                                         })
+                            pageStack.push(NoteListViewPage)
+                        }
+
                     }
                 }
             }
@@ -104,10 +108,12 @@ Window {
             Image {
                 width: 32
                 height: 32
-                source: "qrc:/icon/folder_64x64.png"
+                source: "qrc:/icon/settings_64x64.png"
                 anchors.right: parent.right
             }
             onClicked: {
+                /*
+                // 无法修改，先注释掉
                 console.log('choose folder')
                 mainListView.visible = false
                 var FileListViewPage = Qt.createComponent(
@@ -119,11 +125,23 @@ Window {
                                                                  "path": $FileSystem.defaultPath()
                                                              })
                 pageStack.push(FileListViewPage)
+                */
+                dlgBg.visible = true
+                settingDialog.visible = true
             }
         }
     }
+    /*
+    // 不显示调试信息
     Column {
         anchors.bottom: parent.bottom
+        Text {
+            text: qsTr("MANAGE_EXTERNAL_STORAGE: ") + $Controller.hasManageExternalStorage();
+        }
+
+        Text {
+            text: qsTr("WRITE_EXTERNAL_STORAGE: ") + $Controller.hasWriteExternalStoragePermission()
+        }
         Text {
             text: $Controller.noteDataPath()
         }
@@ -131,7 +149,21 @@ Window {
             text: $Controller.configStorePath()
         }
     }
+    */
+    Rectangle {
+        id: dlgBg
+        color: "transparent"
+        anchors.fill: parent
+        visible: false
+    }
 
+    SettingDialog {
+        id: settingDialog
+        visible: false
+        onRejected: {
+            dlgBg.visible = false
+        }
+    }
     Component.onCompleted: {
         pageStack.push(mainListView)
         var modelData = [{

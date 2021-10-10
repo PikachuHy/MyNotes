@@ -1,0 +1,6 @@
+if (USE_WEB_ENGINE_VIEW)
+    add_subdirectory(webview)
+endif ()
+if (ENABLE_TROJAN)
+    add_subdirectory(trojan)
+endif ()

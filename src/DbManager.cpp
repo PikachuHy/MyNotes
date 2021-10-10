@@ -10,6 +10,7 @@
 #include <QThread>
 #include <QSqlError>
 #include <QFileInfo>
+namespace fs = std::filesystem;
 
 DbManager::DbManager(const QString& dataPath, QObject *parent): QObject(parent) {
     QString threadId = QString::number((long long)QThread::currentThread(), 16);
@@ -27,6 +28,17 @@ DbManager::DbManager(const QString& dataPath, QObject *parent): QObject(parent) 
     qDebug() << database << "read:" << fileInfo.isReadable() << "write:" << fileInfo.isWritable();
     if (QFile(database).exists()) {
         qDebug() << "file exist";
+        if (!fileInfo.isReadable()) {
+            qDebug() << "try change file permissions";
+            bool ok = QFile(database).setPermissions(QFileDevice::ReadUser | QFileDevice::WriteUser);
+            if (!ok) {
+                qDebug() << "修改权限失败";
+            } else {
+                qDebug() << "修改权限成功";
+            }
+
+            qDebug() << database << "read:" << fileInfo.isReadable() << "write:" << fileInfo.isWritable();
+        }
     } else {
         qDebug() << "file not exist";
     }

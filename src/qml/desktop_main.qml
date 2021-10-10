@@ -13,21 +13,31 @@ Window {
     title: "MyNotes"
     visible: true
 
-    Rectangle {
-        anchors.fill: parent
+    Row {
+        Column {
+            width: 64
+            SideMenu {
+                iconSource: "qrc:/icon/avatar_300x300.png"
+            }
+
+            SideMenu {
+                iconSource: "qrc:/icon/settings_64x64.png"
+                onClicked: {
+                    settingDialog.visible = true
+                }
+            }
+        }
 
         NoteTreeView {
             width: 300
-            height: parent.height
+            height: root.height
             onNoteClicked: function(path) {
                 loadNote(path)
             }
         }
         ScrollView {
-
-            x: 305
-            width: parent.width - 308
-            height: parent.height
+            width: root.width - 300 - 64
+            height: root.height
 
             QtQuickMarkdownItem {
                 id: editor

@@ -40,7 +40,7 @@ QSettings *Settings::settings() {
     static QSettings ret(
             QString("%1/config.ini")
                     .arg(QStandardPaths::standardLocations(
-                            QStandardPaths::ConfigLocation).first()
+                            QStandardPaths::AppConfigLocation).first()
                             ),
                             QSettings::IniFormat);
     return &ret;
