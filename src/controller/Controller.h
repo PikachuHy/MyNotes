@@ -28,6 +28,8 @@ public:
 
     Q_INVOKABLE bool hasWriteExternalStoragePermission();
     Q_INVOKABLE bool hasManageExternalStorage();
+
+    Q_INVOKABLE QString qtVersion();
 signals:
     void noteChanged(QString path);
 private:

@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.12
 import cn.net.pikachu.control 1.0
 import Controller 1.0
 
@@ -15,9 +16,20 @@ Window {
 
     Row {
         Column {
+            id: debug1
             width: 64
             SideMenu {
                 iconSource: "qrc:/icon/avatar_300x300.png"
+                onClicked: {
+                    stackLayout.currentIndex = 0
+                }
+            }
+
+            SideMenu {
+                iconSource: "qrc:/icon/notebook_128x128.png"
+                onClicked: {
+                    stackLayout.currentIndex = 1
+                }
             }
 
             SideMenu {
@@ -27,41 +39,54 @@ Window {
                 }
             }
         }
+        StackLayout {
+            id: stackLayout
+            width: root.width - 64
+            Profile {}
+            Row {
+                id: notebook
+                NoteTreeView {
+                    width: 300
+                    height: root.height
+                    onNoteClicked: function(path) {
+                        loadNote(path)
+                    }
+                }
 
-        NoteTreeView {
-            width: 300
-            height: root.height
-            onNoteClicked: function(path) {
-                loadNote(path)
-            }
-        }
-        ScrollView {
-            width: root.width - 300 - 64
-            height: root.height
+                ScrollView {
+                    width: notebook.width - 300
+                    height: root.height
+                    QtQuickMarkdownItem {
+                        id: editor
+                        width: parent.width
+                        onCodeCopied: function (code) {
+                            console.log('copy code:', code)
+                            clipboard.copyText(code)
+                            root.showPassiveNotification('code copied', 800)
+                        }
+                        onLinkClicked: function (url) {
+                            console.log('click link:', url)
+                            root.showPassiveNotification('open url: ' + url, 'short',
+                                                         'open', function () {
+                                                             console.log('open', url)
+                                                             controller.openUrl(url)
+                                                         })
+                        }
+                        onImageClicked: function (path) {
+                            console.log('click image:', path)
+                            previewImage.source = 'file://' + path
+                            previewImagePopup.visible = true
+                        }
+                    }
+                }
 
-            QtQuickMarkdownItem {
-                id: editor
-                width: parent.width
-                onCodeCopied: function (code) {
-                    console.log('copy code:', code)
-                    clipboard.copyText(code)
-                    root.showPassiveNotification('code copied', 800)
-                }
-                onLinkClicked: function (url) {
-                    console.log('click link:', url)
-                    root.showPassiveNotification('open url: ' + url, 'short',
-                                                 'open', function () {
-                                                     console.log('open', url)
-                                                     controller.openUrl(url)
-                                                 })
-                }
-                onImageClicked: function (path) {
-                    console.log('click image:', path)
-                    previewImage.source = 'file://' + path
-                    previewImagePopup.visible = true
-                }
             }
-        }
+
+            Pane {
+            }
+
+             }
+
         Controller {
             id: controller
             onNoteChanged: function (path) {
@@ -83,6 +108,7 @@ Window {
             }
         }
     }
+
 
     QtObject {
         id: internal
@@ -119,13 +145,15 @@ Window {
         console.log('load path', path)
         editor.path = path
         editor.source = path
+        controller.setLastOpenedNote(path)
         controller.watchNote(path)
     }
 
     Component.onCompleted: {
-        editor.height = root.height
-        var path = controller.lastOpenedNote()
-        loadNote(path)
+         editor.height = root.height
+         var path = controller.lastOpenedNote()
+         loadNote(path)
+        console.log('stackLayout z: ', stackLayout.z)
     }
     Popup {
         id: previewImagePopup

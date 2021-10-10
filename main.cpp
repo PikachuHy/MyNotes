@@ -48,6 +48,11 @@
 #endif
 
 #include <QFontDatabase>
+#if 0
+#include <QtWebView>
+#endif
+#include <QQuickWindow>
+// #include <QtWebEngineQuick>
 
 void showQtQuickVersion(QApplication *app) {
   QQuickStyle::setStyle("Material");
@@ -139,7 +144,11 @@ int main(int argc, char *argv[]) {
   Q_INIT_RESOURCE(icon);
   Q_INIT_RESOURCE(md);
   Q_INIT_RESOURCE(qml);
-
+#if 0
+  QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+  QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGLRhi);
+  QtWebView::initialize();
+#endif
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif

@@ -142,3 +142,8 @@ bool Controller::hasManageExternalStorage()
     return true;
 #endif
 }
+
+QString Controller::qtVersion()
+{
+    return QT_VERSION_STR;
+}

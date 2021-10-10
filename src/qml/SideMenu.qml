@@ -16,18 +16,16 @@ Rectangle {
     MouseArea {
         hoverEnabled: true
         anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
         onClicked: {
-
             item.clicked()
         }
 
         onEntered: {
             item.color = "#eee"
-            cursorShape = Qt.PointingHandCursor
         }
         onExited: {
             item.color = "transparent"
-            cursorShape = Qt.ArrowCursor
         }
     }
 }

@@ -12,5 +12,6 @@
         <file>NoteListItem.qml</file>
         <file>FileListView.qml</file>
         <file>SideMenu.qml</file>
+        <file>Profile.qml</file>
     </qresource>
 </RCC>
