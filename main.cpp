@@ -216,6 +216,9 @@ int main(int argc, char *argv[]) {
   QFont font;
 #ifdef Q_OS_MAC
   font.setFamily(".AppleSystemUIFont");
+#endif
+#ifdef Q_OS_WIN
+  font.setFamily("微软雅黑");
 #else
   font.setFamily("Noto Sans CJK SC");
 #endif
