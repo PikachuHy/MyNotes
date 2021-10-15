@@ -20,8 +20,7 @@ Window {
                 console.log('no page to destroy')
                 Qt.quit()
             } else {
-                pageStack.pop().destroy()
-                pageStack[pageStack.length - 1].visible = true
+                popPageInStack()
             }
         }
     }
@@ -52,21 +51,22 @@ Window {
                         if (model.name === "Workshop") {
                             mainListView.visible = false
                             var NoteListViewPage = Qt.createComponent(
-                                        "NoteListView.qml").createObject(listContainer, {
-                                                                             "x": 0,
-                                                                             "y": 0,
-                                                                             "width": listContainer.width,
-                                                                             "height": listContainer.height,
-                                                                             "pathId": 0
-                                                                         })
+                                        "NoteListView.qml").createObject(
+                                        listContainer, {
+                                            "x": 0,
+                                            "y": 0,
+                                            "width": listContainer.width,
+                                            "height": listContainer.height,
+                                            "pathId": 0
+                                        })
                             pageStack.push(NoteListViewPage)
+                            returnIcon.visible = true
+                            avatorIcon.visible = false
                         }
-
                     }
                 }
             }
         }
-
     }
 
     Rectangle {
@@ -80,18 +80,40 @@ Window {
             height: parent.height
             anchors.left: parent.left
             Image {
+                id: avatorIcon
+                width: 32
+                height: 32
+                source: "qrc:/icon/avatar_300x300.png"
+                anchors.left: parent.left
+            }
+            Image {
+                id: returnIcon
+                visible: false
                 width: 32
                 height: 32
                 source: "qrc:/icon/return_64x64.png"
                 anchors.left: parent.left
             }
             onClicked: {
-                console.log('return')
-                if (pageStack.length === 1) {
-                    console.log('no page to destroy')
+                if (returnIcon.visible) {
+                    console.log('return')
+                    if (pageStack.length === 1) {
+                        console.log('no page to destroy')
+                    } else {
+                        popPageInStack()
+                    }
                 } else {
-                    pageStack.pop().destroy()
-                    pageStack[pageStack.length - 1].visible = true
+                    mainListView.visible = false
+                    var page = Qt.createComponent("Profile.qml").createObject(
+                                listContainer, {
+                                    "x": 0,
+                                    "y": 0,
+                                    "width": listContainer.width,
+                                    "height": listContainer.height
+                                })
+                    pageStack.push(page)
+                    returnIcon.visible = true
+                    avatorIcon.visible = false
                 }
             }
         }
@@ -112,6 +134,7 @@ Window {
                 anchors.right: parent.right
             }
             onClicked: {
+
                 /*
                 // 无法修改，先注释掉
                 console.log('choose folder')
@@ -131,6 +154,7 @@ Window {
             }
         }
     }
+
     /*
     // 不显示调试信息
     Column {
@@ -150,6 +174,15 @@ Window {
         }
     }
     */
+    function popPageInStack() {
+        pageStack.pop().destroy()
+        pageStack[pageStack.length - 1].visible = true
+        if (pageStack.length == 1) {
+            returnIcon.visible = false
+            avatorIcon.visible = true
+        }
+    }
+
     Rectangle {
         id: dlgBg
         color: "transparent"

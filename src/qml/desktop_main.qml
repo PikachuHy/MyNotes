@@ -48,7 +48,7 @@ Window {
                 NoteTreeView {
                     width: 300
                     height: root.height
-                    onNoteClicked: function(path) {
+                    onNoteClicked: function (path) {
                         loadNote(path)
                     }
                 }
@@ -66,10 +66,13 @@ Window {
                         }
                         onLinkClicked: function (url) {
                             console.log('click link:', url)
-                            root.showPassiveNotification('open url: ' + url, 'short',
-                                                         'open', function () {
-                                                             console.log('open', url)
-                                                             controller.openUrl(url)
+                            root.showPassiveNotification('open url: ' + url,
+                                                         'short', 'open',
+                                                         function () {
+                                                             console.log('open',
+                                                                         url)
+                                                             controller.openUrl(
+                                                                         url)
                                                          })
                         }
                         onImageClicked: function (path) {
@@ -79,13 +82,10 @@ Window {
                         }
                     }
                 }
-
             }
 
-            Pane {
-            }
-
-             }
+            Pane {}
+        }
 
         Controller {
             id: controller
@@ -108,7 +108,6 @@ Window {
             }
         }
     }
-
 
     QtObject {
         id: internal
@@ -150,9 +149,9 @@ Window {
     }
 
     Component.onCompleted: {
-         editor.height = root.height
-         var path = controller.lastOpenedNote()
-         loadNote(path)
+        editor.height = root.height
+        var path = controller.lastOpenedNote()
+        loadNote(path)
         console.log('stackLayout z: ', stackLayout.z)
     }
     Popup {
@@ -172,8 +171,6 @@ Window {
         title: "New Note"
         anchors.centerIn: parent
         standardButtons: Dialog.Ok | Dialog.Cancel
-        TextEdit {
-
-        }
+        TextEdit {}
     }
 }
