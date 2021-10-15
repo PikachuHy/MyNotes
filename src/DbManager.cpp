@@ -182,6 +182,9 @@ QVariantList DbManager::getPathList_qml(int parentPathId)
     auto list = getPathList(parentPathId);
     QVariantList ret;
     for(const auto& it: list) {
+        if (it.trashed()) {
+            continue;
+        }
         Path_qml* p = new Path_qml();
         p->setName(it.name());
         p->setIcon(Constant::folderImagePath);
@@ -209,6 +212,9 @@ QVariantList DbManager::getNoteList_qml(int pathId) {
     auto list = getNoteList(pathId);
     QVariantList ret;
     for (const auto &it: list) {
+        if (it.trashed()) {
+            continue;
+        }
         Note_qml *p = new Note_qml();
         p->setName(it.title());
         p->setIcon(Constant::noteImagePath);

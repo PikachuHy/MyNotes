@@ -277,7 +277,7 @@ void TreeModel::buildFileTreeFromDb(int parentPathId, TreeItem *parentItem) {
     }
     auto noteList = m_dbManager->getNoteList(parentPathId);
     for(const auto& note: noteList) {
-        if (note.trashed()) return;
+        if (note.trashed()) continue;
         QString realPath = parentItem->path() + "/" + note.title();
         auto item = new NoteItem(note, parentItem);
         item->setPath(realPath);
