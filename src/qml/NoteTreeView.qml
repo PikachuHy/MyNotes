@@ -5,7 +5,30 @@ import Controller 1.0
 TreeView {
     id: treeView
     signal noteClicked(string path)
-    model2: treeModel
+    model: treeModel
+    delegate: Row {
+        property alias text: txt.text
+        required property var model
+        spacing: 10
+        Image {
+            id: img
+            width: 32
+            height: 32
+            source: model === null ? "" : "qrc://" + model.iconPath
+        }
+
+        Text {
+            id: txt
+            text: model === null ? "" : model.text
+            elide: Text.ElideMiddle
+            Component.onCompleted: {
+                if (parent) {
+                    anchors.verticalCenter = parent.verticalCenter
+                }
+            }
+        }
+    }
+
     onItemClicked: index => {
                        if (controller.isNote(index)) {
                            treeView.noteClicked(
@@ -78,7 +101,8 @@ TreeView {
             }
 
             var pathId = controller.getPathId(treeView.currentIndex)
-            var newIndex = controller.createNewNote(treeView.currentIndex, noteName)
+            var newIndex = controller.createNewNote(treeView.currentIndex,
+                                                    noteName)
 
             treeView.setCurrentIndex(newIndex, 0)
             var path = controller.getNoteFullPath(newIndex)
@@ -98,20 +122,20 @@ TreeView {
                 return
             }
 
-            var newIndex = controller.createNewFolder(
-                        treeView.currentIndex, folderName)
+            var newIndex = controller.createNewFolder(treeView.currentIndex,
+                                                      folderName)
 
             treeView.setCurrentIndex(newIndex, 0)
         }
     }
     function openNoteInTypora() {
-            var index = treeView.currentIndex
-            if (controller.isNote(index)) {
-                var path = controller.getNoteFullPath(index)
-                console.log('path', path)
-                controller.openInTypora(path)
-            }
+        var index = treeView.currentIndex
+        if (controller.isNote(index)) {
+            var path = controller.getNoteFullPath(index)
+            console.log('path', path)
+            controller.openInTypora(path)
         }
+    }
     NoteController {
         id: controller
     }

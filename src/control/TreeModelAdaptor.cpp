@@ -64,6 +64,8 @@ QVariant TreeModelAdaptor::data(const QModelIndex &index, int role) const
   case ModelIndexRole:
     // qDebug() << "ModelIndexRole";
     return m_items.at(index.row()).index;
+  case IndexRole:
+    return itemIndex(index);
   default:
     if (role == Qt::DisplayRole) {
       // qDebug() << "DisplayRole";
@@ -86,6 +88,7 @@ QHash<int, QByteArray> TreeModelAdaptor::roleNames() const
   modelRoleNames.insert(HasChildrenRole, "_q_TreeView_HasChildren");
   modelRoleNames.insert(HasSiblingRole, "_q_TreeView_HasSibling");
   modelRoleNames.insert(ModelIndexRole, "_q_TreeView_ModelIndex");
+  modelRoleNames.insert(IndexRole, "_q_TreeView_Index");
   qDebug() << modelRoleNames;
   return modelRoleNames;
 }
@@ -137,7 +140,7 @@ bool TreeModelAdaptor::isLastChild(int n)
   return totalChild == m_items[n].index.row() + 1;
 }
 
-int TreeModelAdaptor::itemIndex(const QModelIndex &index)
+int TreeModelAdaptor::itemIndex(const QModelIndex &index) const
 {
   for(int i=0;i<m_items.size();i++) {
     if (m_items[i].index == index) {

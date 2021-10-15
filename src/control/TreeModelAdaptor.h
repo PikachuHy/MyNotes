@@ -23,7 +23,7 @@ public:
 private:
   int nextSibling(int n);
   bool isLastChild(int n);
-  int itemIndex(const QModelIndex& index);
+  int itemIndex(const QModelIndex& index) const;
 public:
   Q_INVOKABLE void expandRow(int n);
   Q_INVOKABLE void collapseRow(int n);
@@ -36,11 +36,12 @@ private:
   Q_PROPERTY(QAbstractItemModel * model READ model WRITE setModel NOTIFY modelChanged)
 
   enum {
-    DepthRole = Qt::UserRole - 5,
+    DepthRole = Qt::UserRole - 6,
     ExpandedRole,
     HasChildrenRole,
     HasSiblingRole,
-    ModelIndexRole
+    ModelIndexRole,
+    IndexRole
   };
 
   struct TreeItem {
