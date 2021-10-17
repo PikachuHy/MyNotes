@@ -8,6 +8,7 @@ const char Settings::KEY_LAST_OPEN_NOTE_PATH[] = "path/last_open_note";
 const char Settings::KEY_TYPORA_PATH[] = "path/typora";
 const char Settings::KEY_TROJAN_CONFIG_PATH[] = "path/trojan_config";
 const char Settings::KEY_NOTE_DATA_PATH[] = "path/note_data";
+const char Settings::KEY_MUSIC_DATA_PATH[] = "path/music_data";
 const char Settings::KEY_SERVER_IP[] = "server/ip";
 const char Settings::KEY_USER_ACCOUNT[] = "user/account";
 const char Settings::KEY_USER_PASSWORD[] = "user/password";

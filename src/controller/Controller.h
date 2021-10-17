@@ -24,12 +24,17 @@ public:
 
     Q_INVOKABLE QString noteDataPath();
     Q_INVOKABLE void setNoteDataPath(QString path);
+    Q_INVOKABLE QString musicDataPath();
+    Q_INVOKABLE void setMusicDataPath(QString path);
     Q_INVOKABLE QString configStorePath();
 
     Q_INVOKABLE bool hasWriteExternalStoragePermission();
     Q_INVOKABLE bool hasManageExternalStorage();
 
     Q_INVOKABLE QString qtVersion();
+
+    Q_INVOKABLE bool isDesktop();
+    Q_INVOKABLE bool isMobile();
 signals:
     void noteChanged(QString path);
 private:

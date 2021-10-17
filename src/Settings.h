@@ -17,6 +17,7 @@ public:
     static const char KEY_TYPORA_PATH[];
     static const char KEY_TROJAN_CONFIG_PATH[];
     static const char KEY_NOTE_DATA_PATH[];
+    static const char KEY_MUSIC_DATA_PATH[];
     static const char KEY_SERVER_IP[];
     static const char KEY_USER_ACCOUNT[];
     static const char KEY_USER_PASSWORD[];
@@ -98,6 +99,7 @@ public:
     QStringRef<KEY_TYPORA_PATH> typoraPath;
     QStringRef<KEY_TROJAN_CONFIG_PATH> trojanConfigPath;
     QStringRef<KEY_NOTE_DATA_PATH> noteDataPath;
+    QStringRef<KEY_MUSIC_DATA_PATH> musicDataPath;
     QStringRef<KEY_SERVER_IP> serverIp;
     QStringRef<KEY_USER_ACCOUNT> userAccount;
     QStringRef<KEY_USER_PASSWORD> userPassword;

@@ -33,6 +33,13 @@ Window {
             }
 
             SideMenu {
+                iconSource: "qrc:/icon/music_64x64.png"
+                onClicked: {
+                    stackLayout.currentIndex = 2
+                }
+            }
+
+            SideMenu {
                 iconSource: "qrc:/icon/settings_64x64.png"
                 onClicked: {
                     settingDialog.visible = true
@@ -83,7 +90,7 @@ Window {
                     }
                 }
             }
-
+            MusicPlayer {}
             Pane {}
         }
 

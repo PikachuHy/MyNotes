@@ -21,5 +21,10 @@
         <file>icon/return_64x64.png</file>
         <file>icon/check_64x64.png</file>
         <file>icon/settings_64x64.png</file>
+        <file>icon/music_64x64.png</file>
+        <file>icon/left-circle_64x64.png</file>
+        <file>icon/pause-circle_64x64.png</file>
+        <file>icon/play-circle_64x64.png</file>
+        <file>icon/right-circle_64x64.png</file>
     </qresource>
 </RCC>

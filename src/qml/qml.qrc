@@ -13,5 +13,6 @@
         <file>FileListView.qml</file>
         <file>SideMenu.qml</file>
         <file>Profile.qml</file>
+        <file>MusicPlayer.qml</file>
     </qresource>
 </RCC>
