@@ -25,6 +25,13 @@ Item {
                 musicPlayerRoot.playNext()
             }
         }
+        property string musicName
+        function playNext() {
+            musicPlayerRoot.playNext()
+        }
+        function playPrev() {
+            musicPlayerRoot.playPrev()
+        }
     }
     ColumnLayout {
         width: parent.width
@@ -170,6 +177,19 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     id: mobileMusicName
                     text: ""
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            musicPlayerRoot.visible = false
+                            var page = Qt.createComponent(
+                                        "MusicLyrics.qml").createObject(
+                                        listContainer, {
+                                            "mediaPlayer": mediaPlayer,
+                                            "musicName": mobileMusicName.text
+                                        })
+                            root.pageStack.push(page)
+                        }
+                    }
                 }
 
                 Image {
@@ -225,6 +245,7 @@ Item {
             slider.value = 0
             desktopMusicName.text = name
             mobileMusicName.text = name
+            mediaPlayer.musicName = name
         }
         musicPlayerRoot.playing = true
         mediaPlayer.play()

@@ -14,5 +14,6 @@
         <file>SideMenu.qml</file>
         <file>Profile.qml</file>
         <file>MusicPlayer.qml</file>
+        <file>MusicLyrics.qml</file>
     </qresource>
 </RCC>

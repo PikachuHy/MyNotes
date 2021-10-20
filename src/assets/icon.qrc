@@ -26,5 +26,6 @@
         <file>icon/pause-circle_64x64.png</file>
         <file>icon/play-circle_64x64.png</file>
         <file>icon/right-circle_64x64.png</file>
+        <file>icon/disk_600x600.jpeg</file>
     </qresource>
 </RCC>
