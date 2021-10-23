@@ -15,5 +15,6 @@
         <file>Profile.qml</file>
         <file>MusicPlayer.qml</file>
         <file>MusicLyrics.qml</file>
+        <file>WebBrowser.qml</file>
     </qresource>
 </RCC>

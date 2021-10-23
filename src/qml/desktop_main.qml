@@ -40,6 +40,13 @@ Window {
             }
 
             SideMenu {
+                iconSource: "qrc:/icon/browser_64x64.png"
+                onClicked: {
+                    stackLayout.currentIndex = 3
+                }
+            }
+
+            SideMenu {
                 iconSource: "qrc:/icon/settings_64x64.png"
                 onClicked: {
                     settingDialog.visible = true
@@ -91,6 +98,8 @@ Window {
                 }
             }
             MusicPlayer {}
+            WebBrowser {}
+
             Pane {}
         }
 

@@ -48,7 +48,7 @@
 #endif
 
 #include <QFontDatabase>
-#if 0
+#if 1
 #include <QtWebView>
 #endif
 #include <QQuickWindow>
@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
   Q_INIT_RESOURCE(md);
 #endif
   Q_INIT_RESOURCE(qml);
-#if 0
+#if 1
   QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
   QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGLRhi);
   QtWebView::initialize();

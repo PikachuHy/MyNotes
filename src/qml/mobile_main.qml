@@ -192,26 +192,49 @@ Window {
         visible: false
     }
 
-    SideMenu {
-        id: musicPlayer
+    Row {
         anchors.left: parent.left
         anchors.bottom: parent.bottom
-        iconSource: "qrc:/icon/music_64x64.png"
-        onClicked: {
-            mainListView.visible = false
-            var page = Qt.createComponent("MusicPlayer.qml").createObject(
-                        listContainer, {
-                            "x": 0,
-                            "y": 0,
-                            "width": listContainer.width,
-                            "height": listContainer.height
-                        })
-            pageStack.push(page)
-            returnIcon.visible = true
-            avatorIcon.visible = false
-            musicPlayer.visible = false
+        SideMenu {
+            id: musicPlayer
+            iconSource: "qrc:/icon/music_64x64.png"
+            onClicked: {
+                mainListView.visible = false
+                var page = Qt.createComponent("MusicPlayer.qml").createObject(
+                            listContainer, {
+                                "x": 0,
+                                "y": 0,
+                                "width": listContainer.width,
+                                "height": listContainer.height
+                            })
+                pageStack.push(page)
+                returnIcon.visible = true
+                avatorIcon.visible = false
+                musicPlayer.visible = false
+            }
+        }
+
+        SideMenu {
+            id: webBrowser
+            iconSource: "qrc:/icon/browser_64x64.png"
+            onClicked: {
+                mainListView.visible = false
+                var page = Qt.createComponent("WebBrowser.qml").createObject(
+                            listContainer, {
+                                "x": 0,
+                                "y": 0,
+                                "width": listContainer.width,
+                                "height": listContainer.height
+                            })
+                pageStack.push(page)
+                returnIcon.visible = true
+                avatorIcon.visible = false
+                musicPlayer.visible = false
+                webBrowser.visible = false
+            }
         }
     }
+
     SettingDialog {
         id: settingDialog
         visible: false

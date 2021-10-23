@@ -61,8 +61,8 @@ endif ()
 ####
 #   必须在根目录下添加Android的Target，否则json文件会出现问题
 ####
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick Qml QuickControls2 REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick Qml QuickControls2 REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick Qml QuickControls2 WebView REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick Qml QuickControls2 WebView REQUIRED)
 
 if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(MyNotes MANUAL_FINALIZATION)

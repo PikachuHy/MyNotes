@@ -27,5 +27,9 @@
         <file>icon/play-circle_64x64.png</file>
         <file>icon/right-circle_64x64.png</file>
         <file>icon/disk_600x600.jpeg</file>
+        <file>icon/browser_64x64.png</file>
+        <file>icon/arrowleft_64x64.png</file>
+        <file>icon/arrowright_64x64.png</file>
+        <file>icon/reload_64x64.png</file>
     </qresource>
 </RCC>
