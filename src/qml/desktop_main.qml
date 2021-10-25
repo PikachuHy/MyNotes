@@ -115,14 +115,14 @@ Window {
             id: settingDialog
             visible: false
         }
-        Keys.onPressed: {
-            if (event.key === Qt.Key_Comma
-                    && event.modifiers === Qt.ControlModifier) {
-                console.log('show settings dialong')
-                settingDialog.visible = true
-                event.accepted = true
-            }
-        }
+        Keys.onPressed: event => {
+                            if (event.key === Qt.Key_Comma
+                                && event.modifiers === Qt.ControlModifier) {
+                                console.log('show settings dialong')
+                                settingDialog.visible = true
+                                event.accepted = true
+                            }
+                        }
     }
 
     QtObject {
