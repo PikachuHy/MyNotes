@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.12
-import QtGraphicalEffects 1.0
+// import QtGraphicalEffects 1.0
 
 Popup {
     id: control
@@ -178,6 +178,7 @@ Popup {
                 radius: 10.0
                 opacity: 0.9
                 layer.enabled: true
+                /*
                 layer.effect: DropShadow {
                     transparentBorder: true
                     radius: 32
@@ -186,6 +187,7 @@ Popup {
                     verticalOffset: 0
                     color: Qt.rgba(0, 0, 0, 0.14)
                 }
+                */
             }
         }
     }
