@@ -10,6 +10,7 @@ Rectangle {
     required property var model
     property Component delegate
     property var currentIndex
+    property var currentModelIndex
     signal itemClicked(var index)
     signal itemRightClicked(var index)
     // 需要它水平滑动
@@ -72,6 +73,7 @@ Rectangle {
                     onClicked: mouse => {
                                    console.log(model.text)
                                    var modelIndex = model._q_TreeView_ModelIndex
+                                   control.currentModelIndex = modelIndex
                                    listDelegate.selected = true
                                    control.itemClicked(modelIndex)
                                    listView.itemAtIndex(

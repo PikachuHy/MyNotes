@@ -77,7 +77,7 @@ TreeView {
             text: "Trash Note"
             onTriggered: {
                 console.log('transh note')
-                controller.trashNote(treeView.currentIndex)
+                controller.trashNote(treeView.currentModelIndex)
             }
         }
 
@@ -129,7 +129,7 @@ TreeView {
         }
     }
     function openNoteInTypora() {
-        var index = treeView.currentIndex
+        var index = treeView.currentModelIndex
         if (controller.isNote(index)) {
             var path = controller.getNoteFullPath(index)
             console.log('path', path)
