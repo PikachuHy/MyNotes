@@ -107,23 +107,30 @@ if (ANDROID AND ${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     add_custom_command(
             TARGET MyNotes POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy
-            ${qtmarkdown_BINARY_DIR}/libQtQuickMarkdownItem.so
+            ${qtmarkdown_BINARY_DIR}/editor/libQtQuickMarkdownItem.so
             ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/libQtQuickMarkdownItem.so
             COMMENT "copy libQtQuickMarkdownItem.so"
     )
     add_custom_command(
             TARGET MyNotes POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy
-            ${qtmarkdown_BINARY_DIR}/libQtMarkdownEditor.so
+            ${qtmarkdown_BINARY_DIR}/editor/libQtMarkdownEditor.so
             ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/libQtMarkdownEditor.so
             COMMENT "copy libQtMarkdownEditor.so"
     )
     add_custom_command(
             TARGET MyNotes POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy
-            ${qtmarkdown_BINARY_DIR}/libQtMarkdownParser.so
+            ${qtmarkdown_BINARY_DIR}/parser/libQtMarkdownParser.so
             ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/libQtMarkdownParser.so
             COMMENT "copy libQtMarkdownParser.so"
+    )
+    add_custom_command(
+        TARGET MyNotes POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${clatexmath_BINARY_DIR}/libclatexmath.so
+        ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/libclatexmath.so
+        COMMENT "copy libclatexmath.so"
     )
 endif ()
 add_subdirectory(src)

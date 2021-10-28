@@ -38,3 +38,14 @@ if (NOT ANDROID)
     )
     FetchContent_MakeAvailable(CuteLogger)
 endif ()
+message(STATUS "add dependency: cLaTeXMath")
+FetchContent_Declare(
+        cLaTeXMath
+        GIT_REPOSITORY https://github.com/PikachuHy/cLaTeXMath.git
+        GIT_PROGRESS ON
+        GIT_SHALLOW ON
+        GIT_TAG openmath-fix
+)
+set(QT ON)
+set(HAVE_LOG OFF)
+FetchContent_MakeAvailable(cLaTeXMath)
