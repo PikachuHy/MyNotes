@@ -150,8 +150,20 @@ Window {
                                                              })
                 pageStack.push(FileListViewPage)
                 */
-                dlgBg.visible = true
-                settingDialog.visible = true
+//                dlgBg.visible = true
+//                settingDialog.visible = true
+
+                mainListView.visible = false
+                var page = Qt.createComponent("SettingView.qml").createObject(
+                            listContainer, {
+                                "x": 0,
+                                "y": 0,
+                                "width": listContainer.width,
+                                "height": listContainer.height
+                            })
+                pageStack.push(page)
+                returnIcon.visible = true
+                avatorIcon.visible = false
             }
         }
     }

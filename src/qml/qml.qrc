@@ -16,5 +16,6 @@
         <file>MusicPlayer.qml</file>
         <file>MusicLyrics.qml</file>
         <file>WebBrowser.qml</file>
+        <file>SettingView.qml</file>
     </qresource>
 </RCC>
