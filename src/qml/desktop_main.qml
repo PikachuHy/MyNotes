@@ -4,6 +4,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.12
 import cn.net.pikachu.control 1.0
 import Controller 1.0
+import QtMarkdown 1.0
 
 Window {
     id: root
@@ -70,9 +71,11 @@ Window {
                 ScrollView {
                     width: notebook.width - 300
                     height: root.height
-                    QtQuickMarkdownItem {
+                    QtQuickMarkdownEditor {
                         id: editor
+                        focus: true
                         width: parent.width
+                        /*
                         onCodeCopied: function (code) {
                             console.log('copy code:', code)
                             clipboard.copyText(code)
@@ -94,6 +97,7 @@ Window {
                             previewImage.source = 'file://' + path
                             previewImagePopup.visible = true
                         }
+                        */
                     }
                 }
             }

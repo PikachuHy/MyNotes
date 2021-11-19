@@ -19,7 +19,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QDir>
-#include "QtMarkdownParser"
+#include "parser/QtMarkdownParser"
 #include "Utils.h"
 #include <QtSql>
 #include <QtConcurrent>
@@ -56,6 +56,7 @@
 #include <QVector>
 #include <QApplication>
 #include "Indexer.h"
+using namespace md::parser;
 // Returns empty QByteArray() on failure.
 QByteArray fileChecksum(const QString &fileName,
                         QCryptographicHash::Algorithm hashAlgorithm)
@@ -1350,6 +1351,7 @@ void Widget::syncWatchingFolder(const QString &path) {
     }
 
 }
+#if 0
 struct WatchingFileHtmlVisitor: MultipleVisitor<Header,
         Text, ItalicText, BoldText, ItalicBoldText,
         Image, Link, CodeBlock, InlineCode, Paragraph,
@@ -1505,7 +1507,9 @@ private:
     QString m_notePath;
     QString m_noteDir;
 };
+#endif
 void Widget::syncWatchingFile(const QString& path) {
+#if 0
     qInfo() << "sync watching file:" << path;
     auto syncNote = [this](const QString& path) {
         auto title = QFileInfo(path).baseName();
@@ -1559,6 +1563,7 @@ void Widget::syncWatchingFile(const QString& path) {
         qDebug() << "upload word(.doxc):" << path;
         this->uploadFile(info.strId, path);
     }
+#endif
 }
 
 void Widget::showSyncResult(const QString& msg) {
@@ -1680,6 +1685,7 @@ void Widget::uploadNote(const ServerNoteInfo& info) {
 }
 
 void Widget::syncWorkshopFile(const Note& note) {
+#if 0
     qInfo() << "sync workshop file:" << note.strId();
     auto path = noteRealPath(note);
     QFile mdFile(path);
@@ -1701,6 +1707,7 @@ void Widget::syncWorkshopFile(const Note& note) {
         qDebug() << "upload attachment:" << attachmentFilePath;
         this->uploadFile(info.strId, attachmentFilePath);
     }
+#endif
 }
 
 void Widget::initShortcut() {

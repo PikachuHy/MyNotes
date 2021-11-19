@@ -12,7 +12,7 @@
 #include <QDebug>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include "QtQuickMarkdownItem.h"
+#include "editor/QtQuickMarkdownEditor.h"
 #include "controller/Controller.h"
 #include "controller/NoteController.h"
 #include "controller/Clipboard.h"
@@ -53,6 +53,7 @@
 #endif
 #include <QQuickWindow>
 // #include <QtWebEngineQuick>
+using md::editor::QtQuickMarkdownEditor;
 
 void showQtQuickVersion(QApplication *app) {
   QQuickStyle::setStyle("Material");
@@ -71,7 +72,7 @@ void showQtQuickVersion(QApplication *app) {
   auto fs = new FileSystem();
 
   auto engine = new QQmlApplicationEngine();
-  qmlRegisterType<QtQuickMarkdownItem>("cn.net.pikachu.control", 1, 0, "QtQuickMarkdownItem");
+  qmlRegisterType<QtQuickMarkdownEditor>("QtMarkdown", 1, 0, "QtQuickMarkdownEditor");
   //    qmlRegisterType<TreeModelAdaptor>("cn.net.pikachu.control", 1, 0, "TreeModelAdaptor");
   qmlRegisterType<TreeModelAdaptor>("cn.net.pikachu.control", 1, 0, "TreeModelAdaptor");
   qmlRegisterType<Controller>("Controller", 1, 0, "Controller");

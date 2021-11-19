@@ -9,7 +9,9 @@
 #endif
 #include <QTextBrowser>
 #include <QWidget>
-class Editor;
+namespace md::editor {
+class QtWidgetMarkdownEditor;
+}
 class TextPreview : public QWidget{
 Q_OBJECT
 public:
@@ -29,7 +31,7 @@ private:
     QWebEngineView *m_webEngineView;
 #endif
     QTextBrowser *m_textBrowser;
-    Editor *m_editor;
+    md::editor::QtWidgetMarkdownEditor *m_editor;
 };
 
 

@@ -7,13 +7,14 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QDebug>
-#include <QtMarkdownParser>
+#include <parser/QtMarkdownParser>
 #include <QStandardPaths>
 #include <QVBoxLayout>
 #include <WordReader.h>
-#include <Editor.h>
+#include <editor/QtWidgetMarkdownEditor.h>
 #include <QMenu>
 #include "Settings.h"
+using namespace md::editor;
 TextPreview::TextPreview(QWidget *parent) : QWidget(parent) {
     auto layout = new QVBoxLayout();
     int renderMode = Settings::instance()->modeRender;
@@ -23,7 +24,7 @@ TextPreview::TextPreview(QWidget *parent) : QWidget(parent) {
         m_webEngineView = new QWebEngineView();
         layout->addWidget(m_webEngineView);
 #else
-        m_editor = new Editor();
+        m_editor = new QtWidgetMarkdownEditor();
         auto fn = [this](QString link){
             if (link.startsWith("note://")) {
                 emit linkClicked(link);
@@ -32,14 +33,14 @@ TextPreview::TextPreview(QWidget *parent) : QWidget(parent) {
                 return false;
             }
         };
-        m_editor->setLinkClickedCallback(fn);
+//        m_editor->setLinkClickedCallback(fn);
         layout->addWidget(m_editor);
 #endif
     } else if (renderMode == 1) {
         m_textBrowser = new QTextBrowser();
         layout->addWidget(m_textBrowser);
     } else {
-        m_editor = new Editor();
+        m_editor = new QtWidgetMarkdownEditor();
         auto fn = [this](QString link){
             if (link.startsWith("note://")) {
                 emit linkClicked(link);
@@ -48,7 +49,7 @@ TextPreview::TextPreview(QWidget *parent) : QWidget(parent) {
                 return false;
             }
         };
-        m_editor->setLinkClickedCallback(fn);
+//        m_editor->setLinkClickedCallback(fn);
         layout->addWidget(m_editor);
     }
     setLayout(layout);
@@ -64,6 +65,7 @@ TextPreview::TextPreview(QWidget *parent) : QWidget(parent) {
 }
 
 void TextPreview::loadFile(const QString &path) {
+#if 1
     m_filePath = path;
     if (path.endsWith(".md")) {
         QFile mdFile(path);
@@ -80,7 +82,7 @@ void TextPreview::loadFile(const QString &path) {
             m_editor->loadFile(path);
             return;
         }
-        Document doc(mdFile.readAll());
+        Document doc(mdFile.readAll(), std::make_shared<md::render::RenderSetting>());
         auto html = doc.toHtml();
 //    QString mdCssPath = tmpPath() + "github-markdown.css";
         QString mdCssPath = "qrc:///css/github-markdown.css";
@@ -115,6 +117,7 @@ void TextPreview::loadFile(const QString &path) {
     } else {
         qWarning() << "not allowed." << path;
     }
+#endif
 }
 
 QString TextPreview::fileName() const {
