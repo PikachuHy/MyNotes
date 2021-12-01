@@ -43,3 +43,8 @@ bool FileSystem::isWritable(QString path)
 {
     return QFileInfo(path).isWritable();
 }
+
+QString FileSystem::fileDir(QString path)
+{
+    return QFileInfo(path).absolutePath();
+}

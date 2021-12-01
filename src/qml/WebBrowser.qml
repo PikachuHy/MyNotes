@@ -1,6 +1,6 @@
-import QtQuick
-import QtWebView
-import QtQuick.Layouts
+import QtQuick 2.15
+import QtWebView 1.1
+import QtQuick.Layouts 2.15
 
 Rectangle {
     property alias url: webView.url

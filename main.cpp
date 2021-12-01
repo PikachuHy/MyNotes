@@ -44,6 +44,7 @@
 #else
 #include <private/qandroidextras_p.h>
 #include <QFuture>
+#include <QJniObject>
 #endif
 #endif
 
@@ -52,6 +53,7 @@
 #include <QtWebView>
 #endif
 #include <QQuickWindow>
+
 // #include <QtWebEngineQuick>
 using md::editor::QtQuickMarkdownEditor;
 
@@ -99,7 +101,23 @@ void showQtQuickVersion(QApplication *app) {
   }
 
 #endif
-
+#ifdef Q_OS_ANDROID
+#if 0
+  auto activity = QtAndroidPrivate::activity();
+    if (activity->isValid()) {
+        auto intent = activity.callObjectMethod("getIntent", "()Landroid/content/Intent;");
+        if (intent.isValid()) {
+            QAndroidJniObject data = intent.callObjectMethod("getData", "()Landroid/net/Uri;");
+            if (data.isValid()) {
+                QAndroidJniObject path = data.callObjectMethod("getPath", "()Ljava/lang/String;");
+                if (path.isValid())
+                    // Here path.toString() returns the path of the input file
+                    QMetaObject::invokeMethod(rootComponent, "setSourcePath", Q_ARG(QVariant, QVariant("file://" + path.toString())));
+            }
+        }
+    }
+#endif
+#endif
   QObject::connect(engine, &QQmlApplicationEngine::objectCreated,
       app, [url, keyFilter](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl) {
@@ -149,7 +167,9 @@ int main(int argc, char *argv[]) {
   Q_INIT_RESOURCE(qml);
 #if 1
   QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
   QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGLRhi);
+#endif
   QtWebView::initialize();
 #endif
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -208,7 +228,7 @@ int main(int argc, char *argv[]) {
 
 #endif
 #endif
-#if 0
+#if 1
   qDebug() << a.font();
   QFontDatabase database;
   const QStringList fontFamilies = database.families();
@@ -244,6 +264,7 @@ int main(int argc, char *argv[]) {
   QApplication::setOrganizationDomain("pikachu.net.cn");
   QApplication::setApplicationName("MyNotes");
   QApplication::setApplicationVersion(PROJECT_VERSION);
+  qDebug() << QApplication::font();
   // 解析工具
   QCommandLineParser parser;
   parser.setApplicationDescription("Test helper");

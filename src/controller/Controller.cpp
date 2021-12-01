@@ -152,9 +152,12 @@ QString Controller::configStorePath() {
 bool Controller::hasWriteExternalStoragePermission()
 {
 #ifdef Q_OS_ANDROID
+    #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using namespace QtAndroidPrivate;
     auto result = checkPermission(QString("android.permission.WRITE_EXTERNAL_STORAGE"));
     return result.result() == PermissionResult::Authorized;
+#endif
+    return false;
 #else
     return true;
 #endif
@@ -163,9 +166,12 @@ bool Controller::hasWriteExternalStoragePermission()
 bool Controller::hasManageExternalStorage()
 {
 #ifdef Q_OS_ANDROID
+    #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using namespace QtAndroidPrivate;
     auto result = checkPermission(QString("android.permission.MANAGE_EXTERNAL_STORAGE"));
     return result.result() == PermissionResult::Authorized;
+#endif
+    return false;
 #else
     return true;
 #endif

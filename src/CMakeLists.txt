@@ -43,7 +43,12 @@ target_link_libraries(MyNotes_static PUBLIC
         QtMarkdownParser
         QtWordReader
         )
+
 if (NOT ANDROID)
     target_link_libraries(MyNotes_static PUBLIC CuteLogger)
 endif ()
-
+if (ANDROID AND ${QT_VERSION_MAJOR} LESS_EQUAL 5)
+    find_package(QT NAMES Qt5 COMPONENTS AndroidExtras REQUIRED)
+    find_package(Qt${QT_VERSION_MAJOR} COMPONENTS AndroidExtras REQUIRED)
+    target_link_libraries(MyNotes_static PUBLIC Qt${QT_VERSION_MAJOR}::AndroidExtras)
+endif()

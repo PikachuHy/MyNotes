@@ -32,7 +32,7 @@ Item {
                                                                      "width": listContainer.width,
                                                                      "height": listContainer.height,
                                                                      "source": model.path,
-                                                                     "path": model.path
+                                                                     "pathList": [$FileSystem.fileDir(model.path), $Controller.noteDataPath() + "/attachment"]
                                                                  })
                         root.pageStack.push(NoteViewPage)
                     } else {

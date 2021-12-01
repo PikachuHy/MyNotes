@@ -15,5 +15,6 @@ public:
     Q_INVOKABLE QString defaultPath();
     Q_INVOKABLE bool isReadable(QString path);
     Q_INVOKABLE bool isWritable(QString path);
+    Q_INVOKABLE QString fileDir(QString path);
 };
 #endif //MYNOTES_FILESYSTEM_H

@@ -23,8 +23,8 @@ endif ()
 message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
     if (APPLE)
-        SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/MyNotes.app/Contents/MacOS)
-        SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/MyNotes.app/Contents/PlugIns)
+        set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/MyNotes.app/Contents/MacOS)
+        set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/MyNotes.app/Contents/PlugIns)
     endif ()
 endif ()
 if (MSVC)
@@ -36,15 +36,8 @@ if (MSVC)
     set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
     set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 endif ()
-#if (ANDROID)
-#    add_subdirectory(deps/QtMarkdown)
-#    # add_subdirectory(deps/CuteLogger)
-#    add_subdirectory(deps/QtJieba)
-#    add_subdirectory(deps/QtWordReader)
-#else()
-#    include(cmake/DownloadDependencies.cmake)
-#endif()
-include(cmake/DownloadDependencies.cmake)
+
+
 # QtCreator supports the following variables for Android, which are identical to qmake Android variables.
 # Check https://doc.qt.io/qt/deployment-android.html for more information.
 # They need to be set before the find_package( ...) calls below.
@@ -63,7 +56,7 @@ endif ()
 ####
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick Qml QuickControls2 WebView REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick Qml QuickControls2 WebView REQUIRED)
-
+option(USE_LOCAL_DEPS "use local dependency" ON)
 if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(MyNotes MANUAL_FINALIZATION)
 else ()
@@ -84,55 +77,39 @@ if (WIN32)
     target_sources(MyNotes PRIVATE
             src/assets/${app_WINRC}
             )
-endif()
+endif ()
 target_sources(MyNotes PRIVATE main.cpp)
 target_include_directories(MyNotes PRIVATE ${PROJECT_BINARY_DIR}/config src)
-if (ANDROID AND ${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    # 手动复制依赖到安卓构建目录下
-    # 不知道为啥没法自动找到这些依赖
-    add_custom_command(
-            TARGET MyNotes POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            ${qtjieba_BINARY_DIR}/libQtJieba.so
-            ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/libQtJieba.so
-            COMMENT "copy libQtJieba.so"
-    )
-    add_custom_command(
-            TARGET MyNotes POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            ${qtwordreader_BINARY_DIR}/libQtWordReader.so
-            ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/libQtWordReader.so
-            COMMENT "copy libQtWordReader.so"
-    )
-    add_custom_command(
-            TARGET MyNotes POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            ${qtmarkdown_BINARY_DIR}/editor/libQtQuickMarkdownItem.so
-            ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/libQtQuickMarkdownItem.so
-            COMMENT "copy libQtQuickMarkdownItem.so"
-    )
-    add_custom_command(
-            TARGET MyNotes POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            ${qtmarkdown_BINARY_DIR}/editor/libQtMarkdownEditor.so
-            ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/libQtMarkdownEditor.so
-            COMMENT "copy libQtMarkdownEditor.so"
-    )
-    add_custom_command(
-            TARGET MyNotes POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            ${qtmarkdown_BINARY_DIR}/parser/libQtMarkdownParser.so
-            ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/libQtMarkdownParser.so
-            COMMENT "copy libQtMarkdownParser.so"
-    )
-    add_custom_command(
-        TARGET MyNotes POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-        ${clatexmath_BINARY_DIR}/libclatexmath.so
-        ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/libclatexmath.so
-        COMMENT "copy libclatexmath.so"
-    )
+add_custom_target(genexdebug COMMAND ${CMAKE_COMMAND} -E echo "$<TARGET_FILE_DIR:QtJieba>/$<TARGET_FILE_NAME:QtJieba>")
+if (USE_LOCAL_DEPS)
+    message(STATUS "include local")
+    add_subdirectory(deps/QtMarkdown)
+    add_subdirectory(deps/QtJieba)
+    add_subdirectory(deps/QtWordReader)
+    if (NOT ANDROID)
+        add_subdirectory(deps/CuteLogger)
+    endif ()
+else ()
+    include(cmake/DownloadDependencies.cmake)
 endif ()
+
+function(copy_dep dep_target_name)
+    add_custom_command(
+            TARGET MyNotes POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy
+            $<TARGET_FILE_DIR:${dep_target_name}>/$<TARGET_FILE_NAME:${dep_target_name}>
+            ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/$<TARGET_FILE_NAME:${dep_target_name}>
+            COMMENT "copy ${dep_target_name}"
+    )
+endfunction()
+copy_dep(QtJieba)
+copy_dep(QtWordReader)
+copy_dep(QtMarkdownEditorCore)
+copy_dep(QtQuickMarkdownEditor)
+copy_dep(QtWidgetMarkdownEditor)
+copy_dep(QtMarkdownRender)
+copy_dep(QtMarkdownParser)
+copy_dep(clatexmath)
 add_subdirectory(src)
 add_subdirectory(plugin)
 if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
