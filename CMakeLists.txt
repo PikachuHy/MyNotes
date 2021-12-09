@@ -92,24 +92,25 @@ if (USE_LOCAL_DEPS)
 else ()
     include(cmake/DownloadDependencies.cmake)
 endif ()
-
-function(copy_dep dep_target_name)
-    add_custom_command(
-            TARGET MyNotes POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            $<TARGET_FILE_DIR:${dep_target_name}>/$<TARGET_FILE_NAME:${dep_target_name}>
-            ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/$<TARGET_FILE_NAME:${dep_target_name}>
-            COMMENT "copy ${dep_target_name}"
-    )
-endfunction()
-copy_dep(QtJieba)
-copy_dep(QtWordReader)
-copy_dep(QtMarkdownEditorCore)
-copy_dep(QtQuickMarkdownEditor)
-copy_dep(QtWidgetMarkdownEditor)
-copy_dep(QtMarkdownRender)
-copy_dep(QtMarkdownParser)
-copy_dep(clatexmath)
+if (ANDROID)
+    function(copy_dep dep_target_name)
+        add_custom_command(
+                TARGET MyNotes POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy
+                $<TARGET_FILE_DIR:${dep_target_name}>/$<TARGET_FILE_NAME:${dep_target_name}>
+                ${PROJECT_BINARY_DIR}/android-build/libs/${CMAKE_ANDROID_ARCH_ABI}/$<TARGET_FILE_NAME:${dep_target_name}>
+                COMMENT "copy ${dep_target_name}"
+        )
+    endfunction()
+    copy_dep(QtJieba)
+    copy_dep(QtWordReader)
+    copy_dep(QtMarkdownEditorCore)
+    copy_dep(QtQuickMarkdownEditor)
+    copy_dep(QtWidgetMarkdownEditor)
+    copy_dep(QtMarkdownRender)
+    copy_dep(QtMarkdownParser)
+    copy_dep(clatexmath)
+endif ()
 add_subdirectory(src)
 add_subdirectory(plugin)
 if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
