@@ -68,6 +68,37 @@ Pane {
                 }
             }
         }
+        GridLayout {
+            columns: 4
+            SideMenu {
+                id: musicPlayer
+                iconSource: "qrc:/icon/music_64x64.png"
+                onClicked: {
+                    pushPageToStack("MusicPlayer.qml")
+                }
+            }
+
+            SideMenu {
+                id: webBrowser
+                iconSource: "qrc:/icon/browser_64x64.png"
+                onClicked: {
+                    pushPageToStack("WebBrowser.qml")
+                }
+            }
+            SideMenu {
+                iconSource: "qrc:/icon/notebook_128x128.png"
+                onClicked: {
+                    pushPageToStack("NoteListView.qml")
+                }
+            }
+            SideMenu {
+                iconSource: "qrc:/icon/settings_64x64.png"
+                onClicked: {
+                    pushPageToStack("SettingView.qml")
+                }
+            }
+        }
+
         Row {
             anchors.horizontalCenter: parent.horizontalCenter
             Label {
