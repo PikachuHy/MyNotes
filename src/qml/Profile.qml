@@ -69,6 +69,7 @@ Pane {
             }
         }
         GridLayout {
+            visible: $Controller.isMobile()
             columns: 4
             SideMenu {
                 id: musicPlayer

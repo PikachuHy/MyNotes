@@ -162,7 +162,7 @@ Window {
     }
     function loadNote(path) {
         console.log('load path', path)
-        editor.path = path
+        editor.addPath($FileSystem.fileDir(path))
         editor.source = path
         controller.setLastOpenedNote(path)
         controller.watchNote(path)
