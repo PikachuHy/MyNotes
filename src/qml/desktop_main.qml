@@ -58,6 +58,7 @@ Window {
             id: stackLayout
             width: root.width - 64
             Profile {}
+
             Row {
                 id: notebook
                 NoteTreeView {
@@ -68,14 +69,16 @@ Window {
                     }
                 }
 
-                ScrollView {
+                Flickable {
+                    id: editorContainer
                     width: notebook.width - 300
-                    height: root.height
+                    height: 600
                     QtQuickMarkdownEditor {
                         id: editor
                         focus: true
                         width: parent.width
-                        /*
+                        height: root.height
+
                         onCodeCopied: function (code) {
                             console.log('copy code:', code)
                             clipboard.copyText(code)
@@ -97,11 +100,15 @@ Window {
                             previewImage.source = 'file://' + path
                             previewImagePopup.visible = true
                         }
-                        */
+                        onImplicitHeightChanged: {
+                            editorContainer.contentHeight = editor.height
+                        }
                     }
                 }
             }
+
             MusicPlayer {}
+
             WebBrowser {}
 
             Pane {}
@@ -162,6 +169,7 @@ Window {
     }
     function loadNote(path) {
         console.log('load path', path)
+        editor.width = editorContainer.width
         editor.addPath($FileSystem.fileDir(path))
         editor.source = path
         controller.setLastOpenedNote(path)

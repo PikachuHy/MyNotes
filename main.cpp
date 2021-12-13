@@ -228,7 +228,7 @@ int main(int argc, char *argv[]) {
 
 #endif
 #endif
-#if 1
+#if 0
   qDebug() << a.font();
   QFontDatabase database;
   const QStringList fontFamilies = database.families();
