@@ -72,12 +72,11 @@ Window {
                 Flickable {
                     id: editorContainer
                     width: notebook.width - 300
-                    height: 600
+                    height: root.height
                     QtQuickMarkdownEditor {
                         id: editor
                         focus: true
                         width: parent.width
-                        height: root.height
 
                         onCodeCopied: function (code) {
                             console.log('copy code:', code)
@@ -100,7 +99,8 @@ Window {
                             previewImage.source = 'file://' + path
                             previewImagePopup.visible = true
                         }
-                        onImplicitHeightChanged: {
+                        onHeightChanged: {
+                            // console.log('onImplicitHeightChanged', editor.implicitHeight)
                             editorContainer.contentHeight = editor.height
                         }
                         onDocSave: {
