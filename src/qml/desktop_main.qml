@@ -105,6 +105,10 @@ Window {
                         }
                         onDocSave: {
                             showPassiveNotification("Save Note Success")
+                            root.title = "MyNotes(" + editor.title + ")"
+                        }
+                        onContentChanged: {
+                            root.title = "MyNotes(" + editor.title + "*)"
                         }
                     }
                 }
@@ -177,6 +181,7 @@ Window {
         editor.source = path
         controller.setLastOpenedNote(path)
         controller.watchNote(path)
+        root.title = "MyNotes(" + editor.title + ")"
     }
 
     Component.onCompleted: {
