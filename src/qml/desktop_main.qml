@@ -69,7 +69,7 @@ Window {
                     }
                 }
 
-                Flickable {
+                ScrollView {
                     id: editorContainer
                     width: notebook.width - 300
                     height: root.height
