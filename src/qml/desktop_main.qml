@@ -103,6 +103,9 @@ Window {
                         onImplicitHeightChanged: {
                             editorContainer.contentHeight = editor.height
                         }
+                        onDocSave: {
+                            showPassiveNotification("Save Note Success")
+                        }
                     }
                 }
             }
