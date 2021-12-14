@@ -30,6 +30,9 @@ Window {
                 iconSource: "qrc:/icon/notebook_128x128.png"
                 onClicked: {
                     stackLayout.currentIndex = 1
+
+                    var path = controller.lastOpenedNote()
+                    loadNote(path)
                 }
             }
 
@@ -186,9 +189,6 @@ Window {
 
     Component.onCompleted: {
         editor.height = root.height
-        var path = controller.lastOpenedNote()
-        loadNote(path)
-        console.log('stackLayout z: ', stackLayout.z)
     }
     Popup {
         id: previewImagePopup
