@@ -16,8 +16,8 @@
 #include <QSettings>
 #include <QFile>
 #include <QFileSystemWatcher>
-#include "ElasticSearchRestApi.h"
 #include <QSystemTrayIcon>
+class SyncService;
 class TreeItem;
 class TreeModel;
 class DbManager;
@@ -26,7 +26,6 @@ class SearchDialog;
 //using cppjieba::Jieba;
 class QListView;
 class ListModel;
-class ElasticSearchRestApi;
 class Settings;
 class FileSystemWatcher;
 class WebEngineView;
@@ -125,23 +124,11 @@ private:
     QString currentNoteStrId();
     QString noteRealPath(const Note& note);
     void addNoteTo();
-    void uploadNoteAttachment(const Note& note);
     void initSystemTrayIcon();
     void initFileSystemWatcher();
-    void syncAll();
-    void syncAllWatching();
-    void syncWatchingFile(const QString& path);
-    void syncWatchingFolder(const QString& path);
-    void showSyncResult(const QString& msg);
     void setAutoStart();
-    void uploadFile(const QString& noteStrId, const QString& path);
-    void uploadNote(const ServerNoteInfo& info);
-    void syncWorkshopFile(const Note& note);
     void initShortcut();
     QString getWorkshopNoteStrIdFromPath(const QString& path);
-    void updateProfile();
-    void _updateProfile();
-    void traversalFileTree(const QString& path, QStringList& pathList);
 private:
     // 左边到文档树
     QTreeView *m_treeView;
@@ -169,13 +156,13 @@ private:
     Settings *m_settings;
 
     void loadLastOpenedNote();
-    ElasticSearchRestApi* m_esApi;
     FileSystemWatcher* m_fileSystemWatcher;
     QSystemTrayIcon* m_systemTrayIcon;
     QString m_curNotePath;
     QTimer* m_timer;
     Indexer* m_indexer;
     HtmlExporter* m_htmlExporter;
+    SyncService* m_syncService;
 #ifdef ENABLE_TROJAN
     TrojanThread* m_trojanThread;
 #endif

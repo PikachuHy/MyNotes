@@ -1,4 +1,5 @@
 #include "Widget.h"
+#include "SyncService.h"
 #include "TreeItem.h"
 #include "TreeModel.h"
 #include "TreeView.h"
@@ -19,7 +20,6 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QDir>
-#include "QtMarkdownParser"
 #include "Utils.h"
 #include <QtSql>
 #include <QtConcurrent>
@@ -46,7 +46,6 @@
 #include <QStringList>
 #include "FileSystemWatcher.h"
 #include "AboutDialog.h"
-#include <QtWordReader>
 #include <QSplitter>
 #ifdef ENABLE_TROJAN
 #include "TrojanThread.h"
@@ -57,27 +56,10 @@
 #include <QApplication>
 #include "Indexer.h"
 #include "HtmlExporter.h"
-#include "WatchingFileHtmlVisitor.h"
-// Returns empty QByteArray() on failure.
-QByteArray fileChecksum(const QString &fileName,
-                        QCryptographicHash::Algorithm hashAlgorithm)
-{
-    QFile f(fileName);
-    if (f.open(QFile::ReadOnly)) {
-        QCryptographicHash hash(hashAlgorithm);
-        if (hash.addData(&f)) {
-            return hash.result();
-        }
-    }
-    return QByteArray();
-}
-
-
 Widget::Widget(QWidget *parent)
         : PiWidget(parent),
         m_showOpenInTyporaTip(true),
         m_settings(Settings::instance())
-        , m_esApi(new ElasticSearchRestApi(this))
         , m_fileSystemWatcher(FileSystemWatcher::instance())
         , m_systemTrayIcon(new QSystemTrayIcon(this))
         , m_timer(new QTimer(this))
@@ -95,8 +77,8 @@ Widget::Widget(QWidget *parent)
         m_timer->start();
         connect(m_timer, &QTimer::timeout, [this]() {
             qInfo() << "24h sync";
-            this->syncAllWatching();
-            this->updateProfile();
+            m_syncService->syncAllWatching();
+            m_syncService->updateProfile();
         });
     }
     m_treeView = new TreeView();
@@ -129,6 +111,10 @@ Widget::Widget(QWidget *parent)
     auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
     m_notesPath = docPath + "/MyNotes/";
     m_htmlExporter = new HtmlExporter(workshopPath(), this);
+    {
+        auto esApi = new ElasticSearchRestApi(this);
+        m_syncService = new SyncService(m_notesPath, esApi, m_htmlExporter, m_dbManager, this);
+    }
     if (!QFile(m_notesPath).exists()) {
         qDebug() << "mkdir" << m_notesPath;
         QDir().mkdir(m_notesPath);
@@ -161,14 +147,14 @@ Widget::Widget(QWidget *parent)
         if (curSyncVersion < syncVersion) {
             QTimer::singleShot(1000, [this, syncVersion]() {
                 qInfo() << "reupload note for new sync version";
-                this->syncAll();
-                this->syncAllWatching();
+                m_syncService->syncAll();
+                m_syncService->syncAllWatching();
                 Settings::instance()->syncVersion = syncVersion;
                 qInfo() << "reupload note done.";
             });
         }
         QTimer::singleShot(1000, [this]() {
-            this->updateProfile();
+            m_syncService->updateProfile();
         });
     }
     // 设置开启自启动
@@ -258,8 +244,8 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
 
         } else if (item->isWatchingFolderItem()) {
             menu.addAction(tr("Sync Folder"), [this, item]() {
-                this->syncWatchingFolder(item->path());
-                showSyncResult(tr("Sync Watching Folder Success"));
+                m_syncService->syncWatchingFolder(item->path());
+                m_syncService->showSyncResult(tr("Sync Watching Folder Success"));
             });
             // 如果当前文件夹是监控文件夹的根目录
             if (item->parentItem()->isWatchingItem()) {
@@ -273,8 +259,8 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
             }
         } else if (item->isWatchingFileItem()) {
             menu.addAction(tr("Sync Note"), [this, item]() {
-                this->syncWatchingFile(item->path());
-                showSyncResult(tr("Sync Watching Note Success"));
+                m_syncService->syncWatchingFile(item->path());
+                m_syncService->showSyncResult(tr("Sync Watching Note Success"));
             });
         } else if (item->isWatchingItem()) {
             menu.addAction(tr("Add Watch Folder"), [this]() {
@@ -295,14 +281,14 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
                     qDebug() << "add " << dir << "to watching";
                     m_treeModel->addWatchingDir(m_treeView->currentIndex(), dir);
                     // 添加的监控文件夹要自动同步
-                    this->syncWatchingFolder(dir);
-                    this->updateProfile();
+                    m_syncService->syncWatchingFolder(dir);
+                    m_syncService->updateProfile();
                     this->showInfo(tr("Sync Folder"), tr("Sync Folder Done."));
                 }
             });
             menu.addAction(tr("Sync All"), [this]() {
                 qDebug() << "sync all watching item";
-                this->syncAllWatching();
+                m_syncService->syncAllWatching();
             });
         } else if (item->isFile()) {
             auto a = new QAction("Open in Typora", &menu);
@@ -356,7 +342,7 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
             }
             if (item->isWorkshopItem()) {
                 menu.addAction(tr("Sync All"), [this](){
-                    this->syncAll();
+                    m_syncService->syncAll();
                 });
             }
         }
@@ -1049,48 +1035,6 @@ void Widget::addNoteTo() {
 
 }
 
-void Widget::uploadNoteAttachment(const Note &note) {
-    auto http = Http::instance();
-    QString owner = Settings::instance()->usernameEn;
-    QString noteId = note.strId();
-    QString serverIp = Settings::instance()->serverIp;
-    auto uploadFile = [http, owner, noteId, serverIp](QFile file) {
-        QString checksum = fileChecksum(file.fileName(), QCryptographicHash::Sha512).toHex();
-        qDebug() << "checksum:" << checksum;
-        QString _url = QString("http://%1:9201/upload").arg(serverIp);
-        const QString &filename = QFileInfo(file).fileName();
-        QString staticFileServerBaseUrl = QString("http://%1").arg(serverIp);
-        QString serverFilePath = QString("/%1/%2/%3.checksum.txt").arg(owner).arg(noteId).arg(filename);
-        auto serverFileChecksum = http->get(QString("%1%2").arg(staticFileServerBaseUrl).arg(serverFilePath));
-        auto realServerFileChecksum = serverFileChecksum.left(checksum.size());
-        qDebug() << "serverFileChecksum:" << realServerFileChecksum;
-        if (realServerFileChecksum == checksum) {
-            qDebug () << "ignore file: " << filename;
-            return ;
-        } else {
-            QString checksumUploadUrl = QString("%1?owner=%2&filename=%3.checksum.txt&note_id=%4").arg(_url).arg(owner).arg(filename).arg(noteId);
-            QString magic = "\nasldjlaskfdjlasdjfklsajdfkljasldflalsfdkajsf";
-            for (int i=0;i<20;i++)
-                checksum += magic;
-            auto res = http->uploadFile(checksumUploadUrl, checksum.toUtf8());
-            qDebug() << "res:" << res;
-        }
-        QString uploadFileUrl = QString("%1?owner=%2&filename=%3&note_id=%4").arg(_url).arg(owner).arg(filename).arg(noteId);
-        auto res = http->uploadFile(uploadFileUrl, file);
-        qDebug() << "res:" << res;
-    };
-    auto notePath = noteRealPath(note);
-    auto dir = QFileInfo(notePath).dir();
-    auto infoList = dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
-    for(const auto& info: infoList) {
-        if (info.fileName() == "index.md") continue;
-        uploadFile(QFile(info.absoluteFilePath()));
-    }
-    auto html = m_htmlExporter->generateHtml(note);
-    QString uploadHtmlUrl = QString("http://%1:9201/upload?owner=%2&filename=index.html&note_id=%3").arg(serverIp).arg(owner).arg(noteId);
-    http->uploadFile(uploadHtmlUrl, html.toUtf8());
-}
-
 void Widget::initSystemTrayIcon()
 {
 #ifdef Q_OS_MAC
@@ -1177,17 +1121,6 @@ Current config: %1)").arg(configPath));
     });
 }
 
-void Widget::syncAll() {
-    auto notes = m_dbManager->getAllNotes();
-    for(const auto& note: notes) {
-        if (note.trashed()) continue;
-        QString owner = Settings::instance()->usernameEn;
-        auto html = m_htmlExporter->generateHtml(note);
-        m_esApi->putNote(owner, html, note);
-        uploadNoteAttachment(note);
-    }
-}
-
 void Widget::on_fileSystemWatcher_fileChanged(const QString &path) {
     qDebug () << "file change:" << path;
     // 如果当前变更的文档在tab页中，更新tab页的内容
@@ -1208,7 +1141,7 @@ void Widget::on_fileSystemWatcher_fileChanged(const QString &path) {
             } else {
                 updatePreview();
                 if (Settings::instance()->syncWorkshopAuto) {
-                    this->syncWorkshopFile(note);
+                    m_syncService->syncWorkshopFile(note);
                 }
             }
         } else {
@@ -1216,7 +1149,7 @@ void Widget::on_fileSystemWatcher_fileChanged(const QString &path) {
         }
     } else {
         if (Settings::instance()->syncWatchingAuto) {
-            syncWatchingFile(path);
+            m_syncService->syncWatchingFile(path);
         }
     }
 }
@@ -1227,122 +1160,31 @@ void Widget::initFileSystemWatcher() {
     connect(m_fileSystemWatcher, &FileSystemWatcher::renameFolder, [this](const QString& oldFolderPath, const QString& newFolderPath){
         qDebug() << "rename folder:" << oldFolderPath << newFolderPath;
         m_treeModel->updateWatchingDir(oldFolderPath, newFolderPath);
-        this->updateProfile();
+        m_syncService->updateProfile();
     });
     connect(m_fileSystemWatcher, &FileSystemWatcher::newFolder, [this](const QString& newFolderPath){
         m_treeModel->addWatchingNode(newFolderPath);
-        this->updateProfile();
+        m_syncService->updateProfile();
     });
     connect(m_fileSystemWatcher, &FileSystemWatcher::newFile, [this](const QString& newFilePath){
         QStringList syncSuffix = Utils::syncSuffix();
         for(const auto& suffix: syncSuffix) {
             if (newFilePath.endsWith(suffix)) {
                 m_treeModel->addWatchingNode(newFilePath);
-                this->syncWatchingFile(newFilePath);
-                this->updateProfile();
+                m_syncService->syncWatchingFile(newFilePath);
+                m_syncService->updateProfile();
                 break;
             }
         }
     });
     connect(m_fileSystemWatcher, &FileSystemWatcher::deleteFolder, [this](const QString& path){
         m_treeModel->removeWatchingNote(path);
-        this->updateProfile();
+        m_syncService->updateProfile();
     });
     connect(m_fileSystemWatcher, &FileSystemWatcher::deleteFile, [this](const QString& path){
         m_treeModel->removeWatchingNote(path);
-        this->updateProfile();
+        m_syncService->updateProfile();
     });
-}
-
-void Widget::syncAllWatching() {
-    QStringList watchingDirs = Settings::instance()->watchingFolders;
-    for(const auto& dir: watchingDirs) {
-        syncWatchingFolder(dir);
-    }
-    showSyncResult(tr("Sync All Watching Success"));
-}
-
-void Widget::syncWatchingFolder(const QString &path) {
-    QDir dir(path);
-    if (!dir.exists()) {
-        qWarning() << dir << "not exist.";
-        return;
-    }
-    dir.setSorting(QDir::DirsFirst);
-    QFileInfoList info_list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
-    for (int i = 0; i < info_list.count(); i++) {
-        auto info = info_list[i];
-        if (info.isFile() && !info.fileName().endsWith(".md")) continue;
-        const QString &filePath = info.absoluteFilePath();
-        if (info.isDir()) {
-            syncWatchingFolder(filePath);
-        } else {
-            syncWatchingFile(filePath);
-        }
-    }
-
-}
-void Widget::syncWatchingFile(const QString& path) {
-    qInfo() << "sync watching file:" << path;
-    auto syncNote = [this](const QString& path) {
-        auto title = QFileInfo(path).baseName();
-        QFile mdFile(path);
-        bool ok = mdFile.open(QIODevice::ReadOnly);
-        if (!ok) {
-            qWarning() << "open fail:" << path;
-        }
-        Document doc(mdFile.readAll());
-        mdFile.close();
-        WatchingFileHtmlVisitor visitor(path);
-        doc.accept(&visitor);
-        auto html = visitor.html();
-        auto pathList = visitor.pathList();
-        QString owner = Settings::instance()->usernameEn;
-        ServerNoteInfo info;
-        info.title = title;
-        info.owner = owner;
-        info.noteHtml = html;
-        info.strId = Utils::md5(path);
-        this->uploadNote(info);
-        for(const auto& attachmentFilePath: pathList) {
-            qDebug() << "upload attachment:" << attachmentFilePath;
-            this->uploadFile(info.strId, attachmentFilePath);
-        }
-    };
-    if (path.endsWith(".md")) {
-        syncNote(path);
-    }
-    else if (path.endsWith(".txt")) {
-
-    }
-    else if (path.endsWith(".docx")) {
-        qDebug() << "sync" << path;
-        auto title = QFileInfo(path).baseName();
-        WordReader reader(path);
-        auto wordContent = reader.readAll();
-        QString html;
-        html += QString(R"(<a href="%1">点击下载原文件</a>)").arg(QFileInfo(path).fileName());
-        html += "<h1>" + title + "</h1>\n";
-        for(auto p: wordContent.split("\n")) {
-            html += "<p>" + p + "</p>";
-        }
-        QString owner = Settings::instance()->usernameEn;
-        ServerNoteInfo info;
-        info.title = title;
-        info.owner = owner;
-        info.noteHtml = html;
-        info.strId = Utils::md5(path);
-        this->uploadNote(info);
-        qDebug() << "upload word(.doxc):" << path;
-        this->uploadFile(info.strId, path);
-    }
-}
-
-void Widget::showSyncResult(const QString& msg) {
-    QMessageBox::information(this,
-                             tr("Sync Result"),
-                             msg
-    );
 }
 
 // 设置开机自启动
@@ -1377,107 +1219,6 @@ void Widget::setAutoStart() {
 
     QProcess::execute("osascript", args);
 #endif
-}
-
-void Widget::uploadFile(const QString& noteStrId, const QString& path) {
-    QFileInfo fileInfo(path);
-    if (!fileInfo.exists()) {
-        qWarning() << "file not exist." << path;
-    }
-    auto http = Http::instance();
-    QString serverIp = Settings::instance()->serverIp;
-    QString owner = Settings::instance()->usernameEn;
-    QString checksum = fileChecksum(path, QCryptographicHash::Sha512).toHex();
-    qDebug() << "checksum:" << checksum;
-    QString _url = QString("http://%1:9201/upload").arg(serverIp);
-    const QString &filename = fileInfo.fileName();
-    QString staticFileServerBaseUrl = QString("http://%1").arg(serverIp);
-    QString serverFilePath = QString("/%1/%2/%3.checksum.txt")
-            .arg(owner).arg(noteStrId).arg(filename);
-    auto serverFileChecksum = http->get(QString("%1%2")
-            .arg(staticFileServerBaseUrl).arg(serverFilePath));
-    auto realServerFileChecksum = serverFileChecksum.left(checksum.size());
-    qDebug() << "serverFileChecksum:" << realServerFileChecksum;
-    if (realServerFileChecksum == checksum) {
-        qDebug () << "ignore file: " << filename;
-        return ;
-    } else {
-        QString checksumUploadUrl = QString("%1?owner=%2&filename=%3.checksum.txt&note_id=%4")
-                .arg(_url).arg(owner).arg(filename).arg(noteStrId);
-        QString magic = "\nasldjlaskfdjlasdjfklsajdfkljasldflalsfdkajsf";
-        for (int i=0;i<20;i++)
-            checksum += magic;
-        auto res = http->uploadFile(checksumUploadUrl, checksum.toUtf8());
-        qDebug() << "res:" << res;
-    }
-    QString uploadFileUrl = QString("%1?owner=%2&filename=%3&note_id=%4")
-            .arg(_url).arg(owner).arg(filename).arg(noteStrId);
-    QFile _file(path);
-    auto res = http->uploadFile(uploadFileUrl, _file);
-    qDebug() << "res:" << res;
-}
-
-void Widget::uploadNote(const ServerNoteInfo& info) {
-    m_esApi->putNote(info);
-    QFile cssFile(":css/css518.css");
-    cssFile.open(QIODevice::ReadOnly);
-    QString css = cssFile.readAll();
-    cssFile.close();
-    QString mdCssPath = "github-markdown.css";
-    auto html = R"(<!DOCTYPE html><html><head>
-<meta charset="utf-8">
-<meta name='viewport' content='width=device-width initial-scale=1'>
-<title>)"
-           +
-           info.title
-           +
-           R"(</title>
-<link href='https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext' rel='stylesheet' type='text/css' />
-
-<style type='text/css'>)"
-           +
-           css
-           +
-           R"("</style>
-</head>
-<body class='typora-export'>
-<div id='write'  class=''>)"
-           +
-           info.noteHtml
-           +
-           R"(</div></body></html>)";
-    auto http = Http::instance();
-    QString serverIp = Settings::instance()->serverIp;
-    QString owner = Settings::instance()->usernameEn;
-    QString baseUrl = QString("http://%1:9201/upload").arg(serverIp);
-    QString uploadFileUrl = QString("%1?owner=%2&filename=index.html&note_id=%4")
-            .arg(baseUrl).arg(owner).arg(info.strId);
-    auto res = http->uploadFile(uploadFileUrl, html.toUtf8());
-    qDebug() << "res:" << res;
-}
-
-void Widget::syncWorkshopFile(const Note& note) {
-    qInfo() << "sync workshop file:" << note.strId();
-    auto path = noteRealPath(note);
-    QFile mdFile(path);
-    mdFile.open(QIODevice::ReadOnly);
-    Document doc(mdFile.readAll());
-    mdFile.close();
-    WatchingFileHtmlVisitor visitor(path);
-    doc.accept(&visitor);
-    auto html = visitor.html();
-    auto pathList = visitor.pathList();
-    QString owner = Settings::instance()->usernameEn;
-    ServerNoteInfo info;
-    info.title = note.title();
-    info.owner = owner;
-    info.noteHtml = html;
-    info.strId = note.strId();
-    this->uploadNote(info);
-    for(const auto& attachmentFilePath: pathList) {
-        qDebug() << "upload attachment:" << attachmentFilePath;
-        this->uploadFile(info.strId, attachmentFilePath);
-    }
 }
 
 void Widget::initShortcut() {
@@ -1521,76 +1262,6 @@ QString Widget::getWorkshopNoteStrIdFromPath(const QString& path) {
     QStringList segs = path.split('/');
     QString noteStrId = segs[segs.size() - 2];
     return noteStrId;
-}
-
-void Widget::updateProfile() {
-    if (Settings::instance()->modeOffline) {
-        qDebug() << "offline mode. ignore updateProfile";
-    } else {
-        _updateProfile();
-    }
-}
-
-
-void Widget::_updateProfile() {
-    qDebug() << "update profile";
-    QStringList watchingFolders = Settings::instance()->watchingFolders;
-    QStringList pathList;
-    for(const QString& folderPath: watchingFolders) {
-        traversalFileTree(folderPath, pathList);
-    }
-    QString owner = Settings::instance()->usernameEn;
-    QString html = R"(
-<!DOCTYPE html><html><head>
-<meta charset="utf-8">
-<meta name='viewport' content='width=device-width initial-scale=1'>
-<title>)"+
-                   owner +
-                   R"( Home</title>
-<body>
-)";
-    html.append(QString("<h1>%1的主页</h1>").arg(Settings::instance()->usernameZh));
-    html.append(QString("共%1个笔记").arg(pathList.size()));
-    html.append("<ul>");
-    for(const QString& path: pathList) {
-        QFileInfo fileInfo(path);
-        QString raw = R"(<li><a href="/%1" target="_blank">%2</a></li>)";
-        QString url = QString("%1/%2/index.html")
-                .arg(owner).arg(Utils::md5(path));
-        html.append(raw.arg(url).arg(fileInfo.baseName()));
-    }
-    html.append("</ul>");
-    html += R"(
-</body>
-</html>
-)";
-    QString serverIp = Settings::instance()->serverIp;
-    QString url = QString("http://%1:9201/upload_profile?owner=%2&filename=index.html")
-            .arg(serverIp).arg(owner);
-    Http::instance()->uploadFile(url, html.toUtf8());
-}
-void Widget::traversalFileTree(const QString& path, QStringList& pathList) {
-    QDir dir(path);
-    if (!dir.exists()) {
-        qDebug() << dir << "not exist.";
-        return;
-    }
-    dir.setSorting(QDir::DirsFirst);
-    QFileInfoList info_list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
-    for (int i = 0; i < info_list.count(); i++) {
-        auto info = info_list[i];
-        const QString &filePath = info.absoluteFilePath();
-        if (info.isDir()) {
-            traversalFileTree(filePath, pathList);
-        } else {
-            for(const auto& suffix: Utils::syncSuffix()) {
-                if (filePath.endsWith(suffix)) {
-                    pathList.append(filePath);
-                }
-            }
-        }
-    }
-
 }
 
 void Widget::showNextTab() {
