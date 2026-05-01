@@ -56,6 +56,8 @@
 #include <QVector>
 #include <QApplication>
 #include "Indexer.h"
+#include "HtmlExporter.h"
+#include "WatchingFileHtmlVisitor.h"
 // Returns empty QByteArray() on failure.
 QByteArray fileChecksum(const QString &fileName,
                         QCryptographicHash::Algorithm hashAlgorithm)
@@ -126,6 +128,7 @@ Widget::Widget(QWidget *parent)
     setWindowIcon(QIcon(QPixmap(":/icon/notebook_128x128.png")));
     auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
     m_notesPath = docPath + "/MyNotes/";
+    m_htmlExporter = new HtmlExporter(workshopPath(), this);
     if (!QFile(m_notesPath).exists()) {
         qDebug() << "mkdir" << m_notesPath;
         QDir().mkdir(m_notesPath);
@@ -1020,85 +1023,14 @@ void Widget::on_action_exportNoteToHTML() {
         showErrorDialog(tr("export to HTML fail"));
         return;
     }
-    const QString notePath = noteRealPath(item->note());
-    // dirName是完整路径
     auto dirName = QFileDialog::getSaveFileName(this, tr("Export Note to HTML"));
-    qDebug() << "export Note to" << dirName;
-    if (!QDir().exists(dirName)) {
-        qDebug() << "mkdir" << dirName;
-        QDir().mkdir(dirName);
-    }
-    QDir targetDir(dirName);
-    QDir noteDir(notePath);
-    noteDir.cdUp();
-    qDebug() << "note dir:" << noteDir.dirName();
-    QFileInfoList fileInfoList = noteDir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
-    for(const auto & fileInfo: fileInfoList) {
-        if (fileInfo.fileName() == "index.md") {
-            continue;
-        }
-        auto targetFile = targetDir.filePath(fileInfo.fileName());
-        qDebug() << "copy" << fileInfo.filePath() << "to" << targetFile;
-        QFile::copy(fileInfo.filePath(), targetFile);
-    }
-    generateHTML(item->note(), targetDir.filePath("index.html"));
-    QDesktopServices::openUrl(QUrl(QString("file://%1").arg(dirName)));
-}
-
-void Widget::generateHTML(const Note& note, const QString& path) {
-    auto html = generateHTML(note);
-    QFile htmlFile(path);
-    htmlFile.open(QIODevice::WriteOnly);
-    htmlFile.write(html.toUtf8());
-    htmlFile.close();
+    m_htmlExporter->exportToHtml(item->note(), dirName);
 }
 
 QString Widget::noteRealPath(const Note& note) {
     return workshopPath() + note.strId() + "/index.md";
 }
 
-
-QString Widget::generateHTML(const Note& note) {
-    return generateHTML(noteRealPath(note), note.title());
-}
-QString Widget::generateHTML(const QString &path, const QString& title) {
-    QFile mdFile(path);
-    bool ok = mdFile.open(QIODevice::ReadOnly);
-    if (!ok) {
-        qWarning() << "open fail:" << path;
-    }
-    Document doc(mdFile.readAll());
-    mdFile.close();
-    auto html = doc.toHtml();
-    QFile cssFile(":css/css518.css");
-    cssFile.open(QIODevice::ReadOnly);
-    QString css = cssFile.readAll();
-    cssFile.close();
-    QString mdCssPath = "github-markdown.css";
-    html = R"(<!DOCTYPE html><html><head>
-<meta charset="utf-8">
-<meta name='viewport' content='width=device-width initial-scale=1'>
-<title>)"
-+
-title
-+
-R"(</title>
-<link href='https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext' rel='stylesheet' type='text/css' />
-
-<style type='text/css'>)"
-           +
-           css
-           +
-           R"("</style>
-</head>
-<body class='typora-export'>
-<div id='write'  class=''>)"
-           +
-           html
-           +
-           R"(</div></body></html>)";
-    return html;
-}
 
 void Widget::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
@@ -1154,7 +1086,7 @@ void Widget::uploadNoteAttachment(const Note &note) {
         if (info.fileName() == "index.md") continue;
         uploadFile(QFile(info.absoluteFilePath()));
     }
-    auto html = generateHTML(note);
+    auto html = m_htmlExporter->generateHtml(note);
     QString uploadHtmlUrl = QString("http://%1:9201/upload?owner=%2&filename=index.html&note_id=%3").arg(serverIp).arg(owner).arg(noteId);
     http->uploadFile(uploadHtmlUrl, html.toUtf8());
 }
@@ -1250,7 +1182,7 @@ void Widget::syncAll() {
     for(const auto& note: notes) {
         if (note.trashed()) continue;
         QString owner = Settings::instance()->usernameEn;
-        auto html = generateHTML(note);
+        auto html = m_htmlExporter->generateHtml(note);
         m_esApi->putNote(owner, html, note);
         uploadNoteAttachment(note);
     }
@@ -1350,161 +1282,6 @@ void Widget::syncWatchingFolder(const QString &path) {
     }
 
 }
-struct WatchingFileHtmlVisitor: MultipleVisitor<Header,
-        Text, ItalicText, BoldText, ItalicBoldText,
-        Image, Link, CodeBlock, InlineCode, Paragraph,
-        UnorderedList, OrderedList,
-        Hr, QuoteBlock, Table> {
-    WatchingFileHtmlVisitor(const QString& path): m_notePath(path) {
-        m_noteDir = QFileInfo(path).absolutePath();
-        qDebug() << "note dir:" << m_noteDir;
-    }
-    void visit(Header *node) override {
-        auto hn = "h" + String::number(node->level());
-        m_html += "<" + hn + ">";
-        for(auto it: node->children()) {
-            it->accept(this);
-        }
-        m_html += "</" + hn + ">\n";
-    }
-    void visit(Text *node) override {
-        m_html += node->str();
-    }
-    void visit(ItalicText *node) override {
-        m_html += "<em>" + node->str() + "</em>";
-    }
-    void visit(BoldText *node) override {
-        m_html += "<strong>" + node->str() + "</strong>";
-    }
-    void visit(ItalicBoldText *node) override {
-        m_html += "<strong><em>" + node->str() + "</strong></em>";
-    }
-    void visit(Image *node) override {
-        m_html += R"(<img alt=")";
-        if (node->alt()) {
-            node->alt()->accept(this);
-        } else {
-            qDebug() << "image alt is null";
-        }
-        m_html += R"(" src=")";
-        if(node->src()) {
-            QString path = node->src()->str();
-#ifdef Q_OS_WIN
-#else
-            // 如果是绝对路径
-            if (path.startsWith("/")) {
-
-            } else {
-                // 相对路径则改写成绝对路径
-                path = m_noteDir + '/' + path;
-            }
-#endif
-            QFileInfo info(path);
-            if (info.exists() && info.isFile()) {
-                m_html += info.fileName();
-                m_pathList.append(path);
-            }
-        } else {
-            qDebug() << "image src is null";
-        }
-        m_html += R"(" />)";
-        m_html += "\n";
-    }
-    void visit(Link *node) override {
-        m_html += R"(<a href=")";
-        if (node->href()) {
-            node->href()->accept(this);
-        } else {
-            qDebug() << "link href is null";
-        }
-        m_html += R"(">)";
-        if(node->content()) {
-            node->content()->accept(this);
-        } else {
-            qDebug() << "link content is null";
-        }
-        m_html += R"(</a>)";
-        m_html += "\n";
-    }
-    void visit(CodeBlock *node) override {
-        m_html += "<pre><code>\n";
-        auto code = node->code()->str();
-        m_html += code.toHtmlEscaped();
-        m_html += "</code></pre>\n";
-    }
-    void visit(InlineCode *node) override {
-        m_html += "<code>";
-        if (auto code = node->code(); code) {
-            code->accept(this);
-        }
-        m_html += "</code>\n";
-    }
-    void visit(Paragraph *node) override {
-        m_html += "<p>";
-        for(auto it: node->children()) {
-            it->accept(this);
-        }
-        m_html += "</p>\n";
-    }
-    void visit(UnorderedList *node) override {
-        m_html += "<ul>\n";
-        for(auto it: node->children()) {
-            m_html += "\t<li>";
-            it->accept(this);
-            m_html += "</li>\n";
-        }
-        m_html += "</ul>\n";
-    }
-    void visit(OrderedList *node) override {
-        m_html += "<ol>\n";
-        for(auto it: node->children()) {
-            m_html += "\t<li>";
-            it->accept(this);
-            m_html += "</li>\n";
-        }
-        m_html += "</ol>\n";
-    }
-    void visit(Hr *node) override {
-        m_html += "<hr/>\n";
-    }
-    void visit(QuoteBlock *node) override {
-        m_html += "<blockquote>\n";
-        for(auto it: node->children()) {
-            it->accept(this);
-            m_html += "\n";
-        }
-        m_html += "</blockquote>\n";
-    }
-    void visit(Table *node) override {
-        m_html += "<table>\n";
-        m_html += "<thead><tr>";
-        for(const auto &content: node->header()) {
-            m_html += "<th>";
-            m_html += content;
-            m_html += "</th>";
-        }
-        m_html += "</tr></thead>\n";
-        m_html += "<tbody>\n";
-        for(const auto & row: node->content()) {
-            m_html += "<tr>";
-            for(const auto & content: row) {
-                m_html += "<th>";
-                m_html += content;
-                m_html += "</th>";
-            }
-            m_html += "</tr>";
-        }
-        m_html += "</tbody>";
-        m_html += "</table>\n";
-    }
-    String html() { return m_html; }
-    QStringList pathList() { return m_pathList; }
-private:
-    String m_html;
-    QStringList m_pathList;
-    QString m_notePath;
-    QString m_noteDir;
-};
 void Widget::syncWatchingFile(const QString& path) {
     qInfo() << "sync watching file:" << path;
     auto syncNote = [this](const QString& path) {

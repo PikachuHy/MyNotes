@@ -37,6 +37,7 @@ class TabWidget;
 #include <QTimer>
 #include "PiWidget.h"
 class Indexer;
+class HtmlExporter;
 class Widget : public PiWidget {
 Q_OBJECT
 
@@ -123,9 +124,6 @@ private:
     QString currentNotePath();
     QString currentNoteStrId();
     QString noteRealPath(const Note& note);
-    QString generateHTML(const Note& note);
-    QString generateHTML(const QString& path, const QString& title);
-    void generateHTML(const Note& note, const QString& path);
     void addNoteTo();
     void uploadNoteAttachment(const Note& note);
     void initSystemTrayIcon();
@@ -177,6 +175,7 @@ private:
     QString m_curNotePath;
     QTimer* m_timer;
     Indexer* m_indexer;
+    HtmlExporter* m_htmlExporter;
 #ifdef ENABLE_TROJAN
     TrojanThread* m_trojanThread;
 #endif
