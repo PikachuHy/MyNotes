@@ -3,35 +3,27 @@
 
 #include <QWidget>
 #include <QTreeView>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QLayout>
-#include <QAction>
-#include <QSqlQuery>
-//#include "cppjieba/Jieba.hpp"
 #include "DbModel.h"
 #include <QSettings>
-#include <QFile>
 #include <QFileSystemWatcher>
+#include <QTimer>
+#include "PiWidget.h"
+
 class SyncService;
 class NoteFileService;
 class TreeItem;
 class TreeModel;
 class DbManager;
-class QSqlRelationalTableModel;
 class SearchController;
 class Settings;
 class FileSystemWatcher;
 class TrayIconManager;
 class NoteEditorWidget;
+class Indexer;
+class HtmlExporter;
 #ifdef ENABLE_TROJAN
 class TrojanThread;
 #endif
-#include <QTimer>
-#include "PiWidget.h"
-class Indexer;
-class HtmlExporter;
 class Widget : public PiWidget {
 Q_OBJECT
 
