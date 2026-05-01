@@ -72,6 +72,7 @@ else ()
 endif ()
 target_sources(libMyNotes PRIVATE MyNotes_zh_CN.ts)
 target_sources(libMyNotes PRIVATE
+        NoteEditorWidget.cpp NoteEditorWidget.h
         Widget.cpp
         Widget.h
         SyncService.cpp SyncService.h

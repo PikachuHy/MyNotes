@@ -6,6 +6,7 @@
 #include "TreeView.h"
 #include "DbManager.h"
 #include "TrayIconManager.h"
+#include "NoteEditorWidget.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSplitter>
@@ -34,7 +35,6 @@
 #include <vector>
 #include <QFuture>
 #include <functional>
-#include "Toast.h"
 #include "ChooseFolderWidget.h"
 #include "ElasticSearchRestApi.h"
 #include "Settings.h"
@@ -50,7 +50,6 @@
 #ifdef ENABLE_TROJAN
 #include "TrojanThread.h"
 #endif
-#include "TabWidget.h"
 #include "TextPreview.h"
 #include <QVector>
 #include <QApplication>
@@ -58,7 +57,6 @@
 #include "HtmlExporter.h"
 Widget::Widget(QWidget *parent)
         : PiWidget(parent),
-        m_showOpenInTyporaTip(true),
         m_settings(Settings::instance())
         , m_fileSystemWatcher(FileSystemWatcher::instance())
         , m_timer(new QTimer(this))
@@ -80,32 +78,10 @@ Widget::Widget(QWidget *parent)
         });
     }
     m_treeView = new TreeView();
-    m_textEdit = new QTextEdit();
-    m_tabWidget = new TabWidget();
-    connect(m_tabWidget, &TabWidget::tabCloseRequested, [this](int index){
-        m_tabWidget->removeTab(index);
-    });
-//    m_textPreview = new WebEngineView();
-//    connect(m_textPreview, &WebEngineView::urlChanged, [this](const QUrl &url){
-//        if (url.toString().startsWith("http://in.css518.cn/")) {
-//            m_textPreview->setUrl(url);
-//        } else {
-//            qWarning() << "not allow:" << url;
-//        }
-//    });
     // 处理Ctrl+S保存
     m_treeView->installEventFilter(this);
     m_treeView->setMinimumWidth(300);
 //    initShortcut();
-    auto mainLayout = new QHBoxLayout();
-    mainLayout->setContentsMargins(0, 0, 0, 0);
-    QSplitter* splitter = new QSplitter(Qt::Horizontal);
-    splitter->addWidget(m_treeView);
-    splitter->addWidget(m_tabWidget);
-    splitter->setStretchFactor(1, 3);
-    mainLayout->addWidget(splitter);
-    setLayout(mainLayout);
-    setWindowIcon(QIcon(QPixmap(":/icon/notebook_128x128.png")));
     auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
     m_notesPath = docPath + "/MyNotes/";
     m_htmlExporter = new HtmlExporter(workshopPath(), this);
@@ -139,11 +115,20 @@ Widget::Widget(QWidget *parent)
     connect(m_searchController, &SearchController::noteSelected, this, [this](int noteId) {
         auto note = m_dbManager->getNote(noteId);
         if (note.id() != -1) {
-            loadNote(note);
+            m_noteEditorWidget->loadNote(note);
         }
     });
-    // 读最后一次打开的笔记
-    loadLastOpenedNote();
+    m_noteEditorWidget = new NoteEditorWidget();
+    m_noteEditorWidget->setDependencies(m_indexer, m_noteFileService, m_fileSystemWatcher, m_settings, m_dbManager, workshopPath());
+    auto mainLayout = new QHBoxLayout();
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    QSplitter* splitter = new QSplitter(Qt::Horizontal);
+    splitter->addWidget(m_treeView);
+    splitter->addWidget(m_noteEditorWidget);
+    splitter->setStretchFactor(1, 3);
+    mainLayout->addWidget(splitter);
+    setLayout(mainLayout);
+    setWindowIcon(QIcon(QPixmap(":/icon/notebook_128x128.png")));
     if (!Settings::instance()->modeOffline) {
         const int syncVersion = 20210402;
         int curSyncVersion = Settings::instance()->syncVersion;
@@ -175,38 +160,8 @@ Widget::Widget(QWidget *parent)
         dialog.exec();
     });
     connect(m_trayIconManager, &TrayIconManager::syncAllRequested, m_syncService, &SyncService::syncAll);
-}
-
-void Widget::loadLastOpenedNote() {
-    QTimer::singleShot(50, [this](){
-        QString lastOpenNotePath = m_settings->lastOpenNotePath;
-        if (lastOpenNotePath.isEmpty()) {
-            qDebug() << "no last note";
-            return ;
-        }
-        if (!QFile(lastOpenNotePath).exists()) {
-            qInfo() << "last open note not exist." << lastOpenNotePath;
-            return;
-        }
-//        if (lastOpenNotePath.startsWith(workshopPath())) {
-//            //
-//        } else {
-//            // 监控文件夹的情况
-//        }
-        loadNote(lastOpenNotePath);
-//        auto lastNoteId = m_settings->value("last_note", -1).toInt();
-//        if (lastNoteId != -1) {
-//            auto lastNote = m_dbManager->getNote(lastNoteId);
-//            if (lastNote.id() != -1) {
-//                qDebug() << "load last note";
-//                loadNote(lastNote);
-//            } else {
-//                qWarning() << "no last note id error:" << lastNoteId;
-//            }
-//        } else {
-//            qDebug() << "no last note";
-//        }
-    });
+    // 读最后一次打开的笔记
+    m_noteEditorWidget->loadLastOpenedNote();
 }
 
 Widget::~Widget() {
@@ -218,11 +173,11 @@ void Widget::on_treeView_pressed(const QModelIndex &index) {
     auto tryLoadNote = [this](const QString& notePath) {
         qDebug() << "note path: " << notePath;
         // 右键选中笔记时，如果当前笔记就是选中的笔记，不重新载入笔记内容
-        if (notePath == currentNotePath()) {
+        if (notePath == m_noteEditorWidget->currentFilePath()) {
             return;
         }
         if (!notePath.isEmpty()) {
-            loadNote(notePath);
+            m_noteEditorWidget->loadNote(notePath);
         } else {
             qDebug() << "note path is empty.";
             showErrorDialog(tr("note path is empty."));
@@ -387,39 +342,12 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
             dialog.exec();
         }
         if (event->key() == Qt::Key_S && (event->modifiers() & Qt::ControlModifier)) {
-            saveMdText();
-            updatePreview();
+            m_noteEditorWidget->save();
+            m_noteEditorWidget->refreshPreview();
             return true;
         }
-        /*
-        if (event->key() == Qt::Key_V && (event->modifiers() & Qt::ControlModifier)) {
-            qDebug() << "paste";
-            auto mimeData = QApplication::clipboard()->mimeData();
-            if (mimeData->hasImage()) {
-                qDebug() << "image";
-                auto pixmap = qvariant_cast<QPixmap>(mimeData->imageData());
-                QString saveName = "image-" + Utils::generateId() + ".png";
-                QString savePath = attachmentPath() + saveName;
-                auto ret = pixmap.save(savePath);
-                if (!ret) {
-                    qDebug() << "save to" << savePath << "fail";
-                }
-                m_textEdit->insertPlainText(imageMdText(saveName));
-                saveMdText();
-                updatePreview();
-                return true;
-            } else if (mimeData->hasHtml()) {
-                qDebug() << "html";
-            } else if (mimeData->hasText()) {
-                qDebug() << "text";
-            } else {
-                qDebug() << "other";
-            }
-        }
-        */
-        // 按e进入编辑
         if (event->key() == Qt::Key_E) {
-            openInTypora(currentNotePath());
+            m_noteEditorWidget->openInTypora(m_noteEditorWidget->currentFilePath());
         }
         if (watched == m_treeView) {
             if (event->key() == Qt::Key_Backspace) {
@@ -472,95 +400,10 @@ void Widget::hideEvent(QHideEvent *event)
 //    }
 }
 
-void Widget::updatePreview() {
-    updatePreview(currentNotePath());
-}
-
-void Widget::updatePreview(const QString& path) {
-    auto tabs = m_tabWidget->tabs();
-    for(auto tab: tabs) {
-        if (tab->filePath() == path) {
-            m_tabWidget->setCurrentWidget(tab);
-            return;
-        }
-    }
-    TextPreview* textPreview = new TextPreview();
-    connect(textPreview, &TextPreview::linkClicked, [this](QString link){
-        QUrl url(link);
-        auto scheme = url.scheme();
-        if (scheme != "note") {
-            return;
-        }
-        auto q = url.query();
-        qDebug() << "query" << q;
-        QUrlQuery urlQuery(q);
-        auto noteStrId = urlQuery.queryItemValue("note");
-        qDebug() << "note id" << noteStrId;
-        auto pathId = urlQuery.queryItemValue("path");
-        auto note = this->m_dbManager->getNote(noteStrId);
-        if (note.id() == -1) {
-            showWarning(tr("Open Note"), tr("Note not exist.\nNote Str ID: %1").arg(noteStrId));
-        } else {
-            loadNote(note);
-        }
-    });
-    textPreview->loadFile(path);
-    QString title = QFileInfo(path).fileName();
-    if (path.startsWith(workshopPath())) {
-        auto strId = m_noteFileService->noteStrIdFromWorkshopPath(path);
-        auto note = m_dbManager->getNote(strId);
-        title = note.title();
-    }
-    m_tabWidget->add(textPreview, title);
-#if 0
-    QFile mdFile(path);
-    mdFile.open(QIODevice::ReadOnly);
-    Document doc(mdFile.readAll());
-    auto html = doc.toHtml();
-    QFile htmlFile(tmpHtmlPath());
-    htmlFile.open(QIODevice::WriteOnly);
-//    QString mdCssPath = tmpPath() + "github-markdown.css";
-    QString mdCssPath = "qrc:///css/github-markdown.css";
-//    QString mdCssPath = "qrc:///css/github.css";
-    auto allHtml = R"(<!DOCTYPE html><html><head>
-<meta charset="utf-8">
-<title>Markdown</title>
-<link rel="stylesheet" href=")"
-+
-mdCssPath
-+
-R"(">
-</head>
-<body>
-<article class="markdown-body">)"
-           +
-           html
-           +
-           R"(</article></body></html>)";
-    m_textPreview->setHtml(allHtml, QUrl("file://" + QFileInfo(path).absolutePath() + '/'));
-    htmlFile.write(allHtml.toUtf8());
-    htmlFile.close();
-    // auto url = QString("file://%1/%2/").arg(workshopPath()).arg(m_curNote.strId());
-    // m_textPreview->setHtml(html, QUrl(url));
-//    QString owner = Settings::instance()->usernameEn;
-//    m_esApi->putNote(owner, html, m_curNote);
-//    uploadNoteAttachment(m_curNote);
-#endif
-}
-
-
-void Widget::saveMdText() {
-    auto notePath = currentNotePath();
-    if (notePath.isEmpty()) {
-        return;
-    }
-    QFile file(notePath);
-    file.open(QIODevice::WriteOnly);
-    const QString &mdText = m_textEdit->toPlainText();
-    file.write(mdText.toUtf8());
-    file.close();
-    updateIndex(mdText, m_curNote.id());
-    updateStatistics();
+void Widget::resizeEvent(QResizeEvent *event) {
+    QWidget::resizeEvent(event);
+    qDebug() << "resize" << this->geometry();
+    Settings::instance()->mainWindowGeometry = this->geometry();
 }
 
 void Widget::on_action_newNote() {
@@ -593,8 +436,7 @@ void Widget::on_action_newNote() {
     item->setPath(newNotePath);
     auto newNoteIndex = m_treeModel->addNewNode(m_treeView->currentIndex(), noteItem);
     m_treeView->setCurrentIndex(newNoteIndex);
-    loadNote(note);
-    m_textEdit->setFocus();
+    m_noteEditorWidget->loadNote(note);
 }
 
 void Widget::on_action_newFolder() {
@@ -626,29 +468,6 @@ void Widget::on_action_newFolder() {
     auto newPathItem = new FolderItem(path, item);
     auto newNoteIndex = m_treeModel->addNewFolder(m_treeView->currentIndex(), newPathItem);
     m_treeView->setCurrentIndex(newNoteIndex);
-}
-void Widget::loadMdText() {
-    auto notePath = currentNotePath();
-    loadMdText(notePath);
-}
-void Widget::loadMdText(const QString &notePath) {
-
-    QFile file(notePath);
-    if(!file.exists()) {
-        qDebug() << notePath << "is not exist.";
-        QMessageBox::critical(this, tr("File"), tr("File not exist."));
-        return;
-    }
-    bool ret = file.open(QIODevice::ReadOnly);
-    if (!ret) {
-        qDebug() << notePath << "open fail.";
-        QMessageBox::critical(this, tr("File"), tr("File open fail."));
-        return;
-    }
-    QString mdText = file.readAll();
-    m_textEdit->setText(mdText);
-    file.close();
-    updateStatistics();
 }
 
 void Widget::on_action_trashNote() {
@@ -689,145 +508,12 @@ void Widget::showErrorDialog(const QString &msg) {
     QMessageBox::critical(this, tr("ERROR"), msg);
 }
 
-void Widget::updateIndex(QString text, int id) {
-    auto f = [this](QString text, int id) {
-//        if (!m_jieba) initJieba();
-        std::vector<std::string> words;
-        std::string s = text.toStdString();
-//        m_jieba->Cut(s, words);
-        std::unordered_set<std::string> wordSet(words.begin(), words.end());
-        QStringList wordList;
-        for(const auto& word: wordSet) {
-            wordList << QString::fromStdString(word);
-        }
-//        DbManager db(m_notesPath);
-        m_dbManager->updateIndex(wordList, id);
-        qDebug() << "update index for note" << id << "finish";
-    };
-    qDebug() << "update index for note" << id << "start";
-    auto ret = QtConcurrent::run(f, text, id);
-    Q_UNUSED(ret)
-//    f(text, id);
-}
-
-
-
-void Widget::initJieba() {
-    // TODO: change the path
-    const char* const DICT_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/jieba.dict.utf8";
-    const char* const HMM_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/hmm_model.utf8";
-    const char* const USER_DICT_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/user.dict.utf8";
-    const char* const IDF_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/idf.utf8";
-    const char* const STOP_WORD_PATH = "/Users/pikachu/QtProjects/cppjieba/dict/stop_words.utf8";
-    /*
-    m_jieba = new cppjieba::Jieba(DICT_PATH,
-                          HMM_PATH,
-                          USER_DICT_PATH,
-                          IDF_PATH,
-                          STOP_WORD_PATH);
-                          */
-}
-
-
-void Widget::loadNote(const Note &note) {
-    qDebug() << "load" << note.strId() << note.title();
-    m_curNote = note;
-    const QString &path = m_noteFileService->noteRealPath(note);
-    loadNote(path);
-    if (m_showOpenInTyporaTip) {
-        Toast::showTip("Press E Open in Typora", this);
-        m_showOpenInTyporaTip = false;
-    }
-}
-
-void Widget::loadNote(const QString &path)
-{
-    if (!QFile(path).exists()) {
-        qWarning() << "note not exist." << path;
-    }
-    m_fileSystemWatcher->addPath(path);
-    m_curNotePath = path;
-    qDebug() << "load" << path;
-    loadMdText(path);
-    updatePreview(path);
-    Settings::instance()->lastOpenNotePath = path;
-}
-
-
-void Widget::updateStatistics() {
-    /*
-    QString mdText = m_textEdit->toPlainText();
-    m_wordCountLabel->setText(tr("Statistics: %1 words, %2 characters").arg("...").arg(mdText.size()));
-    auto f = [this](const QString& mdText) -> int {
-        std::vector<std::string> words;
-        jieba()->Cut(mdText.toStdString(), words);
-        return words.size();
-    };
-    QFuture<int> ret = QtConcurrent::run(f, mdText);
-    auto callback = [this](int wordCount) {
-        m_wordCountLabel->setText(tr("Statistics: %1 words, %2 characters")
-        .arg(wordCount).arg(m_textEdit->toPlainText().size()));
-    };
-    Utils::checkFuture<int>(ret, callback);
-     */
-}
-/*
-Jieba *Widget::jieba() {
-    if (!m_jieba) initJieba();
-    return m_jieba;
-}
-*/
-void Widget::openInTypora(const QString& notePath) {
-    qDebug() << "open in typora:" << notePath;
-#ifdef Q_OS_WIN
-    QStringList pathList;
-    QString typoraPath = Settings::instance()->typoraPath;
-    pathList << typoraPath;
-    pathList << "C:\\Program Files\\Typora\\Typora.exe";
-    pathList << "C:\\Program Files (x86)\\Typora\\Typora.exe";
-    pathList << "D:\\typora\\Typora\\Typora.exe";
-    QString exePath;
-    bool exeFind = false;
-    for(auto path: pathList) {
-        if (QFile(path).exists()) {
-            exeFind = true;
-            exePath = path;
-        }
-    }
-    if (!exeFind) {
-        showErrorDialog("Please install Typora first.");
-    } else {
-        QStringList cmd;
-        cmd << notePath;
-        QProcess::startDetached(exePath,cmd);
-    }
-#else
-    QStringList cmd;
-    cmd << "-a" << "typora" << notePath;
-    QProcess::startDetached("open",cmd);
-#endif
-}
-
-void Widget::openNoteInTypora(const Note& note) {
-    openInTypora(m_noteFileService->noteRealPath(note));
-}
 void Widget::on_action_openInTypora() {
     auto index = m_treeView->currentIndex();
-    if (!index.isValid()) {
-        return;
-    }
+    if (!index.isValid()) return;
     auto item = static_cast<NoteItem *>(index.internalPointer());
-    if (!item) {
-        qDebug() << "open in typora fail, NPE";
-        showErrorDialog(tr("open in typora fail"));
-        return;
-    }
-    const QString notePath = m_noteFileService->noteRealPath(item->note());
-    openInTypora(notePath);
-}
-
-QString Widget::currentNotePath() {
-    return m_curNotePath;
+    if (!item) { showErrorDialog(tr("open in typora fail")); return; }
+    m_noteEditorWidget->openInTypora(m_noteFileService->noteRealPath(item->note()));
 }
 
 void Widget::on_action_exportNoteToHTML() {
@@ -845,23 +531,10 @@ void Widget::on_action_exportNoteToHTML() {
     m_htmlExporter->exportToHtml(item->note(), dirName);
 }
 
-
-
-void Widget::resizeEvent(QResizeEvent *event) {
-    QWidget::resizeEvent(event);
-    qDebug() << "resize" << this->geometry();
-    Settings::instance()->mainWindowGeometry = this->geometry();
-}
-
-
 void Widget::on_fileSystemWatcher_fileChanged(const QString &path) {
     qDebug () << "file change:" << path;
     // 如果当前变更的文档在tab页中，更新tab页的内容
-    for(auto tab: m_tabWidget->tabs()) {
-        if (tab->filePath() == path) {
-            tab->reload();
-        }
-    }
+    m_noteEditorWidget->reloadTabAt(path);
     if (path.startsWith(workshopPath())) {
         if (path.endsWith("index.md")) {
             // 标准的笔记处理
@@ -872,7 +545,7 @@ void Widget::on_fileSystemWatcher_fileChanged(const QString &path) {
                 qWarning() << "invalid note from strId:" << noteStrId;
                 showErrorDialog(tr("invalid note from strId: %1").arg(noteStrId));
             } else {
-                updatePreview();
+                m_noteEditorWidget->refreshPreview();
                 if (Settings::instance()->syncWorkshopAuto) {
                     m_syncService->syncWorkshopFile(note);
                 }
@@ -920,37 +593,6 @@ void Widget::initFileSystemWatcher() {
     });
 }
 
-void Widget::initShortcut() {
-#if 0
-    // 用一种比较奇怪的方式，兼容焦点在webengine时没法按E进入Typora编辑的问题
-    auto editShortcut = new QShortcut((Qt::Key_E), m_textPreview);
-    QObject::connect(editShortcut, &QShortcut::activated, m_textPreview, [this]() {
-        qDebug() << "from web engine";
-        openInTypora(currentNotePath());
-    });
-    auto searchShortcut = new QShortcut((Qt::Key_F), m_textPreview);
-    connect(searchShortcut, &QShortcut::activated, m_textPreview, [this]() {
-        QString ip = Settings::instance()->serverIp;
-        QString url = "http://"+ip;
-        qDebug() << "search" << url;
-        m_textPreview->setUrl(QUrl(url));
-    });
-    auto openInBrowserShortcut = new QShortcut((Qt::Key_B), m_textPreview);
-    connect(openInBrowserShortcut, &QShortcut::activated, m_textPreview, [this]() {
-        QString ip = Settings::instance()->serverIp;
-        QString owner = Settings::instance()->usernameEn;
-        const QString &url = QString("http://%1/%2/%3/")
-                .arg(ip).arg(owner).arg(currentNoteStrId());
-        qDebug() << "open in browser" << url;
-        QDesktopServices::openUrl(QUrl(url));
-    });
-#endif
-}
-
-
 void Widget::showNextTab() {
-    qDebug() << "next tab";
-    int newTabIndex = (m_tabWidget->currentIndex() + 1) % m_tabWidget->count();
-    m_tabWidget->setCurrentWidget(m_tabWidget->tabAt(newTabIndex));
+    m_noteEditorWidget->showNextTab();
 }
-

@@ -3,8 +3,6 @@
 
 #include <QWidget>
 #include <QTreeView>
-#include <QTextEdit>
-#include <QTextBrowser>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
@@ -26,11 +24,10 @@ class SearchController;
 class Settings;
 class FileSystemWatcher;
 class TrayIconManager;
-class WebEngineView;
+class NoteEditorWidget;
 #ifdef ENABLE_TROJAN
 class TrojanThread;
 #endif
-class TabWidget;
 #include <QTimer>
 #include "PiWidget.h"
 class Indexer;
@@ -98,30 +95,10 @@ private:
     }
     inline TreeItem* currentTreeItem();
     inline void showErrorDialog(const QString & msg);
-    void loadNote(const Note& note);
-    void loadNote(const QString& path);
-    void loadMdText();
-    void loadMdText(const QString& path);
-    void saveMdText();
-    void updatePreview();
-    void updatePreview(const QString& path);
-    void updateIndex(QString text, int id);
-    void initJieba();
-    void updateStatistics();
-    void openNoteInTypora(const Note& note);
-    void openInTypora(const QString& path);
-//    Jieba* jieba();
-    QString currentNotePath();
     void initFileSystemWatcher();
-    void initShortcut();
 private:
     // 左边到文档树
     QTreeView *m_treeView;
-    QTextEdit *m_textEdit;
-    // markdown转html后预览，用GitHub到样式
-    WebEngineView *m_textPreview;
-    TabWidget *m_tabWidget;
-    QLabel *m_wordCountLabel;
     TreeModel *m_treeModel;
     // 笔记所在路径
     QString m_notesPath;
@@ -132,21 +109,18 @@ private:
     time_t m_maxShiftInterval;
     // 分词
 //    Jieba* m_jieba;
-    Note m_curNote;
-    bool m_showOpenInTyporaTip;
     // 持久化的配置
     Settings *m_settings;
 
-    void loadLastOpenedNote();
     FileSystemWatcher* m_fileSystemWatcher;
     TrayIconManager* m_trayIconManager;
-    QString m_curNotePath;
     QTimer* m_timer;
     Indexer* m_indexer;
     SearchController* m_searchController;
     HtmlExporter* m_htmlExporter;
     SyncService* m_syncService;
     NoteFileService* m_noteFileService;
+    NoteEditorWidget* m_noteEditorWidget;
 #ifdef ENABLE_TROJAN
     TrojanThread* m_trojanThread;
 #endif
