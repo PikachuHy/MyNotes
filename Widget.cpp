@@ -5,6 +5,7 @@
 #include "TreeModel.h"
 #include "TreeView.h"
 #include "DbManager.h"
+#include "TrayIconManager.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSplitter>
@@ -60,7 +61,6 @@ Widget::Widget(QWidget *parent)
         m_showOpenInTyporaTip(true),
         m_settings(Settings::instance())
         , m_fileSystemWatcher(FileSystemWatcher::instance())
-        , m_systemTrayIcon(new QSystemTrayIcon(this))
         , m_timer(new QTimer(this))
 //        , m_indexer(new Indexer())
 #ifdef ENABLE_TROJAN
@@ -68,7 +68,6 @@ Widget::Widget(QWidget *parent)
 #endif
 //        ,m_jieba(nullptr)
         {
-    initSystemTrayIcon();
     initFileSystemWatcher();
     if (!Settings::instance()->modeOffline) {
         // 一天
@@ -162,7 +161,20 @@ Widget::Widget(QWidget *parent)
         });
     }
     // 设置开启自启动
-    setAutoStart();
+    m_trayIconManager = new TrayIconManager(m_settings, this);
+    m_trayIconManager->setup(this);
+    connect(m_trayIconManager, &TrayIconManager::showRequested, this, &QWidget::showNormal);
+    connect(m_trayIconManager, &TrayIconManager::quitRequested, qApp, &QApplication::quit);
+    connect(m_trayIconManager, &TrayIconManager::settingsRequested, this, [this]() {
+        SettingsDialog dialog;
+        connect(&dialog, &SettingsDialog::requestReindex, m_searchController, &SearchController::initIndexer);
+        dialog.exec();
+    });
+    connect(m_trayIconManager, &TrayIconManager::aboutRequested, this, [this]() {
+        AboutDialog dialog(this);
+        dialog.exec();
+    });
+    connect(m_trayIconManager, &TrayIconManager::syncAllRequested, m_syncService, &SyncService::syncAll);
 }
 
 void Widget::loadLastOpenedNote() {
@@ -445,10 +457,8 @@ void Widget::closeEvent(QCloseEvent *event)
     qDebug() << "close window in debug mode";
 #else
     // 这个在Debug的时候很讨厌
-    if (m_systemTrayIcon->isVisible()) {
-        hide();
-        event->ignore();
-    }
+    hide();
+    event->ignore();
 #endif
 }
 
@@ -844,92 +854,6 @@ void Widget::resizeEvent(QResizeEvent *event) {
 }
 
 
-void Widget::initSystemTrayIcon()
-{
-#ifdef Q_OS_MAC
-    m_systemTrayIcon->setIcon(QIcon(QPixmap(":/icon/tray_128x128.png")));
-#else
-    m_systemTrayIcon->setIcon(QIcon(QPixmap(":/icon/notebook_128x128.png")));
-#endif
-    auto menu = new QMenu();
-    menu->addAction(tr("Show"), [this](){
-       this->showNormal();
-    });
-
-    menu->addAction(tr("Settings"), [this](){
-        SettingsDialog dialog;
-        connect(&dialog, &SettingsDialog::requestReindex, [this](){
-            m_searchController->initIndexer();
-        });
-        dialog.exec();
-    });
-#ifdef ENABLE_TROJAN
-    auto a = new QAction("Trojan");
-    a->setCheckable(true);
-    menu->addAction(a);
-    connect(a, &QAction::triggered, [this, a](){
-        qDebug() << "trojan triggered" << a->isChecked();
-        if (!m_trojanThread) {
-            m_trojanThread = new TrojanThread();
-            connect(m_trojanThread, &TrojanThread::started, this, [this, a]() {
-                int localPort = m_trojanThread->localPort();
-                a->setText(tr("Trojan: %1").arg(localPort));
-            }, Qt::QueuedConnection);
-            connect(m_trojanThread, &TrojanThread::stopped, this, [this, a]() {
-                a->setText(tr("Trojan"));
-            }, Qt::QueuedConnection);
-        }
-        if (a->isChecked()) {
-            QString configPath = Settings::instance()->trojanConfigPath;
-            bool ok = m_trojanThread->loadConfig(configPath);
-            if (ok) {
-                m_trojanThread->start();
-            } else {
-                showWarning(tr("Start Trojan"),
-                            tr(R"(Trojan config is error.
-Please check your config file.
-Current config: %1)").arg(configPath));
-                a->setChecked(false);
-            }
-
-        } else {
-            m_trojanThread->stop();
-        }
-    });
-#endif
-    menu->addAction(tr("Show Config"), [this]() {
-        Settings::instance();
-        auto path = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation).first();
-        auto dir = QDir(path);
-        dir.cdUp();
-        QString url = QString("%1/MyNotes.ini").arg(dir.absolutePath());
-        QDesktopServices::openUrl(QUrl(url));
-    });
-    menu->addAction(tr("About"), [this](){
-        AboutDialog dialog(this);
-        dialog.exec();
-    });
-    menu->addAction(tr("About Qt"), [this](){
-        qApp->aboutQt();
-    });
-    menu->addAction(tr("Quit"), [this](){
-        qApp->quit();
-    });
-    m_systemTrayIcon->setContextMenu(menu);
-    m_systemTrayIcon->show();
-    connect(m_systemTrayIcon, &QSystemTrayIcon::activated, [this](QSystemTrayIcon::ActivationReason reason){
-        qDebug() << reason;
-        switch (reason) {
-        case QSystemTrayIcon::Trigger:
-        case QSystemTrayIcon::DoubleClick:
-            this->showNormal();
-            break;
-        default:
-            break;
-        }
-    });
-}
-
 void Widget::on_fileSystemWatcher_fileChanged(const QString &path) {
     qDebug () << "file change:" << path;
     // 如果当前变更的文档在tab页中，更新tab页的内容
@@ -994,40 +918,6 @@ void Widget::initFileSystemWatcher() {
         m_treeModel->removeWatchingNote(path);
         m_syncService->updateProfile();
     });
-}
-
-// 设置开机自启动
-// http://blog.sina.com.cn/s/blog_a6fb6cc90101feia.html
-void Widget::setAutoStart() {
-#ifdef Q_OS_WIN
-#define REG_RUN "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
-    QString applicationName = QApplication::applicationName();
-    auto settings = new QSettings(REG_RUN, QSettings::NativeFormat);
-    QString applicationPath = QApplication::applicationFilePath();
-    settings->setValue(applicationName, '"' + applicationPath.replace("/", "\\") + '"');
-    delete settings;
-#endif
-#ifdef Q_OS_MAC
-    // mac开机自启动
-    // https://gist.github.com/andreybutov/33783bca1af9db8f9f36c463c77d7a86
-    auto macOSXAppBundlePath = []() {
-        QDir dir = QDir (QCoreApplication::applicationDirPath() );
-        dir.cdUp();
-        dir.cdUp();
-        QString absolutePath = dir.absolutePath();
-        // absolutePath will contain a "/" at the end,
-        // but we want the clean path to the .app bundle
-        if ( absolutePath.length() > 0 && absolutePath.right(1) == "/" ) {
-            absolutePath.chop(1);
-        }
-        return absolutePath;
-    };
-    QStringList args;
-    args << QString("-e tell application \"System Events\" to make login item at end ") +
-            "with properties {path:\"" + macOSXAppBundlePath() + "\", hidden:false}";
-
-    QProcess::execute("osascript", args);
-#endif
 }
 
 void Widget::initShortcut() {

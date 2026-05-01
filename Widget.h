@@ -16,7 +16,6 @@
 #include <QSettings>
 #include <QFile>
 #include <QFileSystemWatcher>
-#include <QSystemTrayIcon>
 class SyncService;
 class NoteFileService;
 class TreeItem;
@@ -26,6 +25,7 @@ class QSqlRelationalTableModel;
 class SearchController;
 class Settings;
 class FileSystemWatcher;
+class TrayIconManager;
 class WebEngineView;
 #ifdef ENABLE_TROJAN
 class TrojanThread;
@@ -112,9 +112,7 @@ private:
     void openInTypora(const QString& path);
 //    Jieba* jieba();
     QString currentNotePath();
-    void initSystemTrayIcon();
     void initFileSystemWatcher();
-    void setAutoStart();
     void initShortcut();
 private:
     // 左边到文档树
@@ -141,7 +139,7 @@ private:
 
     void loadLastOpenedNote();
     FileSystemWatcher* m_fileSystemWatcher;
-    QSystemTrayIcon* m_systemTrayIcon;
+    TrayIconManager* m_trayIconManager;
     QString m_curNotePath;
     QTimer* m_timer;
     Indexer* m_indexer;

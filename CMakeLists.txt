@@ -111,6 +111,7 @@ target_sources(libMyNotes PRIVATE
         WatchingFileHtmlVisitor.cpp WatchingFileHtmlVisitor.h
         HtmlExporter.cpp HtmlExporter.h
         MainWindow.cpp MainWindow.h
+        TrayIconManager.cpp TrayIconManager.h
         )
 option(UPDATE_TS "update translate" OFF)
 if (UPDATE_TS)
