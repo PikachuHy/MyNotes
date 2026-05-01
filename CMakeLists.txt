@@ -84,6 +84,7 @@ target_sources(libMyNotes PRIVATE
         DbModel.cpp
         DbManager.cpp
         Constant.cpp
+        SearchController.cpp SearchController.h
         SearchDialog.cpp
         Utils.cpp
         ${TS_FILES}

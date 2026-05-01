@@ -27,10 +27,8 @@
 //#include "cppjieba/Jieba.hpp"
 #include <unordered_set>
 #include <QLineEdit>
-#include "SearchDialog.h"
+#include "SearchController.h"
 #include <QtWidgets>
-#include "ListModel.h"
-#include "ListView.h"
 #include "Constant.h"
 #include <vector>
 #include <QFuture>
@@ -138,9 +136,13 @@ Widget::Widget(QWidget *parent)
     setFont(_font);
     m_lastPressShiftTime = 0;
     m_maxShiftInterval = 200;
-    m_listModel = new ListModel(this);
-    m_searchDialog = nullptr;
-    m_listView = nullptr;
+    m_searchController = new SearchController(m_dbManager, m_indexer, m_notesPath, this);
+    connect(m_searchController, &SearchController::noteSelected, this, [this](int noteId) {
+        auto note = m_dbManager->getNote(noteId);
+        if (note.id() != -1) {
+            loadNote(note);
+        }
+    });
     // 读最后一次打开的笔记
     loadLastOpenedNote();
     if (!Settings::instance()->modeOffline) {
@@ -196,8 +198,6 @@ void Widget::loadLastOpenedNote() {
 }
 
 Widget::~Widget() {
-    delete m_searchDialog;
-    delete m_listView;
 }
 
 void Widget::on_treeView_pressed(const QModelIndex &index) {
@@ -429,10 +429,7 @@ bool Widget::eventFilter(QObject *watched, QEvent *e) {
             auto curTime = Utils::getTimeStamp();
             if (curTime - m_lastPressShiftTime < m_maxShiftInterval) {
                 m_lastPressShiftTime = curTime;
-                if (!m_searchDialog) initSearchDialog();
-                auto x = this->geometry().left() + this->geometry().width() / 2 - m_searchDialog->width() / 2;
-                m_searchDialog->move(x, this->geometry().top() + Constant::marginToTop);
-                m_searchDialog->show();
+                m_searchController->showSearchDialog(this->geometry());
             } else {
                 m_lastPressShiftTime = curTime;
             }
@@ -703,95 +700,7 @@ void Widget::updateIndex(QString text, int id) {
 //    f(text, id);
 }
 
-void Widget::initSearchDialog() {
-    m_searchDialog = new SearchDialog(this);
-    // 强制计算搜索框的实际大小
-    m_searchDialog->show();
-    m_searchDialog->hide();
-    connect(m_searchDialog, &SearchDialog::searchTextChanged, this, &Widget::on_searchDialog_searchTextChanged);
-    connect(m_searchDialog, &SearchDialog::clickNote, [this](int noteId) {
-        auto note = m_dbManager->getNote(noteId);
-        if (note.id() == -1) {
-            qWarning() << "invalid note id" << noteId;
-            return;
-        }
-        this->loadNote(note);
-        m_searchDialog->hide();
-    });
-}
 
-void Widget::on_searchDialog_searchTextChanged(const QString &text) {
-#if 1
-    if (text.isEmpty()) {
-        qDebug() << "ignore empty search string";
-        return;
-    }
-    qDebug() << "search" << text;
-    auto f = [this](const QString& text) -> QList<Note> {
-        qDebug() << "do searching";
-        auto noteIds = this->m_indexer->search(text);
-        QList<Note> noteList;
-        for(auto noteId: noteIds) {
-            auto note = m_dbManager->getNote(noteId);
-            if (note.id() != -1) {
-                noteList.push_back(note);
-            }
-        }
-        return noteList;
-    };
-    auto callback = [this](const QList<Note> &noteList) {
-        Search::SearchResult ret;
-        for(const auto& note: noteList) {
-            Search::SearchResultItem item;
-            item.noteId = note.id();
-            item.noteTitle = note.title();
-            // 获得笔记的完整路径
-            int pathId = note.pathId();
-            QStringList paths;
-            while (pathId != 0) {
-                auto path = m_dbManager->getPath(pathId);
-                paths.append(path.name());
-                pathId = path.parentId();
-            }
-            item.paths = QStringList (paths.rbegin(), paths.rend());
-            ret.items.emplace_back(item);
-        }
-        this->m_searchDialog->setSearchResult(ret);
-    };
-    auto ret = QtConcurrent::run(f, text);
-    Utils::checkFuture<QList<Note>>(ret, callback);
-#endif
-#if 0
-    auto f = [this](const QString& text) -> QList<Note> {
-        std::vector<std::string> words;
-        /*
-        if (!m_jieba) initJieba();
-        m_jieba->Cut(text.toStdString(), words);
-         */
-        QStringList wordList;
-        for(const auto& word: words) {
-            wordList << QString::fromStdString(word);
-        }
-        qDebug() << wordList;
-        QList<Note> noteList = m_dbManager->getNoteList(wordList);
-        qDebug() << noteList.size();
-        return noteList;
-    };
-    auto callback = [this](QList<Note> noteList) {
-        auto model = new QStandardItemModel(this);
-        for(const auto& note: noteList) {
-            auto item = new QStandardItem(note.title());
-            item->setData(QVariant::fromValue(note), Qt::UserRole+1);
-            model->appendRow(item);
-        }
-//    m_listModel->reset(noteList);
-        searchResultView()->setModel(model);
-        searchResultView()->show();
-    };
-    auto ret = QtConcurrent::run(f, text);
-    Utils::checkFuture<QList<Note>>(ret, callback);
-#endif
-}
 
 void Widget::initJieba() {
     // TODO: change the path
@@ -809,64 +718,6 @@ void Widget::initJieba() {
                           */
 }
 
-void Widget::initIndexer()
-{
-    auto readNoteContent = [this](const Note& note) -> QString {
-        auto docPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
-        QString notePath = docPath + "/MyNotes/workshop/" + note.strId() + "/index.md";
-        QFile noteFile(notePath);
-        if (!noteFile.exists()) {
-            qWarning() << "note not exist." << notePath;
-            return "";
-        }
-        bool ok = noteFile.open(QIODevice::ReadOnly);
-        if (!ok) {
-            qWarning() << "file open fail." << notePath;
-            return "";
-        }
-        return noteFile.readAll();
-    };
-    auto f = [this, &readNoteContent]() {
-        auto notes = m_dbManager->getAllNotes();
-        int count = 0;
-        for(const auto& note: notes) {
-            auto content = readNoteContent(note);
-            m_indexer->updateIndex(note.id(), content);
-            count++;
-            qDebug() << count << "/" << notes.size();
-        }
-        m_indexer->saveIndex();
-        return 0;
-    };
-    auto callback = [](int) {
-        qDebug() << "index all done!";
-    };
-    auto ret = QtConcurrent::run(f);
-    Utils::checkFuture<int>(ret, callback);
-}
-
-QListView* Widget::searchResultView() {
-    if (!m_listView) {
-        m_listView = new ListView();
-        m_listView->setModel(m_listModel);
-    }
-    auto x = this->geometry().left() + this->geometry().width() / 2 - m_searchDialog->width() / 2;
-    int y = this->geometry().top() + Constant::marginToTop + Constant::searchDialogHeight + 10;
-    m_listView->move(x, y);
-    connect(m_listView, &ListView::pressed, this, &Widget::on_listView_pressed);
-    return m_listView;
-}
-
-void Widget::on_listView_pressed(const QModelIndex &index) {
-    if (!index.isValid()) {
-        return;
-    }
-    index.data(Qt::UserRole+1);
-    auto note = index.data(Qt::UserRole+1).value<Note>();
-    loadNote(note);
-    m_listView->hide();
-    m_searchDialog->hide();
-}
 
 void Widget::loadNote(const Note &note) {
     qDebug() << "load" << note.strId() << note.title();
@@ -1008,7 +859,7 @@ void Widget::initSystemTrayIcon()
     menu->addAction(tr("Settings"), [this](){
         SettingsDialog dialog;
         connect(&dialog, &SettingsDialog::requestReindex, [this](){
-            this->initIndexer();
+            m_searchController->initIndexer();
         });
         dialog.exec();
     });

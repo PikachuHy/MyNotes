@@ -23,10 +23,7 @@ class TreeItem;
 class TreeModel;
 class DbManager;
 class QSqlRelationalTableModel;
-class SearchDialog;
-//using cppjieba::Jieba;
-class QListView;
-class ListModel;
+class SearchController;
 class Settings;
 class FileSystemWatcher;
 class WebEngineView;
@@ -64,8 +61,6 @@ private slots:
 
     void on_treeView_pressed(const QModelIndex &index);
 
-    void on_listView_pressed(const QModelIndex &index);
-
     void on_treeView_customContextMenuRequested(const QPoint &pos);
 
     void on_action_newNote();
@@ -79,8 +74,6 @@ private slots:
     void on_action_trashFolder();
 
     void on_action_exportNoteToHTML();
-
-    void on_searchDialog_searchTextChanged(const QString& text);
 
     void on_fileSystemWatcher_fileChanged(const QString &path);
 
@@ -113,13 +106,10 @@ private:
     void updatePreview();
     void updatePreview(const QString& path);
     void updateIndex(QString text, int id);
-    void initSearchDialog();
     void initJieba();
-    void initIndexer();
     void updateStatistics();
     void openNoteInTypora(const Note& note);
     void openInTypora(const QString& path);
-    QListView* searchResultView();
 //    Jieba* jieba();
     QString currentNotePath();
     void initSystemTrayIcon();
@@ -142,11 +132,8 @@ private:
     // 双击Shift出现搜索框用
     time_t m_lastPressShiftTime;
     time_t m_maxShiftInterval;
-    SearchDialog* m_searchDialog;
     // 分词
 //    Jieba* m_jieba;
-    QListView* m_listView;
-    ListModel* m_listModel;
     Note m_curNote;
     bool m_showOpenInTyporaTip;
     // 持久化的配置
@@ -158,6 +145,7 @@ private:
     QString m_curNotePath;
     QTimer* m_timer;
     Indexer* m_indexer;
+    SearchController* m_searchController;
     HtmlExporter* m_htmlExporter;
     SyncService* m_syncService;
     NoteFileService* m_noteFileService;
