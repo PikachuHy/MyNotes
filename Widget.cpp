@@ -1,4 +1,5 @@
 #include "Widget.h"
+#include "NoteFileService.h"
 #include "SyncService.h"
 #include "TreeItem.h"
 #include "TreeModel.h"
@@ -122,6 +123,7 @@ Widget::Widget(QWidget *parent)
     m_indexer = new Indexer(m_notesPath+"index", "note");
     m_indexer->loadIndex();
     m_dbManager = new DbManager(m_notesPath, this);
+    m_noteFileService = new NoteFileService(m_dbManager, workshopPath(), trashPath(), this);
     m_treeModel = new TreeModel(m_notesPath, m_dbManager);
     m_treeView->setModel(m_treeModel);
     // initIndexer();
@@ -222,7 +224,7 @@ void Widget::on_treeView_pressed(const QModelIndex &index) {
         // 如果是workshop的note
         auto noteItem = static_cast<NoteItem*>(item);
         const auto& note = noteItem->note();
-        notePath = noteRealPath(note);
+        notePath = m_noteFileService->noteRealPath(note);
         tryLoadNote(notePath);
     }
 }
@@ -301,11 +303,11 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
             menu.addAction(c);
             connect(c, &QAction::triggered, this, &Widget::on_action_exportNoteToHTML);
             menu.addAction(tr("Add to ..."), [this](){
-                this->addNoteTo();
+                qDebug() << "add note to";
             });
             auto noteItem = (NoteItem*)item;
             auto note = noteItem->note();
-            auto notePath = noteRealPath(note);
+            auto notePath = m_noteFileService->noteRealPath(note);
             QUrlQuery urlQuery;
             urlQuery.addQueryItem("note", note.strId());
             urlQuery.addQueryItem("path", QString::number(note.pathId()));
@@ -356,7 +358,7 @@ void Widget::on_treeView_customContextMenuRequested(const QPoint &pos) {
 #endif
                     [this, item]() {
                         auto note = this->m_dbManager->getNote(item->path());
-                        QString url = this->noteRealPath(note)+"/..";
+                        QString url = this->m_noteFileService->noteRealPath(note)+"/..";
                         QDesktopServices::openUrl(QUrl(url));
                     }
             );
@@ -498,7 +500,7 @@ void Widget::updatePreview(const QString& path) {
     textPreview->loadFile(path);
     QString title = QFileInfo(path).fileName();
     if (path.startsWith(workshopPath())) {
-        auto strId = getWorkshopNoteStrIdFromPath(path);
+        auto strId = m_noteFileService->noteStrIdFromWorkshopPath(path);
         auto note = m_dbManager->getNote(strId);
         title = note.title();
     }
@@ -573,28 +575,17 @@ void Widget::on_action_newNote() {
         return;
     }
     int pathId = item->pathId();
-    auto strId = Utils::generateId();
-    Note note(strId, noteName, pathId);
-    QString newNotePath = noteRealPath(note);
-    QDir dir;
-    dir.mkpath(QFileInfo(newNotePath).path());
-    QFile file = QFile(newNotePath);
-
-    qDebug() << "create new note:" << noteName << "in" << newNotePath;
-    ok = file.open(QIODevice::WriteOnly);
-    if (!ok) {
-        qDebug() << "open file fail:" << newNotePath;
+    auto note = m_noteFileService->createNote(noteName, pathId);
+    if (note.id() == -1) {
+        qDebug() << "create note fail";
         return;
     }
-    m_dbManager->addNewNote(note);
+    QString newNotePath = m_noteFileService->noteRealPath(note);
     TreeItem* parentItem = item->isFile() ? item->parentItem() : item;
     auto noteItem = new NoteItem(note, parentItem);
     item->setPath(newNotePath);
     auto newNoteIndex = m_treeModel->addNewNode(m_treeView->currentIndex(), noteItem);
     m_treeView->setCurrentIndex(newNoteIndex);
-    QString newNoteText = "# " + noteName;
-    file.write(newNoteText.toUtf8());
-    file.close();
     loadNote(note);
     m_textEdit->setFocus();
 }
@@ -619,19 +610,12 @@ void Widget::on_action_newFolder() {
         showErrorDialog(tr("current item is null"));
         return;
     }
-    auto ret = m_dbManager->isPathExist(folderName, item->pathId());
-    if (ret) {
+    if (m_noteFileService->isPathExist(folderName, item->pathId())) {
         qDebug() << "path exist." << folderName;
         showErrorDialog(tr("folder exist."));
         return;
     }
-    Path path(folderName, item->pathId());
-    ret = m_dbManager->addNewPath(path);
-    if (!ret) {
-        qDebug() << "save to db fail";
-        showErrorDialog(tr("new folder: save to db fail"));
-        return;
-    }
+    auto path = m_noteFileService->createFolder(folderName, item->pathId());
     auto newPathItem = new FolderItem(path, item);
     auto newNoteIndex = m_treeModel->addNewFolder(m_treeView->currentIndex(), newPathItem);
     m_treeView->setCurrentIndex(newNoteIndex);
@@ -666,18 +650,7 @@ void Widget::on_action_trashNote() {
         return;
     }
     auto item = static_cast<NoteItem *>(index.internalPointer());
-    auto ret = m_dbManager->removeNote(item->note().id());
-    if (!ret) {
-        qDebug() << "trash note fail";
-        showErrorDialog(tr("trash note fail"));
-        return;
-    }
-    const QString noteOldPath = workshopPath() + item->note().strId();
-    QString noteTrashPath = trashPath() + item->note().strId();
-    qDebug() << "trash" << noteOldPath << "to" << noteTrashPath;
-    ret = QDir().rename(noteOldPath, noteTrashPath);
-    if (!ret) {
-        qDebug() << "trash" << noteOldPath << "fail";
+    if (!m_noteFileService->trashNote(item->note())) {
         showErrorDialog(tr("trash note fail"));
         return;
     }
@@ -691,9 +664,7 @@ void Widget::on_action_trashFolder() {
         return;
     }
     auto item = static_cast<FolderItem *>(index.internalPointer());
-    auto ret = m_dbManager->removePath(item->path().id());
-    if (!ret) {
-        qDebug() << "trash path fail";
+    if (!m_noteFileService->trashFolder(item->path())) {
         showErrorDialog(tr("trash folder fail"));
         return;
     }
@@ -900,7 +871,7 @@ void Widget::on_listView_pressed(const QModelIndex &index) {
 void Widget::loadNote(const Note &note) {
     qDebug() << "load" << note.strId() << note.title();
     m_curNote = note;
-    const QString &path = noteRealPath(note);
+    const QString &path = m_noteFileService->noteRealPath(note);
     loadNote(path);
     if (m_showOpenInTyporaTip) {
         Toast::showTip("Press E Open in Typora", this);
@@ -977,7 +948,7 @@ void Widget::openInTypora(const QString& notePath) {
 }
 
 void Widget::openNoteInTypora(const Note& note) {
-    openInTypora(noteRealPath(note));
+    openInTypora(m_noteFileService->noteRealPath(note));
 }
 void Widget::on_action_openInTypora() {
     auto index = m_treeView->currentIndex();
@@ -990,7 +961,7 @@ void Widget::on_action_openInTypora() {
         showErrorDialog(tr("open in typora fail"));
         return;
     }
-    const QString notePath = noteRealPath(item->note());
+    const QString notePath = m_noteFileService->noteRealPath(item->note());
     openInTypora(notePath);
 }
 
@@ -1013,9 +984,6 @@ void Widget::on_action_exportNoteToHTML() {
     m_htmlExporter->exportToHtml(item->note(), dirName);
 }
 
-QString Widget::noteRealPath(const Note& note) {
-    return workshopPath() + note.strId() + "/index.md";
-}
 
 
 void Widget::resizeEvent(QResizeEvent *event) {
@@ -1024,16 +992,6 @@ void Widget::resizeEvent(QResizeEvent *event) {
     Settings::instance()->mainWindowGeometry = this->geometry();
 }
 
-void Widget::addNoteTo() {
-    auto item = currentTreeItem();
-    if (!item) {
-        qDebug() << "item is nullptr";
-        return;
-    }
-    qDebug() << "add note to";
-//    ChooseFolderWidget w;
-
-}
 
 void Widget::initSystemTrayIcon()
 {
@@ -1132,7 +1090,7 @@ void Widget::on_fileSystemWatcher_fileChanged(const QString &path) {
     if (path.startsWith(workshopPath())) {
         if (path.endsWith("index.md")) {
             // 标准的笔记处理
-            QString noteStrId = getWorkshopNoteStrIdFromPath(path);
+            QString noteStrId = m_noteFileService->noteStrIdFromWorkshopPath(path);
             qDebug() << "note id:" << noteStrId;
             auto note = m_dbManager->getNote(noteStrId);
             if (note.id() == -1) {
@@ -1248,21 +1206,6 @@ void Widget::initShortcut() {
 #endif
 }
 
-QString Widget::currentNoteStrId() {
-    QString ret;
-    auto path = currentNotePath();
-    if (path.startsWith(workshopPath())) {
-        return getWorkshopNoteStrIdFromPath(path);
-    } else {
-        return Utils::md5(path);
-    }
-}
-
-QString Widget::getWorkshopNoteStrIdFromPath(const QString& path) {
-    QStringList segs = path.split('/');
-    QString noteStrId = segs[segs.size() - 2];
-    return noteStrId;
-}
 
 void Widget::showNextTab() {
     qDebug() << "next tab";

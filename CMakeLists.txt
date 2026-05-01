@@ -75,6 +75,7 @@ target_sources(libMyNotes PRIVATE
         Widget.cpp
         Widget.h
         SyncService.cpp SyncService.h
+        NoteFileService.cpp NoteFileService.h
         ListModel.cpp
         ListView.cpp
         TreeModel.cpp

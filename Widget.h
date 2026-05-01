@@ -18,6 +18,7 @@
 #include <QFileSystemWatcher>
 #include <QSystemTrayIcon>
 class SyncService;
+class NoteFileService;
 class TreeItem;
 class TreeModel;
 class DbManager;
@@ -121,14 +122,10 @@ private:
     QListView* searchResultView();
 //    Jieba* jieba();
     QString currentNotePath();
-    QString currentNoteStrId();
-    QString noteRealPath(const Note& note);
-    void addNoteTo();
     void initSystemTrayIcon();
     void initFileSystemWatcher();
     void setAutoStart();
     void initShortcut();
-    QString getWorkshopNoteStrIdFromPath(const QString& path);
 private:
     // 左边到文档树
     QTreeView *m_treeView;
@@ -163,6 +160,7 @@ private:
     Indexer* m_indexer;
     HtmlExporter* m_htmlExporter;
     SyncService* m_syncService;
+    NoteFileService* m_noteFileService;
 #ifdef ENABLE_TROJAN
     TrojanThread* m_trojanThread;
 #endif
