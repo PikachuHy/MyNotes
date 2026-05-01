@@ -87,3 +87,5 @@ trojan
 out
 build-*
 build/
+.worktrees/
+.superpowers/
