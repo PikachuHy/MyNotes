@@ -2,7 +2,7 @@
 #define MYNOTES_NOTEEDITORWIDGET_H
 
 #include <QWidget>
-#include "DbModel.h"
+#include "database/DbModel.h"
 
 class QTextEdit;
 class TabWidget;

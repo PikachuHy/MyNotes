@@ -1,5 +1,5 @@
 #include "NoteFileService.h"
-#include "DbManager.h"
+#include "database/DbManager.h"
 #include "utils/Utils.h"
 #include <QDir>
 #include <QFile>

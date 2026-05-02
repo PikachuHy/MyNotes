@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QTreeView>
-#include "DbModel.h"
+#include "database/DbModel.h"
 #include <QSettings>
 #include <QFileSystemWatcher>
 #include <QTimer>

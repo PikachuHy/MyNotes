@@ -10,7 +10,7 @@
 #include <QDir>
 
 #include "QtQuickMarkdownItem.h"
-#include "DbManager.h"
+#include "database/DbManager.h"
 #include "TreeModel.h"
 #include "KeyFilter.h"
 int main(int argc, char *argv[])

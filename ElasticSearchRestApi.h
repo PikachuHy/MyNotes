@@ -7,7 +7,7 @@
 
 #include <QString>
 #include <QObject>
-#include "DbModel.h"
+#include "database/DbModel.h"
 class Settings;
 struct SearchResult {
     QString strId;

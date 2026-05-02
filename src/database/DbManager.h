@@ -8,7 +8,7 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#include "DbModel.h"
+#include "database/DbModel.h"
 class DbManager : public QObject {
 Q_OBJECT
 public:

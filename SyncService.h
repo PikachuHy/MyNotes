@@ -5,7 +5,7 @@
 #include <QString>
 #include <QStringList>
 #include <QCryptographicHash>
-#include "DbModel.h"
+#include "database/DbModel.h"
 
 class ElasticSearchRestApi;
 class HtmlExporter;

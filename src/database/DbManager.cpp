@@ -2,7 +2,7 @@
 // Created by PikachuHy on 2020/12/26.
 //
 
-#include "DbManager.h"
+#include "database/DbManager.h"
 #include "utils/Constant.h"
 #include <QtCore>
 #include <QtWidgets>

@@ -83,8 +83,6 @@ target_sources(libMyNotes PRIVATE
         TreeModel.cpp
         TreeItem.cpp
         TreeView.cpp
-        DbModel.cpp
-        DbManager.cpp
         SearchController.cpp SearchController.h
         SearchDialog.cpp
         ${TS_FILES}
@@ -113,6 +111,7 @@ target_sources(libMyNotes PRIVATE
         TrayIconManager.cpp TrayIconManager.h
         )
 add_subdirectory(src/utils)
+add_subdirectory(src/database)
 add_subdirectory(src/settings)
 option(UPDATE_TS "update translate" OFF)
 if (UPDATE_TS)

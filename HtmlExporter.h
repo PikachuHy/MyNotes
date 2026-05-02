@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QString>
-#include "DbModel.h"
+#include "database/DbModel.h"
 
 class HtmlExporter : public QObject {
     Q_OBJECT

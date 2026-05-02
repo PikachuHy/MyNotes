@@ -7,7 +7,7 @@
 
 #include <QWidget>
 #include <QTreeWidget>
-#include "DbManager.h"
+#include "database/DbManager.h"
 class ChooseFolderWidget: public QTreeWidget {
 Q_OBJECT
 public:

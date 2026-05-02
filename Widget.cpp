@@ -4,7 +4,7 @@
 #include "TreeItem.h"
 #include "TreeModel.h"
 #include "TreeView.h"
-#include "DbManager.h"
+#include "database/DbManager.h"
 #include "TrayIconManager.h"
 #include "NoteEditorWidget.h"
 #include <QVBoxLayout>

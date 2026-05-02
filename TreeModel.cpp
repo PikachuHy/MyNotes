@@ -2,7 +2,7 @@
 #include "TreeModel.h"
 #include "TreeItem.h"
 #include "utils/Constant.h"
-#include "DbManager.h"
+#include "database/DbManager.h"
 #include "FileSystemWatcher.h"
 #include "utils/Utils.h"
 #include <QStringList>

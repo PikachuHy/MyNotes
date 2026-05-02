@@ -10,7 +10,7 @@
 #include <QTextStream>
 #include <QDataStream>
 #include <utility>
-#include "DbManager.h"
+#include "database/DbManager.h"
 #include "Tokenizer.h"
 namespace index_ns {
     struct Node {

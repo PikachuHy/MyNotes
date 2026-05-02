@@ -6,7 +6,7 @@
 #define MYNOTES_LISTMODEL_H
 
 #include <QAbstractListModel>
-#include "DbModel.h"
+#include "database/DbModel.h"
 class ListModel : public QAbstractListModel{
 Q_OBJECT
 public:

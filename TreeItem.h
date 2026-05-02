@@ -3,7 +3,7 @@
 #define TREEITEM_H
 
 #include <QVariant>
-#include "DbModel.h"
+#include "database/DbModel.h"
 class TreeItem {
 public:
     explicit TreeItem(const QList<QVariant> &data, TreeItem *parentItem = nullptr);

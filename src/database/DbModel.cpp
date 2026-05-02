@@ -2,7 +2,7 @@
 // Created by PikachuHy on 2020/12/27.
 //
 
-#include "DbModel.h"
+#include "database/DbModel.h"
 
 Note::Note() {}
 
