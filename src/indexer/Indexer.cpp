@@ -2,7 +2,7 @@
 // Created by pikachu on 2021/5/15.
 //
 
-#include "Indexer.h"
+#include "indexer/Indexer.h"
 #include <QStandardPaths>
 #include <QDir>
 #include <QFile>

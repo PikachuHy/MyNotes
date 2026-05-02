@@ -1,7 +1,7 @@
 //
 // Created by pikachu on 5/19/2021.
 //
-#include "Indexer.h"
+#include "indexer/Indexer.h"
 #include <QDebug>
 QList<int> testSaveIndex() {
     Indexer indexer("", "test");

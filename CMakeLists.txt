@@ -75,7 +75,6 @@ target_sources(libMyNotes PRIVATE MyNotes_zh_CN.ts)
 target_sources(libMyNotes PRIVATE
         NoteEditorWidget.cpp NoteEditorWidget.h
         SyncService.cpp SyncService.h
-        NoteFileService.cpp NoteFileService.h
         ListModel.cpp
         ListView.cpp
         TreeModel.cpp
@@ -97,18 +96,17 @@ target_sources(libMyNotes PRIVATE
         TabWidget.cpp TabWidget.h
         TextPreview.cpp TextPreview.h
         TabBar.cpp TabBar.h
-        Indexer.cpp Indexer.h
         MarkdownHighlighter.cpp MarkdownHighlighter.h
-        WatchingFileHtmlVisitor.cpp WatchingFileHtmlVisitor.h
-        HtmlExporter.cpp HtmlExporter.h
         TrayIconManager.cpp TrayIconManager.h
         )
+add_subdirectory(src/indexer)
 add_subdirectory(src/utils)
 add_subdirectory(src/database)
 add_subdirectory(src/settings)
 add_subdirectory(src/watcher)
 add_subdirectory(src/network)
 add_subdirectory(src/widgets)
+add_subdirectory(src/notes)
 option(UPDATE_TS "update translate" OFF)
 if (UPDATE_TS)
     if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)

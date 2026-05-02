@@ -35,7 +35,7 @@
 #include <QStringList>
 #include "watcher/FileSystemWatcher.h"
 #include "AboutDialog.h"
-#include "Indexer.h"
+#include "indexer/Indexer.h"
 #include "HtmlExporter.h"
 #ifdef ENABLE_TROJAN
 #include "network/TrojanThread.h"

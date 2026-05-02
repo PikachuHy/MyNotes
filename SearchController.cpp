@@ -1,7 +1,7 @@
 #include "SearchController.h"
 #include "SearchDialog.h"
 #include "database/DbManager.h"
-#include "Indexer.h"
+#include "indexer/Indexer.h"
 #include "utils/Utils.h"
 #include "utils/Constant.h"
 #include <QtConcurrent>

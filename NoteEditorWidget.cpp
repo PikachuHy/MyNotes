@@ -2,7 +2,7 @@
 #include "NoteFileService.h"
 #include "watcher/FileSystemWatcher.h"
 #include "settings/Settings.h"
-#include "Indexer.h"
+#include "indexer/Indexer.h"
 #include "database/DbManager.h"
 #include "utils/Utils.h"
 #include "utils/Toast.h"
