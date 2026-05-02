@@ -40,7 +40,11 @@ void MarkdownHighlighter::highlightBlocks(int position, int charsAdded)
     while (block.isValid()) {
         QTextCursor cursor(block);
         cursor.select(QTextCursor::BlockUnderCursor);
-        cursor.setCharFormat(QTextCharFormat());
+        QTextCharFormat defaultFmt;
+        defaultFmt.setForeground(QColor("#d4d4d4"));
+        defaultFmt.setFontWeight(QFont::Normal);
+        defaultFmt.setFontItalic(false);
+        cursor.setCharFormat(defaultFmt);
         if (block == endBlock) break;
         block = block.next();
     }
@@ -95,6 +99,8 @@ QVector<HighlightRange> MarkdownHighlighter::parseHighlightRanges(const QString 
         if (codeLines.contains(i)) {
             QTextCharFormat codeFmt;
             codeFmt.setFontFamilies({"Courier New", "monospace"});
+            codeFmt.setBackground(QColor("#2d2d2d"));
+            codeFmt.setForeground(QColor("#d4d4d4"));
             ranges.append({charOffset, charOffset + static_cast<int>(line.length()), codeFmt});
         } else {
             highlightLine(line, charOffset, ranges);

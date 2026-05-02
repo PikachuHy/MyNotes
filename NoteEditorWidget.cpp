@@ -29,6 +29,7 @@ NoteEditorWidget::NoteEditorWidget(QWidget *parent)
     , m_showOpenInTyporaTip(true)
 {
     m_textEdit = new QTextEdit();
+    m_textEdit->setStyleSheet("QTextEdit { background-color: #1e1e1e; color: #d4d4d4; }");
     m_tabWidget = new TabWidget();
     connect(m_tabWidget, &TabWidget::tabCloseRequested, [this](int index){
         m_tabWidget->removeTab(index);
