@@ -25,7 +25,7 @@
 #include <QMessageBox>
 #include <QDir>
 #include "utils/Utils.h"
-#include "SearchController.h"
+#include "search/SearchController.h"
 #include "utils/Constant.h"
 #include "sync/ElasticSearchRestApi.h"
 #include "settings/Settings.h"

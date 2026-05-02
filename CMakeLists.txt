@@ -73,8 +73,6 @@ else ()
 endif ()
 target_sources(libMyNotes PRIVATE MyNotes_zh_CN.ts)
 target_sources(libMyNotes PRIVATE
-        SearchController.cpp SearchController.h
-        SearchDialog.cpp
         ${TS_FILES}
         assets/db.qrc
         assets/css.qrc
@@ -96,6 +94,7 @@ add_subdirectory(src/widgets)
 add_subdirectory(src/notes)
 add_subdirectory(src/editor)
 add_subdirectory(src/navigation)
+add_subdirectory(src/search)
 add_subdirectory(src/appcore)
 option(UPDATE_TS "update translate" OFF)
 if (UPDATE_TS)

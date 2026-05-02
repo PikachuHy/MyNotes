@@ -1,5 +1,5 @@
-#include "SearchController.h"
-#include "SearchDialog.h"
+#include "search/SearchController.h"
+#include "search/SearchDialog.h"
 #include "database/DbManager.h"
 #include "indexer/Indexer.h"
 #include "utils/Utils.h"

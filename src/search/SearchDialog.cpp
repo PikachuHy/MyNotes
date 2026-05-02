@@ -2,7 +2,7 @@
 // Created by PikachuHy on 2020/12/27.
 //
 
-#include "SearchDialog.h"
+#include "search/SearchDialog.h"
 #include "utils/Constant.h"
 #include "utils/Utils.h"
 #include <QLineEdit>
