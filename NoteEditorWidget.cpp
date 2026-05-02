@@ -8,6 +8,7 @@
 #include "Toast.h"
 #include "TabWidget.h"
 #include "TextPreview.h"
+#include "MarkdownHighlighter.h"
 #include <QTextEdit>
 #include <QHBoxLayout>
 #include <QFile>
@@ -21,7 +22,6 @@
 #include <QUrl>
 #include <QUrlQuery>
 #include <QtConcurrent>
-#include <unordered_set>
 #include <QVector>
 
 NoteEditorWidget::NoteEditorWidget(QWidget *parent)
@@ -38,6 +38,19 @@ NoteEditorWidget::NoteEditorWidget(QWidget *parent)
     layout->addWidget(m_textEdit);
     layout->addWidget(m_tabWidget);
     setLayout(layout);
+
+    // Syntax highlighting
+    m_highlighter = new MarkdownHighlighter(m_textEdit->document(), this);
+
+    // Real-time preview with 300ms debounce
+    m_debounceTimer = new QTimer(this);
+    m_debounceTimer->setSingleShot(true);
+    m_debounceTimer->setInterval(300);
+    connect(m_debounceTimer, &QTimer::timeout, this, &NoteEditorWidget::refreshPreview);
+    connect(m_textEdit, &QTextEdit::textChanged, this, [this]() {
+        m_debounceTimer->start();
+    });
+
     m_textEdit->installEventFilter(this);
 }
 
@@ -180,20 +193,11 @@ QString NoteEditorWidget::currentFilePath() const {
 }
 
 void NoteEditorWidget::updateIndex(const QString& text, int id) {
-    auto f = [this](QString text, int id) {
-        std::vector<std::string> words;
-        std::string s = text.toStdString();
-        std::unordered_set<std::string> wordSet(words.begin(), words.end());
-        QStringList wordList;
-        for(const auto& word: wordSet) {
-            wordList << QString::fromStdString(word);
-        }
-        m_dbManager->updateIndex(wordList, id);
-        qDebug() << "update index for note" << id << "finish";
-    };
-    qDebug() << "update index for note" << id << "start";
-    auto ret = QtConcurrent::run(f, text, id);
-    Q_UNUSED(ret)
+    QtConcurrent::run([this, text, id]() {
+        m_indexer->updateIndex(id, text);
+        m_indexer->saveIndex();
+        qDebug() << "index updated for note" << id;
+    });
 }
 
 void NoteEditorWidget::updateStatistics() {
@@ -249,7 +253,6 @@ bool NoteEditorWidget::eventFilter(QObject *watched, QEvent *e) {
         auto *event = static_cast<QKeyEvent *>(e);
         if (event->key() == Qt::Key_S && (event->modifiers() & Qt::ControlModifier)) {
             save();
-            refreshPreview();
             return true;
         }
         if (event->key() == Qt::Key_E) {

@@ -12,6 +12,7 @@ class NoteFileService;
 class FileSystemWatcher;
 class Settings;
 class DbManager;
+class MarkdownHighlighter;
 
 class NoteEditorWidget : public QWidget {
     Q_OBJECT
@@ -59,6 +60,8 @@ private:
     DbManager* m_dbManager;
     QString m_workshopPath;
     bool m_showOpenInTyporaTip;
+    MarkdownHighlighter *m_highlighter = nullptr;
+    QTimer *m_debounceTimer = nullptr;
 };
 
 #endif

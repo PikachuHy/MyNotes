@@ -109,6 +109,7 @@ target_sources(libMyNotes PRIVATE
         TextPreview.cpp TextPreview.h
         TabBar.cpp TabBar.h
         Indexer.cpp Indexer.h
+        MarkdownHighlighter.cpp MarkdownHighlighter.h
         WatchingFileHtmlVisitor.cpp WatchingFileHtmlVisitor.h
         HtmlExporter.cpp HtmlExporter.h
         MainWindow.cpp MainWindow.h
