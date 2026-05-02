@@ -7,7 +7,7 @@
 #include <QSettings>
 #include <QFileSystemWatcher>
 #include <QTimer>
-#include "PiWidget.h"
+#include "widgets/PiWidget.h"
 
 class SyncService;
 class NoteFileService;

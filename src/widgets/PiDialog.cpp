@@ -2,7 +2,7 @@
 // Created by PikachuHy on 2021/4/3.
 //
 
-#include "PiDialog.h"
+#include "widgets/PiDialog.h"
 #include <QMessageBox>
 PiDialog::PiDialog(QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f) {
 

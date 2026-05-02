@@ -1,4 +1,4 @@
-#include "Widget.h"
+#include "widgets/Widget.h"
 #include "NoteFileService.h"
 #include "SyncService.h"
 #include "TreeItem.h"

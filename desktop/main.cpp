@@ -1,6 +1,6 @@
 #include <qglobal.h>
-#include "MainWindow.h"
-#include "Widget.h"
+#include "widgets/MainWindow.h"
+#include "widgets/Widget.h"
 #include "SettingsDialog.h"
 #include <QApplication>
 #include <QStandardPaths>

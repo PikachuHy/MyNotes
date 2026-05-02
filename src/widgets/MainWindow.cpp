@@ -2,8 +2,8 @@
 // Created by pikachu on 6/13/2021.
 //
 
-#include "MainWindow.h"
-#include "Widget.h"
+#include "widgets/MainWindow.h"
+#include "widgets/Widget.h"
 #include "settings/Settings.h"
 #include <QMenuBar>
 #include <QAction>

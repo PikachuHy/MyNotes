@@ -74,8 +74,6 @@ endif ()
 target_sources(libMyNotes PRIVATE MyNotes_zh_CN.ts)
 target_sources(libMyNotes PRIVATE
         NoteEditorWidget.cpp NoteEditorWidget.h
-        Widget.cpp
-        Widget.h
         SyncService.cpp SyncService.h
         NoteFileService.cpp NoteFileService.h
         ListModel.cpp
@@ -91,12 +89,10 @@ target_sources(libMyNotes PRIVATE
         assets/icon.qrc
         ChooseFolderWidget.cpp
         SettingsDialog.cpp
-        PiWidget.cpp PiWidget.h
         LoginDialog.cpp LoginDialog.h
         AboutDialog.cpp AboutDialog.h
         SingleApplication.cpp SingleApplication.h
         ElasticSearchRestApi.cpp ElasticSearchRestApi.h
-        PiDialog.cpp PiDialog.h
         LoginApi.cpp LoginApi.h
         TabWidget.cpp TabWidget.h
         TextPreview.cpp TextPreview.h
@@ -105,7 +101,6 @@ target_sources(libMyNotes PRIVATE
         MarkdownHighlighter.cpp MarkdownHighlighter.h
         WatchingFileHtmlVisitor.cpp WatchingFileHtmlVisitor.h
         HtmlExporter.cpp HtmlExporter.h
-        MainWindow.cpp MainWindow.h
         TrayIconManager.cpp TrayIconManager.h
         )
 add_subdirectory(src/utils)
@@ -113,6 +108,7 @@ add_subdirectory(src/database)
 add_subdirectory(src/settings)
 add_subdirectory(src/watcher)
 add_subdirectory(src/network)
+add_subdirectory(src/widgets)
 option(UPDATE_TS "update translate" OFF)
 if (UPDATE_TS)
     if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)

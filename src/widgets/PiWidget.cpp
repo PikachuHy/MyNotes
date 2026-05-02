@@ -2,7 +2,7 @@
 // Created by PikachuHy on 2021/4/3.
 //
 
-#include "PiWidget.h"
+#include "widgets/PiWidget.h"
 #include <QMessageBox>
 PiWidget::PiWidget(QWidget *parent, Qt::WindowFlags f) : QWidget(parent, f) {
 
