@@ -28,7 +28,7 @@
 #include "SearchController.h"
 #include "utils/Constant.h"
 #include "ElasticSearchRestApi.h"
-#include "Settings.h"
+#include "settings/Settings.h"
 #include "SettingsDialog.h"
 #include "Http.h"
 #include <QDesktopServices>

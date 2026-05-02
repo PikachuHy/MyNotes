@@ -2,7 +2,7 @@
 #include "ElasticSearchRestApi.h"
 #include "HtmlExporter.h"
 #include "DbManager.h"
-#include "Settings.h"
+#include "settings/Settings.h"
 #include "Http.h"
 #include "utils/Utils.h"
 #include "WatchingFileHtmlVisitor.h"

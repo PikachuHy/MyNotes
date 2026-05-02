@@ -2,7 +2,7 @@
 // Created by PikachuHy on 2021/3/25.
 //
 
-#include "Settings.h"
+#include "settings/Settings.h"
 #include <QApplication>
 #include <QStandardPaths>
 const char Settings::KEY_LAST_OPEN_NOTE_PATH[] = "path/last_open_note";

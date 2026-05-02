@@ -1,5 +1,5 @@
 #include "TrayIconManager.h"
-#include "Settings.h"
+#include "settings/Settings.h"
 #include <QSystemTrayIcon>
 #include <QMenu>
 #include <QAction>

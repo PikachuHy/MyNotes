@@ -93,7 +93,6 @@ target_sources(libMyNotes PRIVATE
         assets/icon.qrc
         ChooseFolderWidget.cpp
         Http.cpp
-        Settings.cpp
         SettingsDialog.cpp
         PiWidget.cpp PiWidget.h
         LoginDialog.cpp LoginDialog.h
@@ -114,6 +113,7 @@ target_sources(libMyNotes PRIVATE
         TrayIconManager.cpp TrayIconManager.h
         )
 add_subdirectory(src/utils)
+add_subdirectory(src/settings)
 option(UPDATE_TS "update translate" OFF)
 if (UPDATE_TS)
     if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)

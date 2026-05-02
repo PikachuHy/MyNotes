@@ -16,7 +16,7 @@
 #include <QEventLoop>
 #include <QObject>
 #include <QJsonArray>
-#include <Settings.h>
+#include "settings/Settings.h"
 void ElasticSearchRestApi::putNote(const QString &owner, const QString &noteHtml, const Note& note) {
 
     QNetworkAccessManager* manager = new QNetworkAccessManager;

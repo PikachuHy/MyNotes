@@ -11,7 +11,7 @@
 #include <QPushButton>
 #include <QCheckBox>
 #include <QRadioButton>
-#include "Settings.h"
+#include "settings/Settings.h"
 #include "PiDialog.h"
 class SettingsDialog: public PiDialog {
     Q_OBJECT

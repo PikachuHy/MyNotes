@@ -1,7 +1,7 @@
 #include "NoteEditorWidget.h"
 #include "NoteFileService.h"
 #include "FileSystemWatcher.h"
-#include "Settings.h"
+#include "settings/Settings.h"
 #include "Indexer.h"
 #include "DbManager.h"
 #include "utils/Utils.h"

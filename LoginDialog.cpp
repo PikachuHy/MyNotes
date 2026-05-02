@@ -14,7 +14,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <QMovie>
-#include "Settings.h"
+#include "settings/Settings.h"
 #include "LoginApi.h"
 #include "utils/Utils.h"
 #include "utils/Constant.h"

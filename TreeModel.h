@@ -5,7 +5,7 @@
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
-#include "Settings.h"
+#include "settings/Settings.h"
 class TreeItem;
 class WatchingItem;
 class DbManager;

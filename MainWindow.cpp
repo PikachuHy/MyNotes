@@ -4,7 +4,7 @@
 
 #include "MainWindow.h"
 #include "Widget.h"
-#include "Settings.h"
+#include "settings/Settings.h"
 #include <QMenuBar>
 #include <QAction>
 #include <QDebug>

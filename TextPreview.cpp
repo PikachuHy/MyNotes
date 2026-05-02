@@ -13,7 +13,7 @@
 #include <WordReader.h>
 #include <Editor.h>
 #include <QMenu>
-#include "Settings.h"
+#include "settings/Settings.h"
 TextPreview::TextPreview(QWidget *parent) : QWidget(parent) {
     auto layout = new QVBoxLayout();
     int renderMode = Settings::instance()->modeRender;
