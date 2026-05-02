@@ -1,4 +1,4 @@
-#include "WatchingFileHtmlVisitor.h"
+#include "export/WatchingFileHtmlVisitor.h"
 
 WatchingFileHtmlVisitor::WatchingFileHtmlVisitor(const QString& path)
     : m_notePath(path)

@@ -15,7 +15,7 @@
 #endif
 #include <QCommandLineParser>
 #include "config.h"
-#include "LoginDialog.h"
+#include "auth/LoginDialog.h"
 #include "utils/Utils.h"
 int showWindow(SingleApplication* app) {
     auto w = new MainWindow();

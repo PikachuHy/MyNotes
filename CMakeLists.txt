@@ -88,11 +88,9 @@ target_sources(libMyNotes PRIVATE
         assets/icon.qrc
         ChooseFolderWidget.cpp
         SettingsDialog.cpp
-        LoginDialog.cpp LoginDialog.h
         AboutDialog.cpp AboutDialog.h
         SingleApplication.cpp SingleApplication.h
         ElasticSearchRestApi.cpp ElasticSearchRestApi.h
-        LoginApi.cpp LoginApi.h
         TabWidget.cpp TabWidget.h
         TextPreview.cpp TextPreview.h
         TabBar.cpp TabBar.h
@@ -102,9 +100,11 @@ target_sources(libMyNotes PRIVATE
 add_subdirectory(src/indexer)
 add_subdirectory(src/utils)
 add_subdirectory(src/database)
+add_subdirectory(src/export)
 add_subdirectory(src/settings)
 add_subdirectory(src/watcher)
 add_subdirectory(src/network)
+add_subdirectory(src/auth)
 add_subdirectory(src/widgets)
 add_subdirectory(src/notes)
 option(UPDATE_TS "update translate" OFF)

@@ -1,5 +1,5 @@
 #include "widgets/Widget.h"
-#include "NoteFileService.h"
+#include "notes/NoteFileService.h"
 #include "SyncService.h"
 #include "TreeItem.h"
 #include "TreeModel.h"
@@ -36,7 +36,7 @@
 #include "watcher/FileSystemWatcher.h"
 #include "AboutDialog.h"
 #include "indexer/Indexer.h"
-#include "HtmlExporter.h"
+#include "export/HtmlExporter.h"
 #ifdef ENABLE_TROJAN
 #include "network/TrojanThread.h"
 #endif

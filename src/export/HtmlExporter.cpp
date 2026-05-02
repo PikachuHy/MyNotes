@@ -1,4 +1,4 @@
-#include "HtmlExporter.h"
+#include "export/HtmlExporter.h"
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>

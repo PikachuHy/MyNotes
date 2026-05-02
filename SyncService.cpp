@@ -1,11 +1,11 @@
 #include "SyncService.h"
 #include "ElasticSearchRestApi.h"
-#include "HtmlExporter.h"
+#include "export/HtmlExporter.h"
 #include "database/DbManager.h"
 #include "settings/Settings.h"
 #include "network/Http.h"
 #include "utils/Utils.h"
-#include "WatchingFileHtmlVisitor.h"
+#include "export/WatchingFileHtmlVisitor.h"
 #include "QtMarkdownParser"
 #include <QtWordReader>
 #include <QDir>

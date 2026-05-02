@@ -1,5 +1,5 @@
 #include "NoteEditorWidget.h"
-#include "NoteFileService.h"
+#include "notes/NoteFileService.h"
 #include "watcher/FileSystemWatcher.h"
 #include "settings/Settings.h"
 #include "indexer/Indexer.h"

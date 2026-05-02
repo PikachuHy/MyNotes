@@ -6,7 +6,7 @@
 #define MYNOTES_LOGINDIALOG_H
 
 #include <QDialog>
-#include "PiDialog.h"
+#include "widgets/PiDialog.h"
 #include <QLineEdit>
 #include <QCheckBox>
 class LoginDialog: public PiDialog {

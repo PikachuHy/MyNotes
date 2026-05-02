@@ -2,7 +2,7 @@
 // Created by PikachuHy on 2021/4/3.
 //
 
-#include "LoginDialog.h"
+#include "auth/LoginDialog.h"
 #include <QIcon>
 #include <QDialogButtonBox>
 #include <QFormLayout>
@@ -15,7 +15,7 @@
 #include <QDebug>
 #include <QMovie>
 #include "settings/Settings.h"
-#include "LoginApi.h"
+#include "auth/LoginApi.h"
 #include "utils/Utils.h"
 #include "utils/Constant.h"
 
