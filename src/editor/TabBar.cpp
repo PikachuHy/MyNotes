@@ -2,7 +2,7 @@
 // Created by pikachu on 2021/4/19.
 //
 
-#include "TabBar.h"
+#include "editor/TabBar.h"
 #include <QMenu>
 #include <QAction>
 #include <QDebug>

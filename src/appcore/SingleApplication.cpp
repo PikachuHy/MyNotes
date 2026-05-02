@@ -4,7 +4,7 @@
 // https://blog.csdn.net/playstudy/article/details/7796691
 // 第二种实现方法
 
-#include "SingleApplication.h"
+#include "appcore/SingleApplication.h"
 #include <QTimer>
 #include <QByteArray>
 

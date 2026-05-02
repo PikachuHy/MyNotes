@@ -1,4 +1,4 @@
-#include "TrayIconManager.h"
+#include "appcore/TrayIconManager.h"
 #include "settings/Settings.h"
 #include <QSystemTrayIcon>
 #include <QMenu>

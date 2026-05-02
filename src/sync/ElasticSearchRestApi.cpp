@@ -2,7 +2,7 @@
 // Created by PikachuHy on 2021/3/24.
 //
 
-#include "ElasticSearchRestApi.h"
+#include "sync/ElasticSearchRestApi.h"
 #include <QCoreApplication>
 #include <QString>
 #include <QNetworkAccessManager>

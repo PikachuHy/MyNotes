@@ -1,5 +1,5 @@
-#include "SyncService.h"
-#include "ElasticSearchRestApi.h"
+#include "sync/SyncService.h"
+#include "sync/ElasticSearchRestApi.h"
 #include "export/HtmlExporter.h"
 #include "database/DbManager.h"
 #include "settings/Settings.h"

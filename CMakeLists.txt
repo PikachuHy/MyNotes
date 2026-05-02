@@ -73,13 +73,6 @@ else ()
 endif ()
 target_sources(libMyNotes PRIVATE MyNotes_zh_CN.ts)
 target_sources(libMyNotes PRIVATE
-        NoteEditorWidget.cpp NoteEditorWidget.h
-        SyncService.cpp SyncService.h
-        ListModel.cpp
-        ListView.cpp
-        TreeModel.cpp
-        TreeItem.cpp
-        TreeView.cpp
         SearchController.cpp SearchController.h
         SearchDialog.cpp
         ${TS_FILES}
@@ -89,13 +82,6 @@ target_sources(libMyNotes PRIVATE
         ChooseFolderWidget.cpp
         SettingsDialog.cpp
         AboutDialog.cpp AboutDialog.h
-        SingleApplication.cpp SingleApplication.h
-        ElasticSearchRestApi.cpp ElasticSearchRestApi.h
-        TabWidget.cpp TabWidget.h
-        TextPreview.cpp TextPreview.h
-        TabBar.cpp TabBar.h
-        MarkdownHighlighter.cpp MarkdownHighlighter.h
-        TrayIconManager.cpp TrayIconManager.h
         )
 add_subdirectory(src/indexer)
 add_subdirectory(src/utils)
@@ -104,9 +90,12 @@ add_subdirectory(src/export)
 add_subdirectory(src/settings)
 add_subdirectory(src/watcher)
 add_subdirectory(src/network)
+add_subdirectory(src/sync)
 add_subdirectory(src/auth)
 add_subdirectory(src/widgets)
 add_subdirectory(src/notes)
+add_subdirectory(src/editor)
+add_subdirectory(src/appcore)
 option(UPDATE_TS "update translate" OFF)
 if (UPDATE_TS)
     if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -178,7 +167,6 @@ if (USE_WEB_ENGINE_VIEW)
             Qt${QT_VERSION_MAJOR}::WebChannel
             Qt${QT_VERSION_MAJOR}::Positioning
             )
-    target_sources(libMyNotes PRIVATE WebEngineView.cpp WebEngineView.h)
 else ()
 endif ()
 if (BUILD_TEST)

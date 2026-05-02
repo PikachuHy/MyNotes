@@ -2,7 +2,7 @@
 // Created by pikachu on 2021/4/19.
 //
 
-#include "TextPreview.h"
+#include "editor/TextPreview.h"
 #include <QFile>
 #include <QDir>
 #include <QFileInfo>

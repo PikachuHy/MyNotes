@@ -1,11 +1,11 @@
 #include "widgets/Widget.h"
 #include "notes/NoteFileService.h"
-#include "SyncService.h"
+#include "sync/SyncService.h"
 #include "TreeItem.h"
 #include "TreeModel.h"
 #include "TreeView.h"
 #include "database/DbManager.h"
-#include "TrayIconManager.h"
+#include "appcore/TrayIconManager.h"
 #include "NoteEditorWidget.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -27,7 +27,7 @@
 #include "utils/Utils.h"
 #include "SearchController.h"
 #include "utils/Constant.h"
-#include "ElasticSearchRestApi.h"
+#include "sync/ElasticSearchRestApi.h"
 #include "settings/Settings.h"
 #include "SettingsDialog.h"
 #include "network/Http.h"

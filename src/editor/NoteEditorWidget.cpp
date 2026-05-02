@@ -1,4 +1,4 @@
-#include "NoteEditorWidget.h"
+#include "editor/NoteEditorWidget.h"
 #include "notes/NoteFileService.h"
 #include "watcher/FileSystemWatcher.h"
 #include "settings/Settings.h"
@@ -6,9 +6,9 @@
 #include "database/DbManager.h"
 #include "utils/Utils.h"
 #include "utils/Toast.h"
-#include "TabWidget.h"
-#include "TextPreview.h"
-#include "MarkdownHighlighter.h"
+#include "editor/TabWidget.h"
+#include "editor/TextPreview.h"
+#include "editor/MarkdownHighlighter.h"
 #include <QTextEdit>
 #include <QHBoxLayout>
 #include <QFile>

@@ -1,4 +1,4 @@
-#include "MarkdownHighlighter.h"
+#include "editor/MarkdownHighlighter.h"
 #include <QTextDocument>
 #include <QTextBlock>
 #include <QTextCursor>

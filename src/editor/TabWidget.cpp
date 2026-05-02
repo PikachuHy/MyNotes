@@ -2,11 +2,11 @@
 // Created by pikachu on 2021/4/19.
 //
 
-#include "TabWidget.h"
-#include "TextPreview.h"
+#include "editor/TabWidget.h"
+#include "editor/TextPreview.h"
 #include <QEvent>
 #include <QKeyEvent>
-#include "TabBar.h"
+#include "editor/TabBar.h"
 #include <QMenu>
 #include <QDebug>
 TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent) {

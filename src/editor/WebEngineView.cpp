@@ -2,7 +2,7 @@
 // Created by pikachu on 2021/4/12.
 //
 
-#include "WebEngineView.h"
+#include "editor/WebEngineView.h"
 
 QWebEngineView *WebEngineView::createWindow(QWebEnginePage::WebWindowType type) {
     Q_UNUSED(type);

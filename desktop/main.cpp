@@ -5,7 +5,7 @@
 #include <QApplication>
 #include <QStandardPaths>
 #include <QDir>
-#include "SingleApplication.h"
+#include "appcore/SingleApplication.h"
 #include <QDebug>
 #ifndef _DEBUG
 #include <QLoggingCategory>
