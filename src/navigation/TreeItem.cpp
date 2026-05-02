@@ -1,6 +1,6 @@
 
-#include "TreeItem.h"
-#include "TreeModel.h"
+#include "navigation/TreeItem.h"
+#include "navigation/TreeModel.h"
 #include "utils/Constant.h"
 #include <QFileInfo>
 #include <QFileIconProvider>

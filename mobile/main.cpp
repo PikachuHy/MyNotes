@@ -11,7 +11,7 @@
 
 #include "QtQuickMarkdownItem.h"
 #include "database/DbManager.h"
-#include "TreeModel.h"
+#include "navigation/TreeModel.h"
 #include "KeyFilter.h"
 int main(int argc, char *argv[])
 {

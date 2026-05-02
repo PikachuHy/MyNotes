@@ -1,4 +1,4 @@
-#include "TreeView.h"
+#include "navigation/TreeView.h"
 #include <QWidget>
 #include <QTreeView>
 #include <QHeaderView>
