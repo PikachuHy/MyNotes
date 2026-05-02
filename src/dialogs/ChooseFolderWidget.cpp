@@ -2,7 +2,7 @@
 // Created by PikachuHy on 2021/3/16.
 //
 
-#include "ChooseFolderWidget.h"
+#include "dialogs/ChooseFolderWidget.h"
 
 ChooseFolderWidget::ChooseFolderWidget(DbManager *dbManager, QWidget *parent):
     m_dbManager(dbManager), QTreeWidget(parent)

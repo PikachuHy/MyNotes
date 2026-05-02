@@ -2,7 +2,7 @@
 // Created by PikachuHy on 2021/3/25.
 //
 
-#include "SettingsDialog.h"
+#include "dialogs/SettingsDialog.h"
 #include <QGridLayout>
 #include <QLabel>
 #include <QTimer>

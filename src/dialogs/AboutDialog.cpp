@@ -2,7 +2,7 @@
 // Created by PikachuHy on 2021/4/3.
 //
 
-#include "AboutDialog.h"
+#include "dialogs/AboutDialog.h"
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QPushButton>

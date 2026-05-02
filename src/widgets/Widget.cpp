@@ -29,12 +29,12 @@
 #include "utils/Constant.h"
 #include "sync/ElasticSearchRestApi.h"
 #include "settings/Settings.h"
-#include "SettingsDialog.h"
+#include "dialogs/SettingsDialog.h"
 #include "network/Http.h"
 #include <QDesktopServices>
 #include <QStringList>
 #include "watcher/FileSystemWatcher.h"
-#include "AboutDialog.h"
+#include "dialogs/AboutDialog.h"
 #include "indexer/Indexer.h"
 #include "export/HtmlExporter.h"
 #ifdef ENABLE_TROJAN

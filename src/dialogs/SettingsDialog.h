@@ -12,7 +12,7 @@
 #include <QCheckBox>
 #include <QRadioButton>
 #include "settings/Settings.h"
-#include "PiDialog.h"
+#include "widgets/PiDialog.h"
 class SettingsDialog: public PiDialog {
     Q_OBJECT
 public:

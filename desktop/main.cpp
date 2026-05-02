@@ -1,7 +1,7 @@
 #include <qglobal.h>
 #include "widgets/MainWindow.h"
 #include "widgets/Widget.h"
-#include "SettingsDialog.h"
+#include "dialogs/SettingsDialog.h"
 #include <QApplication>
 #include <QStandardPaths>
 #include <QDir>
