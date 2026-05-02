@@ -33,7 +33,7 @@
 #include "Http.h"
 #include <QDesktopServices>
 #include <QStringList>
-#include "FileSystemWatcher.h"
+#include "watcher/FileSystemWatcher.h"
 #include "AboutDialog.h"
 #include "Indexer.h"
 #include "HtmlExporter.h"

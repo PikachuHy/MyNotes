@@ -3,7 +3,7 @@
 #include "TreeItem.h"
 #include "utils/Constant.h"
 #include "database/DbManager.h"
-#include "FileSystemWatcher.h"
+#include "watcher/FileSystemWatcher.h"
 #include "utils/Utils.h"
 #include <QStringList>
 #include <QDir>

@@ -96,7 +96,6 @@ target_sources(libMyNotes PRIVATE
         LoginDialog.cpp LoginDialog.h
         AboutDialog.cpp AboutDialog.h
         SingleApplication.cpp SingleApplication.h
-        FileSystemWatcher.cpp FileSystemWatcher.h
         ElasticSearchRestApi.cpp ElasticSearchRestApi.h
         PiDialog.cpp PiDialog.h
         LoginApi.cpp LoginApi.h
@@ -113,6 +112,7 @@ target_sources(libMyNotes PRIVATE
 add_subdirectory(src/utils)
 add_subdirectory(src/database)
 add_subdirectory(src/settings)
+add_subdirectory(src/watcher)
 option(UPDATE_TS "update translate" OFF)
 if (UPDATE_TS)
     if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)

@@ -2,7 +2,7 @@
 // Created by PikachuHy on 2021/4/1.
 //
 
-#include "FileSystemWatcher.h"
+#include "watcher/FileSystemWatcher.h"
 #include <QFileInfo>
 #include <QDir>
 #include <QSet>
