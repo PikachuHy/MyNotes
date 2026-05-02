@@ -3,8 +3,8 @@
 //
 
 #include "SearchDialog.h"
-#include "Constant.h"
-#include "Utils.h"
+#include "utils/Constant.h"
+#include "utils/Utils.h"
 #include <QLineEdit>
 #include <QVBoxLayout>
 #include <QStandardItemModel>

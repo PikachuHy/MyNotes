@@ -16,7 +16,7 @@
 #include <QCommandLineParser>
 #include "config.h"
 #include "LoginDialog.h"
-#include "Utils.h"
+#include "utils/Utils.h"
 int showWindow(SingleApplication* app) {
     auto w = new MainWindow();
     w->setAttribute(Qt::WA_DeleteOnClose, true);

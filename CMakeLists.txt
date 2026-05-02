@@ -85,15 +85,12 @@ target_sources(libMyNotes PRIVATE
         TreeView.cpp
         DbModel.cpp
         DbManager.cpp
-        Constant.cpp
         SearchController.cpp SearchController.h
         SearchDialog.cpp
-        Utils.cpp
         ${TS_FILES}
         assets/db.qrc
         assets/css.qrc
         assets/icon.qrc
-        Toast.cpp
         ChooseFolderWidget.cpp
         Http.cpp
         Settings.cpp
@@ -116,6 +113,7 @@ target_sources(libMyNotes PRIVATE
         MainWindow.cpp MainWindow.h
         TrayIconManager.cpp TrayIconManager.h
         )
+add_subdirectory(src/utils)
 option(UPDATE_TS "update translate" OFF)
 if (UPDATE_TS)
     if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)

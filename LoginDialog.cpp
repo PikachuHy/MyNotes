@@ -16,8 +16,8 @@
 #include <QMovie>
 #include "Settings.h"
 #include "LoginApi.h"
-#include "Utils.h"
-#include "Constant.h"
+#include "utils/Utils.h"
+#include "utils/Constant.h"
 
 
 LoginDialog::LoginDialog() {

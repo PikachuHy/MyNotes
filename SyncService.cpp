@@ -4,7 +4,7 @@
 #include "DbManager.h"
 #include "Settings.h"
 #include "Http.h"
-#include "Utils.h"
+#include "utils/Utils.h"
 #include "WatchingFileHtmlVisitor.h"
 #include "QtMarkdownParser"
 #include <QtWordReader>

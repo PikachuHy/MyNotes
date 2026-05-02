@@ -6,7 +6,7 @@
 #define MYNOTES_LOGINAPI_H
 
 #include <QObject>
-#include "Singleton.h"
+#include "utils/Singleton.h"
 struct LoginParam {
     QString baseUrl;
     QString account;

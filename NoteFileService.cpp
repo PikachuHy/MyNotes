@@ -1,6 +1,6 @@
 #include "NoteFileService.h"
 #include "DbManager.h"
-#include "Utils.h"
+#include "utils/Utils.h"
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>

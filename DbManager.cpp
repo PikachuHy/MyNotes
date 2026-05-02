@@ -3,7 +3,7 @@
 //
 
 #include "DbManager.h"
-#include "Constant.h"
+#include "utils/Constant.h"
 #include <QtCore>
 #include <QtWidgets>
 #include <QtSql>

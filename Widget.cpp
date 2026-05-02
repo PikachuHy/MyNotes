@@ -24,9 +24,9 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QDir>
-#include "Utils.h"
+#include "utils/Utils.h"
 #include "SearchController.h"
-#include "Constant.h"
+#include "utils/Constant.h"
 #include "ElasticSearchRestApi.h"
 #include "Settings.h"
 #include "SettingsDialog.h"

@@ -1,10 +1,10 @@
 
 #include "TreeModel.h"
 #include "TreeItem.h"
-#include "Constant.h"
+#include "utils/Constant.h"
 #include "DbManager.h"
 #include "FileSystemWatcher.h"
-#include "Utils.h"
+#include "utils/Utils.h"
 #include <QStringList>
 #include <QDir>
 #include <QDebug>
