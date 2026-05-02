@@ -6,7 +6,7 @@
 #include "navigation/TreeView.h"
 #include "database/DbManager.h"
 #include "appcore/TrayIconManager.h"
-#include "NoteEditorWidget.h"
+#include "editor/NoteEditorWidget.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSplitter>
