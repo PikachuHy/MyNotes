@@ -30,7 +30,7 @@
 #include "ElasticSearchRestApi.h"
 #include "settings/Settings.h"
 #include "SettingsDialog.h"
-#include "Http.h"
+#include "network/Http.h"
 #include <QDesktopServices>
 #include <QStringList>
 #include "watcher/FileSystemWatcher.h"
@@ -38,7 +38,7 @@
 #include "Indexer.h"
 #include "HtmlExporter.h"
 #ifdef ENABLE_TROJAN
-#include "TrojanThread.h"
+#include "network/TrojanThread.h"
 #endif
 Widget::Widget(QWidget *parent)
         : PiWidget(parent),

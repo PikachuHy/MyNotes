@@ -1,4 +1,4 @@
-#include "TrojanThread.h"
+#include "network/TrojanThread.h"
 #include <string>
 #include "trojan/src/core/log.h"
 #include "trojan/src/core/service.h"

@@ -3,7 +3,7 @@
 #include "HtmlExporter.h"
 #include "database/DbManager.h"
 #include "settings/Settings.h"
-#include "Http.h"
+#include "network/Http.h"
 #include "utils/Utils.h"
 #include "WatchingFileHtmlVisitor.h"
 #include "QtMarkdownParser"

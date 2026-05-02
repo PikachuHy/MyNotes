@@ -90,7 +90,6 @@ target_sources(libMyNotes PRIVATE
         assets/css.qrc
         assets/icon.qrc
         ChooseFolderWidget.cpp
-        Http.cpp
         SettingsDialog.cpp
         PiWidget.cpp PiWidget.h
         LoginDialog.cpp LoginDialog.h
@@ -113,6 +112,7 @@ add_subdirectory(src/utils)
 add_subdirectory(src/database)
 add_subdirectory(src/settings)
 add_subdirectory(src/watcher)
+add_subdirectory(src/network)
 option(UPDATE_TS "update translate" OFF)
 if (UPDATE_TS)
     if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
